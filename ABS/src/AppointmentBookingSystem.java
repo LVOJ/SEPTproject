@@ -1,10 +1,3 @@
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Scanner;
 public class AppointmentBookingSystem {
 
@@ -22,7 +15,7 @@ public class AppointmentBookingSystem {
         boolean flag=false,terminate=false;
         while(!terminate)
         {
-        System.out.println("Wellcome to Appointment Booking System");
+        System.out.println("Welcome to Appointment Booking System");
         System.out.println("1-Login");
         System.out.println("2-Register");
         System.out.println("3-Terminate");
