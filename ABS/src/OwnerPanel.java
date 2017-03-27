@@ -38,7 +38,36 @@ public class OwnerPanel {
              System.out.println("Ther is an exception in File Handling: "+e);
         }
     }
-    public static void AddWorkingTime(){}
+    public static void AddWorkingTime(){
+   	
+    	 try
+         {
+             FileWriter fw=new FileWriter("TimeTable.txt",true);          //open text file in writer append mode
+             BufferedWriter bw=new BufferedWriter(fw);       //gave access of file to buffer writer
+             System.out.println("Enter Date(i.e DD/mm/yyyy):");
+             bw.write(in.next());
+             bw.write(",");
+             System.out.println("Start Time (i.e 2:00):");
+             bw.write(in.next());
+             bw.write(",");
+             System.out.println("am/pm?");
+             bw.write(in.next());
+             bw.write(",");
+             System.out.println("End Time (i.e 4:00):");
+             bw.write(in.next());
+             bw.write(",");
+             System.out.println("am/pm?");
+             bw.write(in.next());
+             bw.write(",");
+             bw.write("available");
+             bw.newLine();       //after all data inserted an endline to make file redy for next registration
+             bw.close();
+         }
+         catch(Exception e)
+         {
+              System.out.println("Ther is an exception in File Handling: "+e);
+         }
+    }
    
     public static void showWorkingTimeTable()
     {
