@@ -15,7 +15,7 @@ public class AppointmentBookingSystem {
         boolean flag=false,terminate=false;
         while(!terminate)
         {
-        System.out.println("Welcome to Appointment Booking System");
+        System.out.println("Welllcome to Appointment Booking System");
         System.out.println("1-Login");
         System.out.println("2-Register");
         System.out.println("3-Terminate");
