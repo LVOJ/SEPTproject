@@ -1,0 +1,9 @@
+02/02/2016,2:00,pm,4:00,pm,available
+02/05/2016,4:20,pm,6:00,pm,Un-available
+02/06/2016,7:30,pm,8:45,pm,available
+02/06/2017,09:00,AM,09:30,AM,available
+02/03/2017,06:00,am,07:00,am,available
+02/01/2017,09:00,am,10:00,AM,available
+02/01/2017,06:00,am,07.00,am,Un-available
+12/12/2017,03:30,Pm,06:30,Pm,Un-available
+01/02/2017,6.66,am,6.66,pm,Un-available
