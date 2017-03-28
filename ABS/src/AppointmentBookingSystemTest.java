@@ -167,5 +167,37 @@ public class AppointmentBookingSystemTest {
     @Test
     public void testAddEmployee(){
     	
+    	//create the expected input pattern (login as business owner, select add employee, enter info)
+    	String actual = "";
+    	
+    	String data="Test\n"
+    			+ "Employee\n"
+    			+ "0411222333\n"
+    			+ "99_Address_St\n"
+    			+ "5pm-6pm\n";
+    	
+        System.setIn(new ByteArrayInputStream(String.valueOf(data).getBytes()));
+
+        AppointmentBookingSystem.in=new Scanner(System.in);
+        
+        OwnerPanel.AddEmployee();
+        
+        //iterate to the last line and store it into a string
+        try {
+			File f = new File("employeeinfo.txt");
+			FileReader fr = new FileReader(f);
+			BufferedReader br = new BufferedReader(fr);
+			String l;
+			
+			while ((l = br.readLine()) != null) {
+				actual = l;
+			}
+			fr.close();
+			
+		} catch (IOException e) {
+			System.out.println("There is an exception in File Handling: " + e);
+		}   
+        
+        assertEquals("Test,Employee,0411222333,99_Address_St,5pm-6pm", actual);
     }}
    
