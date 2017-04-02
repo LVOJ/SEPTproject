@@ -14,6 +14,23 @@ public class CustomerPanel {
     }
     public static void showBookingTimeTable()
     {
+    	try
+        {
+            FileReader fr=new FileReader("employeeinfo.txt");
+            BufferedReader br=new BufferedReader(fr);
+            String line="";
+            System.out.println("Employee Name\tDay\tTime Available\tStatus");
+            while((line=br.readLine())!=null)
+            {
+                String arr[]=line.split(",");
+                System.out.println(arr[0]+"\t\t"+arr[1]+"\t"+arr[2]+"\t"+arr[3]);
+            }
+            br.close();
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
         
 }}
 

@@ -34,11 +34,10 @@ public class AppointmentBookingSystem {
                     {
                         boolean flag1;
                         System.out.println("Wellcome to Owner's Panel");
-                        System.out.println("1- Add new Employee");
-                        //real functionality will be in in part 2
-                        System.out.println("2- Add Working Time/Date");     
-                        System.out.println("3- Look Summaries of Bookings");
-                        System.out.println("4- Show All Worker's avalaibility next week");
+                        System.out.println("1- Add new Employee Working Time");
+                        //real functionality will be in in part 2                      
+                        System.out.println("2- Look Summaries of Bookings");
+                        System.out.println("3- Show All Worker's avalaibility next week");
                         //till here
                         do
                         {
@@ -47,20 +46,16 @@ public class AppointmentBookingSystem {
                             {
                                 case 1:
                                 {
-                                    owner.AddEmployee();  //add new employee access only available to Owner
+                                    owner.AddEmployeeWorkingTime();  //add new employee access only available to Owner
                                     break;
                                 }
+                               
                                 case 2:
-                                {
-                                    owner.AddWorkingTime();
-                                    break;
-                                }
-                                case 3:
                                 {
                                     owner.ShowSummaries();
                                     break;
                                 }
-                                case 4:
+                                case 3:
                                 {
                                     owner.showWorkingTimeTable();
                                     break;

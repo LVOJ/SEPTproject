@@ -1,5 +1,6 @@
-ahsna,islam,1,2121212,25KK,KKK,KKKK,KKKKK,04:00
-K,KK,KKK,KKKKK,06:00
-k,k,k,k,k
-aqib,javed,789456123,paksitan,07:00
-tom,jake,032432,vfknvfd,06.12
+john,monday,19:49-20:19,available
+john,monday,20:19-20:49,available
+john,monday,20:49-21:19,available
+john,monday,21:19-21:49,available
+Kimmy,Monday,12:00-12:30,available
+Kimmy,Monday,12:30-13:00,available
