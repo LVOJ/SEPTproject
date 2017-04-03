@@ -1,6 +1,6 @@
-john,monday,19:49-20:19,available
-john,monday,20:19-20:49,available
-john,monday,20:49-21:19,available
-john,monday,21:19-21:49,available
+John,Monday,19:49-20:19,available
+John,Monday,20:19-20:49,available
+John,Monday,20:49-21:19,available
+John,Monday,21:19-21:49,available
 Kimmy,Monday,12:00-12:30,available
 Kimmy,Monday,12:30-13:00,available

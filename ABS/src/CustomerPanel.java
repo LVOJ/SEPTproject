@@ -12,7 +12,7 @@ public class CustomerPanel {
     {
        
     }
-    public static void showBookingTimeTable()
+    public static void ShowBookingTimeTable()
     {
     	try
         {

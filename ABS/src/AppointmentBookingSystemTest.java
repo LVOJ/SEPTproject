@@ -57,12 +57,36 @@ public class AppointmentBookingSystemTest {
      * Test of AddWorkingTime method, of class AppointmentBookingSystem.
      */
     @Test
-    public void testAddWorkingTime() {
+    public void testAddEmployeeWorkingTime() {
         
-        
+    	int length = getEmployeeLength();
+    	String data="a a a a a";
+    	 System.setIn(new ByteArrayInputStream(String.valueOf(data).getBytes()));
+
+         AppointmentBookingSystem.in=new Scanner(System.in);
+         
+         OwnerPanel.AddEmployeeWorkingTime();
+         
+         assertEquals(length, getEmployeeLength());
+    	
     }
 
-    
+    public int getEmployeeLength(){
+    	int length=0;
+    	try{
+    		Scanner input=new Scanner(new File("employeeinfo.txt"));
+    		while(input.hasNextLine()){
+    			length++;
+    			input.nextLine();
+    		}
+    		input.close();
+    	}
+    	catch(Exception e){
+    		
+    	}
+    	return length;
+    }
+ 
     
     /**
      * Test of ShowSummaries method, of class AppointmentBookingSystem.
@@ -117,7 +141,7 @@ public class AppointmentBookingSystemTest {
 
     /**
      * Test of main method, of class AppointmentBookingSystem.
-     */
+    */
     @Test
     public void testMain() {
         System.out.println("main");
@@ -131,13 +155,13 @@ public class AppointmentBookingSystemTest {
         
         AppointmentBookingSystem.main(args);
         String call="main\n";
-        call+="Wellcome to Appointment Booking System"+"\n";
-        call+="1-Login"+"\n";
-        call+="2-Register"+"\n";
-        call+="3-Terminate"+"\n";
+        call+="Welcome to Appointment Booking System"+"\n";
+        call+="1. Login"+"\n";
+        call+="2. Register"+"\n";
+        call+="3. Terminate"+"\n";
         
         
-        String expect="2-Register";
+        String expect="2. Register";
         
         String actual=outContent.toString().split("\n")[3].trim();
         assertEquals(expect, actual);

@@ -1,7 +1,7 @@
 import java.util.Scanner;
 public class AppointmentBookingSystem {
 
-    public static Scanner in=new Scanner(System.in);           //scanner objext to input from user in console
+    public static Scanner in=new Scanner(System.in);           //scanner object to input from user in console
     
     private static String data2[];
     /**
@@ -15,10 +15,10 @@ public class AppointmentBookingSystem {
         boolean flag=false,terminate=false;
         while(!terminate)
         {
-        System.out.println("Welllcome to Appointment Booking System");
-        System.out.println("1-Login");
-        System.out.println("2-Register");
-        System.out.println("3-Terminate");
+        System.out.println("Welcome to Appointment Booking System:");
+        System.out.println(" 1. Login");
+        System.out.println(" 2. Register");
+        System.out.println(" 3. Terminate");
         do
         {
             flag=false;
@@ -33,11 +33,11 @@ public class AppointmentBookingSystem {
                     if(OwnerFlag)
                     {
                         boolean flag1;
-                        System.out.println("Wellcome to Owner's Panel");
-                        System.out.println("1- Add new Employee Working Time");
+                        System.out.println("Welcome to Owner's Panel:");
+                        System.out.println(" 1. Add new Employee Working Time");
                         //real functionality will be in in part 2                      
-                        System.out.println("2- Look Summaries of Bookings");
-                        System.out.println("3- Show All Worker's avalaibility next week");
+                        System.out.println(" 2. Look Summaries of Bookings");
+                        System.out.println(" 3. Show All Worker's avalaibility next week");
                         //till here
                         do
                         {
@@ -57,7 +57,7 @@ public class AppointmentBookingSystem {
                                 }
                                 case 3:
                                 {
-                                    owner.showWorkingTimeTable();
+                                    owner.ShowWorkingTimeTable();
                                     break;
                                 }
                             }
@@ -66,15 +66,15 @@ public class AppointmentBookingSystem {
                     }
                     else if(CustomerFlag)   //else its customer's login data
                     {
-                        System.out.println("Customer Successfully Loged in");
+                        System.out.println("\nCustomer Successfully Logged in.\n");
                         for(int i=0;i<data2.length;i++)
                         {
                             System.out.print(data2[i]+" ");
                         }
                         boolean flag1;
-                        System.out.println("Wellcome to Customer's Panel");
-                        System.out.println("1- Show Booking Time Slots");
-                        System.out.println("2- book appointment");   
+                        System.out.println("Welcome to Customer's Panel:");
+                        System.out.println(" 1. Show Booking Time Slots");
+                        System.out.println(" 2. Book Appointment");   
                         do
                         {
                             flag1=false;
@@ -82,7 +82,7 @@ public class AppointmentBookingSystem {
                             {
                                 case 1:
                                 {
-                                    customer.showBookingTimeTable();
+                                    customer.ShowBookingTimeTable();
                                     break;
                                 }
                                 case 2:
