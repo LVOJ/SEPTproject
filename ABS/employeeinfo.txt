@@ -50,7 +50,7 @@ Fred,Thursday,12:00-12:30,available
 Fred,Thursday,12:30-13:00,available
 Kimmy,Friday,15:00-15:30,available
 Kimmy,Friday,15:30-16:00,available
-Kimmy,Friday,16:00-16:30,available
+Kimmy,Friday,16:00-16:30,Un-available
 Kimmy,Friday,16:30-17:00,available
 Kimmy,Friday,17:00-17:30,available
-Kimmy,Friday,17:30-18:00,available
+Kimmy,Friday,17:30-18:00,Un-available
