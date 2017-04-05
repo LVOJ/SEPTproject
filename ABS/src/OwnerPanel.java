@@ -19,13 +19,14 @@ public class OwnerPanel {
             BufferedWriter bw=new BufferedWriter(fw);       //gave access of file to buffer writer
             System.out.println("Employee Name");       
             String name = in.next();             //append , for easiness n data extraction
-            System.out.println("Employee Working Day(Monday-Sun)");
+            System.out.println("Employee Working Day(Monday-Friday)");
             String day = in.next();
-            
             System.out.println("Enter Starting Time i.e (06:00)");
             String start = in.next();
             System.out.println("Enter Ending Time i.e (08:00)");
             String end = in.next();
+            System.out.println("Enter the service provided i.e (Haircut, Wash, Colour):");
+            String service = in.next();
             int partOne, partTwo;
             int gap = 30;
             String prev = "";
@@ -57,11 +58,11 @@ public class OwnerPanel {
                     start = partOne+":0"+partTwo;
                 }else
                     start = partOne+":"+partTwo;
-                bw.write(name+","+day+","+prev+"-"+start+",available");
+                String selectedDay = day.toLowerCase();
+                String selectedService = service.toLowerCase();
+                bw.write(name + "," + selectedDay + "," + prev + "-" + start + ",available" + "," + selectedService);
                 bw.newLine();
             }
-                
-                
             bw.close();
         }
         catch(Exception e)

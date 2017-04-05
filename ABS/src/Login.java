@@ -91,7 +91,7 @@ public class Login {
                         return null;
                     }
                     flag=true;
-                    System.out.println("Wrong Username or passwrod.\nPlease Try Again!");
+                    System.out.println("Wrong Username or password.\nPlease Try Again!");
                     count++;    //count ++ if user enter wrong username or password
                 }
             }

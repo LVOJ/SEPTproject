@@ -72,29 +72,34 @@ public class AppointmentBookingSystem {
                             System.out.print(data2[i]+" ");
                         }
                         boolean flag1;
-                        System.out.println("Welcome to Customer's Panel:");
-                        System.out.println(" 1. Show Booking Time Slots");
-                        System.out.println(" 2. Book Appointment");   
-                        do
-                        {
-                            flag1=false;
-                            switch(in.nextInt())
-                            {
-                                case 1:
-                                {
-                                    customer.ShowBookingTimeTable();
-                                    break;
-                                }
-                                case 2:
-                                {
-                                    customer.BookAppointment(data2);
-                                    break;
-                                }
-                                
-                            }
-                        }
-                        while(flag1);
-                        
+                          do
+	                        {
+		                        System.out.println("Welcome to Customer's Panel:");
+		                        System.out.println(" 1. Show All Booking Time Slots");
+		                        System.out.println(" 2. Book Appointment");   
+		                        System.out.println(" 3. Terminate"); 
+	                            flag1=true;
+	                            switch(in.nextInt())
+	                            {
+	                                case 1:
+	                                {
+	                                    customer.ShowBookingTimeTable();
+	                                    break;
+	                                }
+	                                case 2:
+	                                {
+	                                    customer.BookAppointment(data2);
+	                                    break;
+	                                }
+	                                case 3:
+	                                {	
+	                                	flag1 = false;
+	                                    terminate = true;     //terminate flag will true so it will terminate main while loop
+	                                    break;
+	                                }
+	                            }
+	                        }
+	                        while(flag1);
                         
                     }
                     break;

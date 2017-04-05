@@ -2,8 +2,13 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Scanner;
+import java.util.function.Consumer;
+import java.nio.file.*;
 
 public class CustomerPanel {
     private static Scanner in=new Scanner(System.in);           //scanner objext to input from user in console
@@ -11,25 +16,78 @@ public class CustomerPanel {
     public static void BookAppointment(String[] data2)
     {
     	Booking book = new Booking();
-        ArrayList<String> data=new ArrayList<>();
+        ArrayList<String> data = new ArrayList<>();
         try
         {
+        	String selectedDay = null;
+        	String selectedService = null;
+        	boolean validService = false;
+        	do {	
+	        	System.out.println("\nSelect service i.e. (Haircut, Wash, Colour):");
+	        	String selectService = in.next();
+	            switch(selectService.toLowerCase()){
+		            case "haircut":
+		            case "wash":
+		            case "colour":
+		            	validService = true;
+		            	break;
+	            	default: 
+	            		break;
+	            }
+	            if (validService){
+	            	selectedService = selectService.toLowerCase();
+	            }
+        	}while(!validService);
+        	boolean validDay = false;
+        	do {
+
+	            System.out.println("\nSelect day of appointment i.e.(Monday, Tuesday etc.):");
+	            String selectDay = in.next();
+	            switch(selectDay.toLowerCase()){
+		            case "monday":
+		            case "tuesday":
+		            case "wednesday":
+		            case "thursday":
+		            case "friday":
+		            	validDay = true;
+		            	break;
+	            	default: 
+	            		break;
+	            }
+	            if (validDay){
+	            	selectedDay = selectDay.toLowerCase();
+	            }
+        	}while(!validDay);
+
             FileReader fr=new FileReader("employeeinfo.txt");
             BufferedReader br=new BufferedReader(fr);
             String line="";
+            lineGenerator();
             System.out.printf("%1s%10s%20s%12s\n","Employee Name","Day","Time Available","Status");
+            lineGenerator();
             //System.out.println("Employee Name\tDay\tTime Available\tStatus");
+            List<String> appointment = data;
             int i=1;
-            while((line=br.readLine())!=null)
+            boolean relevantTimeslot = false;
+            while( (line = br.readLine())!= null )
             {
-                data.add(line);     //save list of bookings
-                String arr[]=line.split(",");
-                System.out.printf("%1s%1s%20s%15s%20s\n",i+"-",arr[0],arr[1],arr[2],arr[3]);
+
+            	data.add(line);     //save list of bookings
+                String arr[] = line.split(",");
+                if (arr[4].contains(selectedService)){
+                	if(arr[1].contains(selectedDay)){
+                		relevantTimeslot = true;
+                	}
+                }
+                if(relevantTimeslot == true){
+                	System.out.printf("%1s%1s%20s%15s%20s\n",i+"-",arr[0],arr[1],arr[2],arr[3]);
+                }
+                
                 //System.out.println(i+"-"+arr[0]+"\t\t"+arr[1]+"\t"+arr[2]+"\t"+arr[3]);
                 i++;
             }
             br.close();
-            System.out.println("\nSelect Time i.e (1,2)");
+            System.out.println("\nSelect appointment time i.e (1,2)");
             String select=in.next();
             String[] selected = select.split(",");
             int choice = 0;
@@ -84,5 +142,16 @@ public class CustomerPanel {
             e.printStackTrace();
         }
         
-}}
+}
 
+    static boolean showSpecificTimeSlots(int line){
+    	return false;
+	}
+    
+	public static void lineGenerator(){
+	    for(int i = 0; i < 60; i++){
+	        System.out.printf("-");
+	    }
+	    System.out.printf("\n");
+	}
+}

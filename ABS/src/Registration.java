@@ -32,10 +32,10 @@ public class Registration {
             bw.write(",");
             System.out.println("Enter Password");
             bw.write(in.next());
-            bw.newLine();       //after all data inserted an endline to make file redy for next registration
+            bw.newLine();       //after all data inserted an endline to make file ready for next registration
             bw.close();
         }
-        catch(IOException e)        //catch any exception occur durring this process
+        catch(IOException e)        //catch any exception occur during this process
         {
             System.out.println("Theer is an exception in File Handling: "+e);
         }
