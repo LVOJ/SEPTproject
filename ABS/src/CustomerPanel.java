@@ -21,6 +21,8 @@ public class CustomerPanel {
         {
         	String selectedDay = null;
         	String selectedService = null;
+        	String selectedEmployee = null;
+        	
         	boolean validService = false;
         	do {	
 	        	System.out.println("\nSelect service i.e. (Haircut, Wash, Colour):");
@@ -38,6 +40,7 @@ public class CustomerPanel {
 	            	selectedService = selectService.toLowerCase();
 	            }
         	}while(!validService);
+        	
         	boolean validDay = false;
         	do {
 
@@ -59,6 +62,28 @@ public class CustomerPanel {
 	            }
         	}while(!validDay);
 
+        	boolean validEmployee = false;
+        	do {
+
+	            System.out.println("\nSelect an Employee (Enter * if you want to see all):");
+	            String selectEmployee = in.next();
+	            switch(selectEmployee.toLowerCase()){
+		            case "harry":
+		            case "fred":
+		            case "joe":
+		            case "kimmy":
+		            case "tom":
+		            case "*":
+		            	validEmployee = true;
+		            	break;
+	            	default: 
+	            		break;
+	            }
+	            if (validEmployee){
+	            	selectedEmployee = selectEmployee.toLowerCase();
+	            }
+        	}while(!validEmployee);
+        	
             FileReader fr=new FileReader("employeeinfo.txt");
             BufferedReader br=new BufferedReader(fr);
             String line="";
@@ -68,15 +93,20 @@ public class CustomerPanel {
             //System.out.println("Employee Name\tDay\tTime Available\tStatus");
             List<String> appointment = data;
             int i=1;
-            boolean relevantTimeslot = false;
+            
             while( (line = br.readLine())!= null )
             {
-
+            	boolean relevantTimeslot = false;
             	data.add(line);     //save list of bookings
                 String arr[] = line.split(",");
-                if (arr[4].contains(selectedService)){
+            	if (arr[4].contains(selectedService)){
                 	if(arr[1].contains(selectedDay)){
-                		relevantTimeslot = true;
+                		if(arr[0].contains(selectedEmployee)){
+                    		relevantTimeslot = true;
+                		}else if (selectedEmployee.equals("*")){
+                        	relevantTimeslot = true;
+                        }
+
                 	}
                 }
                 if(relevantTimeslot == true){

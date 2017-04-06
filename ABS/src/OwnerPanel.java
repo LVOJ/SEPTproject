@@ -60,7 +60,8 @@ public class OwnerPanel {
                     start = partOne+":"+partTwo;
                 String selectedDay = day.toLowerCase();
                 String selectedService = service.toLowerCase();
-                bw.write(name + "," + selectedDay + "," + prev + "-" + start + ",available" + "," + selectedService);
+                String selectedEmployee = name.toLowerCase();
+                bw.write(selectedEmployee + "," + selectedDay + "," + prev + "-" + start + ",available" + "," + selectedService);
                 bw.newLine();
             }
             bw.close();
