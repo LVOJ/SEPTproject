@@ -127,7 +127,7 @@ public class CustomerPanel {
 	    }
 	    System.out.printf("\n");
 	}
-	public static ArrayList<String> getEmployeeNames(){
+	private static ArrayList<String> getEmployeeNames(){
 		String line="";
 		int i = 0;
 		ArrayList<String> employeeNames = new ArrayList<String>();
@@ -150,7 +150,7 @@ public class CustomerPanel {
 		}
 		return employeeNames;  
 	}
-	public static String validateEmployees(ArrayList<String> employeeNames){
+	private static String validateEmployees(ArrayList<String> employeeNames){
 		boolean validEmployee = false;
     	String selectedEmployee = null;
     	do {
@@ -167,7 +167,7 @@ public class CustomerPanel {
 		return selectedEmployee;
 		
 	}
-	public static String validateService(){
+	private static String validateService(){
 		String selectedService = null;
 	 	boolean validService = false;
     	do {	
@@ -189,7 +189,7 @@ public class CustomerPanel {
     	
     	return selectedService;
 	}
-	public static String validateDay(){
+	private static String validateDay(){
 		boolean validDay = false;
 		String selectedDay = null;
     	do {
