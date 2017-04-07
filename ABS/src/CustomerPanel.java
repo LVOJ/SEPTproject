@@ -1,5 +1,6 @@
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -19,81 +20,22 @@ public class CustomerPanel {
         ArrayList<String> data = new ArrayList<>();
         try
         {
-        	String selectedDay = null;
-        	String selectedService = null;
-        	String selectedEmployee = null;
-        	
-        	boolean validService = false;
-        	do {	
-	        	System.out.println("\nSelect service i.e. (Haircut, Wash, Colour):");
-	        	String selectService = in.next();
-	            switch(selectService.toLowerCase()){
-		            case "haircut":
-		            case "wash":
-		            case "colour":
-		            	validService = true;
-		            	break;
-	            	default: 
-	            		break;
-	            }
-	            if (validService){
-	            	selectedService = selectService.toLowerCase();
-	            }
-        	}while(!validService);
-        	
-        	boolean validDay = false;
-        	do {
-
-	            System.out.println("\nSelect day of appointment i.e.(Monday, Tuesday etc.):");
-	            String selectDay = in.next();
-	            switch(selectDay.toLowerCase()){
-		            case "monday":
-		            case "tuesday":
-		            case "wednesday":
-		            case "thursday":
-		            case "friday":
-		            	validDay = true;
-		            	break;
-	            	default: 
-	            		break;
-	            }
-	            if (validDay){
-	            	selectedDay = selectDay.toLowerCase();
-	            }
-        	}while(!validDay);
-
-        	boolean validEmployee = false;
-        	do {
-
-	            System.out.println("\nSelect an Employee (Enter * if you want to see all):");
-	            String selectEmployee = in.next();
-	            switch(selectEmployee.toLowerCase()){
-		            case "harry":
-		            case "fred":
-		            case "joe":
-		            case "kimmy":
-		            case "tom":
-		            case "*":
-		            	validEmployee = true;
-		            	break;
-	            	default: 
-	            		break;
-	            }
-	            if (validEmployee){
-	            	selectedEmployee = selectEmployee.toLowerCase();
-	            }
-        	}while(!validEmployee);
-        	
             FileReader fr=new FileReader("employeeinfo.txt");
             BufferedReader br=new BufferedReader(fr);
             String line="";
+            int i = 1;
+        	String selectedService = validateService();
+        	String selectedDay = validateDay();
+
+        	ArrayList<String> employeeNames = getEmployeeNames();
+        	String selectedEmployee = validateEmployees(employeeNames);
+
             lineGenerator();
             System.out.printf("%1s%10s%20s%12s\n","Employee Name","Day","Time Available","Status");
             lineGenerator();
             //System.out.println("Employee Name\tDay\tTime Available\tStatus");
-            List<String> appointment = data;
-            int i=1;
             
+            List<String> appointment = data;
             while( (line = br.readLine())!= null )
             {
             	boolean relevantTimeslot = false;
@@ -111,10 +53,11 @@ public class CustomerPanel {
                 }
                 if(relevantTimeslot == true){
                 	System.out.printf("%1s%1s%20s%15s%20s\n",i+"-",arr[0],arr[1],arr[2],arr[3]);
+                    i++;
                 }
                 
                 //System.out.println(i+"-"+arr[0]+"\t\t"+arr[1]+"\t"+arr[2]+"\t"+arr[3]);
-                i++;
+
             }
             br.close();
             System.out.println("\nSelect appointment time i.e (1,2)");
@@ -184,4 +127,92 @@ public class CustomerPanel {
 	    }
 	    System.out.printf("\n");
 	}
+	public static ArrayList<String> getEmployeeNames(){
+		String line="";
+		int i = 0;
+		ArrayList<String> employeeNames = new ArrayList<String>();
+		try {
+			FileReader fr;
+			fr = new FileReader("employeeinfo.txt");
+	        BufferedReader br = new BufferedReader(fr);
+			while( (line = br.readLine())!= null ){
+				String arr[] = line.split(",");
+				String employee = arr[0].toLowerCase();
+				if (!employeeNames.contains(employee)) {
+					employeeNames.add(i, employee);
+					i++;
+				}				
+
+			}
+			/*br.close();*/
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return employeeNames;  
+	}
+	public static String validateEmployees(ArrayList<String> employeeNames){
+		boolean validEmployee = false;
+    	String selectedEmployee = null;
+    	do {
+            System.out.println("\nSelect an Employee (Enter * if you want to see all):");
+            String selectEmployee = in.next();
+            if (employeeNames.contains(selectEmployee.toLowerCase())){
+	            	validEmployee = true;
+    		}
+
+            if (validEmployee){
+            	selectedEmployee = selectEmployee.toLowerCase();
+            }
+    	}while(!validEmployee);
+		return selectedEmployee;
+		
+	}
+	public static String validateService(){
+		String selectedService = null;
+	 	boolean validService = false;
+    	do {	
+        	System.out.println("\nSelect service i.e. (Haircut, Wash, Colour):");
+        	String selectService = in.next();
+            switch(selectService.toLowerCase()){
+	            case "haircut":
+	            case "wash":
+	            case "colour":
+	            	validService = true;
+	            	break;
+            	default: 
+            		break;
+            }
+            if (validService){
+            	selectedService = selectService.toLowerCase();
+            }
+    	}while(!validService);
+    	
+    	return selectedService;
+	}
+	public static String validateDay(){
+		boolean validDay = false;
+		String selectedDay = null;
+    	do {
+
+            System.out.println("\nSelect day of appointment i.e.(Monday, Tuesday etc.):");
+            String selectDay = in.next();
+            switch(selectDay.toLowerCase()){
+	            case "monday":
+	            case "tuesday":
+	            case "wednesday":
+	            case "thursday":
+	            case "friday":
+	            	validDay = true;
+	            	break;
+            	default: 
+            		break;
+            }
+            if (validDay){
+            	selectedDay = selectDay.toLowerCase();
+            } 
+    	}while(!validDay);
+    	
+    	return selectedDay;
+	}
 }
+ 

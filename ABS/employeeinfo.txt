@@ -22,3 +22,7 @@ tom,friday,10:00-10:30,available,haircut
 tom,friday,10:30-11:00,available,haircut
 tom,friday,11:00-11:30,available,haircut
 tom,friday,11:30-12:00,available,haircut
+jakke,wednesday,08:00-08:30,available,colour
+jakke,wednesday,08:30-09:00,available,colour
+jakke,wednesday,09:00-09:30,available,colour
+jakke,wednesday,09:30-10:00,available,colour
