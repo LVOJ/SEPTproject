@@ -24,7 +24,7 @@ public class Registration {
             System.out.println("Enter Phone:");
             bw.write(in.next());
             bw.write(",");
-            System.out.println("Enter Address:");
+            System.out.println("Enter Address i.e. (1.Seasame.St):");
             bw.write(in.next());
             bw.write(",");
             System.out.println("Enter Username:");

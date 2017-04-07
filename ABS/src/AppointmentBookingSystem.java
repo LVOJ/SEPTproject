@@ -81,7 +81,7 @@ public class AppointmentBookingSystem {
                         		label = "Address:";
                         	} else if (i == 4){
                         		label = "Username:";
-                        	}else if (i == 4){
+                        	}else if (i == 5){
                         		label = "Password:";
                         	}
                             System.out.print(label + "\t"+data2[i]+"\n");
