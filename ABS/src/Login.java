@@ -70,14 +70,14 @@ public class Login {
                     {
                         if(arr[5].equals(Password))   //compare password with password in file
                         {
-                            authenticFlag=true; //sucess authenticate
+                            authenticFlag=true; //success authenticate
                             if(OwnerFlag==true){
                                 OwnerFlag = true;
                             }
                             else if(CustomerFlag == true){
                                 CustomerFlag = true;
                             }
-                            return arr;         //return data of user
+                            return arr;         //return data of user       
                         }
                     }
                 }

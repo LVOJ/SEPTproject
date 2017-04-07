@@ -15,22 +15,22 @@ public class Registration {
         {
             FileWriter fw=new FileWriter("customerinfo.txt",true);          //open text file in writer append mode
             BufferedWriter bw=new BufferedWriter(fw);       //gave access of file to buffer writer
-            System.out.println("Enter First Name");       
+            System.out.println("Enter First Name:");       
             bw.write(in.next());        //write string input from console directly to file
             bw.write(",");              //append , for easiness n data extraction
-            System.out.println("Enter Last Name");       
+            System.out.println("Enter Last Name:");       
             bw.write(in.next());        //write string input from console directly to file
             bw.write(",");              //append , for easiness n data extraction
-            System.out.println("Enter Phone");
+            System.out.println("Enter Phone:");
             bw.write(in.next());
             bw.write(",");
-            System.out.println("Enter Address");
+            System.out.println("Enter Address:");
             bw.write(in.next());
             bw.write(",");
-            System.out.println("Enter UserName");
+            System.out.println("Enter Username:");
             bw.write(in.next());
             bw.write(",");
-            System.out.println("Enter Password");
+            System.out.println("Enter Password:");
             bw.write(in.next());
             bw.newLine();       //after all data inserted an endline to make file ready for next registration
             bw.close();

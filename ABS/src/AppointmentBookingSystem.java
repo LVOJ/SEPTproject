@@ -66,15 +66,30 @@ public class AppointmentBookingSystem {
                     }
                     else if(CustomerFlag)   //else its customer's login data
                     {
+                    	String label = "";
                         System.out.println("\nCustomer Successfully Logged in.\n");
+                        System.out.println("Customer Details:\n");
                         for(int i=0;i<data2.length;i++)
                         {
-                            System.out.print(data2[i]+" ");
+                        	if (i == 0){
+                        		label = "First Name:";
+                        	} else if (i == 1){
+                        		label = "Last Name:";
+                        	} else if (i == 2){
+                        		label = "Phone:\t";
+                        	} else if (i == 3){
+                        		label = "Address:";
+                        	} else if (i == 4){
+                        		label = "Username:";
+                        	}else if (i == 4){
+                        		label = "Password:";
+                        	}
+                            System.out.print(label + "\t"+data2[i]+"\n");
                         }
                         boolean flag1;
                           do
 	                        {
-		                        System.out.println("Welcome to Customer's Panel:");
+		                        System.out.println("\nWelcome to Customer's Panel:");
 		                        System.out.println(" 1. Show All Booking Time Slots");
 		                        System.out.println(" 2. Book Appointment");   
 		                        System.out.println(" 3. Terminate"); 
