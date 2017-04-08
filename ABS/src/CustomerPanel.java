@@ -158,6 +158,8 @@ public class CustomerPanel {
             String selectEmployee = in.next();
             if (employeeNames.contains(selectEmployee.toLowerCase())){
 	            	validEmployee = true;
+    		} else if (selectEmployee.equals("*")){
+    			validEmployee = true;
     		}
 
             if (validEmployee){
