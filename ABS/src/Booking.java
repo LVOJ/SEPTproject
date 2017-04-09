@@ -24,7 +24,7 @@ public class Booking {
             {
                 if(currentLine.equals(lineToRemove)) 
                 {
-                    String newLine=currentLine.replace("available", "Un-available");
+                    String newLine = currentLine.replace("available", "Un-available");
                     writer.write(newLine);
                     writer.newLine();
                 }

@@ -52,7 +52,7 @@ public class OwnerPanel {
             }
             System.out.println("Activities");
             for(int a=0;a<activities.size();a++){
-                System.out.println((a+1)+"- "+activities.get(a));
+                System.out.println((a+1)+". "+activities.get(a));
             }
             System.out.print("Select an Activity: ");
             choice = in.nextInt();

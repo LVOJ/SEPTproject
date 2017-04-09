@@ -16,6 +16,7 @@ public class Utils {
 		
 		return input;
 	}
+	
 	public static String validateIntegerInput(String message, int min, int max){
     	boolean validInput = false;
     	String input = null;
@@ -30,5 +31,5 @@ public class Utils {
     }while (!validInput);
 	
 	return input;
-}
+	}
 }

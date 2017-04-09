@@ -18,14 +18,14 @@ public class Login {
         boolean flag=false;
         String File="";
         String UserName,Password;
-        
-        System.out.println("Choose Login Type");
-        System.out.println("1- Bussiness Owner");
-        System.out.println("2- Customer");
+        String input ="";
+
+        input = Utils.validateIntegerInput("Choose Login Type\n1. Bussiness Owner\n2. Customer\n", 1, 2);
+        int choice = Integer.parseInt(input);
         do
         {
             flag=false;
-            switch(in.nextInt())
+            switch(choice)
             {
                 case 1:
                 {
