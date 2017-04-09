@@ -94,11 +94,33 @@ public class AppointmentBookingSystemTest {
     @Test 
     public void testShowSummaries() {
     	
-       
+    	System.setOut(new PrintStream(outContent));
+    	OwnerPanel.ShowSummaries();
+        
+        assertEquals(readData().trim(),outContent.toString().trim());
         
     }
     
-    
+    public String readData(){
+    	String data="";
+    	 try
+         {
+             FileReader fr=new FileReader("BookingSummaries.txt");
+             BufferedReader br=new BufferedReader(fr);
+             String line="";
+             while((line=br.readLine())!=null)
+             {
+                data+=line+"\n";
+             }
+             br.close();
+         }
+         catch(Exception e)
+         {
+             e.printStackTrace();
+         }
+    	 return data;
+
+    }
 
     
 
@@ -107,10 +129,37 @@ public class AppointmentBookingSystemTest {
      */
     @Test 
     public void testShowWorkingTimeTable() {
-    	
+    	System.setOut(new PrintStream(outContent));
+        OwnerPanel.ShowWorkingTimeTable();
+        
+        String expec=getTimeTable().trim().split("\n")[1].trim();
+        String actual=outContent.toString().trim().split("\n")[1].trim();
+        
+        assertEquals(expec, actual);
     }
     
-    
+ private String getTimeTable(){
+    	
+    	StringBuffer time=new StringBuffer();
+            try
+            {
+                FileReader fr=new FileReader("employeeinfo.txt");
+                BufferedReader br=new BufferedReader(fr);
+                String line="";
+                time.append("Employee Name\tDay\tStatus\n");
+                while((line=br.readLine())!=null)
+                {
+                    String arr[]=line.split(",");
+                    time.append(arr[0]+"\t\t"+arr[1]+"\t"+arr[4]+"\n");
+                }
+                br.close();
+            }
+            catch(Exception e)
+            {
+                e.printStackTrace();
+            }
+            return time.toString();
+    }
 
     /**
      * Test of showBookingTimeTable method, of class AppointmentBookingSystem.
@@ -128,7 +177,10 @@ public class AppointmentBookingSystemTest {
      */
     @Test @Ignore
     public void testBookSlot() {
-        
+    	System.out.println("BookSlot");
+        ArrayList<String> data = null;
+        int slotNo = 0;
+        Booking.BookSlot(data, slotNo);
     }
 
     /**

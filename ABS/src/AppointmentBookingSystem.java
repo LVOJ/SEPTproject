@@ -1,13 +1,23 @@
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Scanner;
 public class AppointmentBookingSystem {
 
-    public static Scanner in=new Scanner(System.in);           //scanner object to input from user in console
+    public static Scanner in=new Scanner(System.in);           //scanner objext to input from user in console
     
     private static String data2[];
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException{
+        
+        
         Login log = new Login();
         OwnerPanel owner = new OwnerPanel();
         CustomerPanel customer = new CustomerPanel();
@@ -15,10 +25,10 @@ public class AppointmentBookingSystem {
         boolean flag=false,terminate=false;
         while(!terminate)
         {
-        System.out.println("Welcome to Appointment Booking System:");
-        System.out.println(" 1. Login");
-        System.out.println(" 2. Register");
-        System.out.println(" 3. Terminate");
+        System.out.println("Wellcome to Appointment Booking System");
+        System.out.println("1-Login");
+        System.out.println("2-Register");
+        System.out.println("3-Terminate");
         do
         {
             flag=false;
@@ -33,11 +43,13 @@ public class AppointmentBookingSystem {
                     if(OwnerFlag)
                     {
                         boolean flag1;
-                        System.out.println("Welcome to Owner's Panel:");
-                        System.out.println(" 1. Add new Employee Working Time");
-                        //real functionality will be in in part 2                      
-                        System.out.println(" 2. Look Summaries of Bookings");
-                        System.out.println(" 3. Show All Worker's avalaibility next week");
+                        System.out.println("Wellcome to Owner's Panel");
+                        System.out.println("1- Add new Employee Working Time");
+                        //real functionality will be in in part 2
+                        System.out.println("2- Look Summaries of Bookings");
+                        System.out.println("3- Show All Worker's avalaibility next week");
+                        System.out.println("4- Add New Service");
+                        System.out.println("5- Delete Service");
                         //till here
                         do
                         {
@@ -49,7 +61,6 @@ public class AppointmentBookingSystem {
                                     owner.AddEmployeeWorkingTime();  //add new employee access only available to Owner
                                     break;
                                 }
-                               
                                 case 2:
                                 {
                                     owner.ShowSummaries();
@@ -57,19 +68,21 @@ public class AppointmentBookingSystem {
                                 }
                                 case 3:
                                 {
-                                    owner.ShowWorkingTimeTable();
+                                    owner.showWorkingTimeTable();
                                     break;
                                 }
+                               
                             }
                         }
                         while(flag1);
                     }
                     else if(CustomerFlag)   //else its customer's login data
-                    {
+                    {		
                     	String label = "";
-                        System.out.println("\nCustomer Successfully Logged in.\n");
+                        System.out.println("Customer Successfully Logged in");
                         System.out.println("Customer Details:\n");
                         for(int i=0;i<data2.length;i++)
+                        	
                         {
                         	if (i == 0){
                         		label = "First Name:";
@@ -84,37 +97,43 @@ public class AppointmentBookingSystem {
                         	}else if (i == 5){
                         		label = "Password:";
                         	}
-                            System.out.print(label + "\t"+data2[i]+"\n");
+                        	 System.out.print(label + "\t"+data2[i]+"\n");
                         }
                         boolean flag1;
-                          do
-	                        {
-		                        System.out.println("\nWelcome to Customer's Panel:");
-		                        System.out.println(" 1. Show All Booking Time Slots");
-		                        System.out.println(" 2. Book Appointment");   
-		                        System.out.println(" 3. Terminate"); 
-	                            flag1=true;
-	                            switch(in.nextInt())
-	                            {
-	                                case 1:
-	                                {
-	                                    customer.ShowBookingTimeTable();
-	                                    break;
-	                                }
-	                                case 2:
-	                                {
-	                                    customer.BookAppointment(data2);
-	                                    break;
-	                                }
-	                                case 3:
-	                                {	
-	                                	flag1 = false;
-	                                    terminate = true;     //terminate flag will true so it will terminate main while loop
-	                                    break;
-	                                }
-	                            }
-	                        }
-	                        while(flag1);
+                        System.out.println("Wellcome to Customer's Panel");
+                        System.out.println("1- Show Booking Time Slots");
+//                        System.out.println("2- Book Appointment");   
+                        System.out.println("2- Book Custom Appointment");
+                        System.out.println("3- Cancel Booking");
+                        do
+                        {
+                            flag1=false;
+                            switch(in.nextInt())
+                            {
+                                case 1:
+                                {
+                                    customer.showBookingTimeTable();
+                                    break;
+                                }
+//                                case 2:
+//                                {
+//                                    customer.BookAppointment(data2);
+//                                    break;
+//                                }
+                                case 2:
+                                {
+                                    customer.BookCustomAppointment(data2);
+                                    break;
+                                }
+                                case 3:
+                                {
+                                    customer.cancelBooking();
+                                    break;
+                                }
+                            }
+                        }
+                        while(flag1);
+                        
                         
                     }
                     break;
@@ -144,4 +163,3 @@ public class AppointmentBookingSystem {
     }
     
 }
-
