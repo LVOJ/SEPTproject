@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class CustomerPanel {
@@ -25,6 +26,7 @@ public class CustomerPanel {
         }
         System.out.print("Select a Service: ");
         int choice = in.nextInt();
+        
         String fileName = services.get(choice-1);
         fileName = fileName.toLowerCase();
         String service = fileName;
@@ -120,7 +122,7 @@ public class CustomerPanel {
     public static void BookCustomAppointment(String[] data2) throws FileNotFoundException, IOException{
         
         
-        int choice = 0;
+        String choice = null;
         String fileName = "";
         String empName = "";
         boolean empSet = false;
@@ -134,10 +136,18 @@ public class CustomerPanel {
         for(int a=0;a<services.size();a++){
             System.out.println((a+1)+"- "+services.get(a));
         }
-        System.out.print("Select a Service: ");
-        choice = in.nextInt();
-        fileName = services.get(choice-1);
-        fileName = fileName.toLowerCase();
+        
+        try {
+        	choice = Utils.validateInput("Select a Service: ", "[1-4]");
+        }
+        catch(InputMismatchException exception){
+        	
+        }
+        
+       	fileName = services.get(Integer.parseInt(choice)-1);
+
+    	
+    	fileName = fileName.toLowerCase();
         String service = fileName;
         fileName = fileName+".txt";
         br.close();
@@ -154,14 +164,12 @@ public class CustomerPanel {
         
         while(repeat){
             if(daySet==false){
-                System.out.println("Enter Day: ");
-                day = in.next();
-                day = day.toLowerCase();
+                day = validateDay(); // validates input for Day
             }
             if(empSet==false){
-                System.out.println("Enter Employee Name: ");
-                empName = in.next();
-                empName = empName.toLowerCase();
+                ArrayList<String> employeeNames = getEmployeeNames(fileName); //checks if employee name exists ---
+                empName =  validateEmployees(employeeNames); //validates input for Selected Employee and it exists in file
+
             }
             
             int one = 0;
@@ -267,7 +275,7 @@ public class CustomerPanel {
             bookings.add(line);
         }
         for(int a=0;a<bookings.size();a++){
-            System.out.println((a+1)+"-"+bookings.get(a));
+            System.out.println((a+1)+". "+bookings.get(a));
         }
         br.close();
         String delete ="";
@@ -311,4 +319,70 @@ public class CustomerPanel {
         
         
     }
+    private static ArrayList<String> getEmployeeNames(String fileName){
+		String line="";
+		int i = 0;
+		ArrayList<String> employeeNames = new ArrayList<String>();
+		try {
+			FileReader fr;
+			fr = new FileReader(fileName);
+	        BufferedReader br = new BufferedReader(fr);
+			while( (line = br.readLine())!= null ){
+				String arr[] = line.split(",");
+				String employee = arr[0].toLowerCase();
+				if (!employeeNames.contains(employee)) {
+					employeeNames.add(i, employee);
+					i++;
+				}				
+
+			}
+			br.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return employeeNames;  
+    }
+	private static String validateEmployees(ArrayList<String> employeeNames){
+		boolean validEmployee = false;
+    	String selectedEmployee = null;
+    	do {
+            System.out.println("\nSelect an Employee (Enter * if you want to see all):");
+            String selectEmployee = in.next();
+            if (employeeNames.contains(selectEmployee.toLowerCase())){
+            	validEmployee = true;
+    		}else if (selectEmployee.equals("*")){
+				validEmployee = true;
+      		}
+
+            if (validEmployee){
+            	selectedEmployee = selectEmployee.toLowerCase();
+            }
+    	}while(!validEmployee);
+		return selectedEmployee;
+		
+	}
+	private static String validateDay(){
+		boolean validDay = false;
+		String selectedDay = null;
+    	do {
+            System.out.println("\nSelect day of appointment i.e.(Monday, Tuesday etc.):");
+            String selectDay = in.next();
+            switch(selectDay.toLowerCase()){
+	            case "monday":
+	            case "tuesday":
+	            case "wednesday":
+	            case "thursday":
+	            case "friday":
+	            	validDay = true;
+	            	break;
+            	default: 
+            		break;
+            }
+            if (validDay){
+            	selectedDay = selectDay.toLowerCase();
+            } 
+    	}while(!validDay);
+    	
+    	return selectedDay;
+	}
 }
