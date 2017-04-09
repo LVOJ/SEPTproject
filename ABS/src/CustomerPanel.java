@@ -10,7 +10,7 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class CustomerPanel {
-    private static Scanner in=new Scanner(System.in);           //scanner objext to input from user in console
+    private static Scanner in=new Scanner(System.in);           //scanner object to input from user in console
     
     public static void BookAppointment(String[] data2) throws IOException
     {
@@ -58,8 +58,7 @@ public class CustomerPanel {
                 i++;
             }
             br.close();
-            System.out.println("\nSelect Time i.e (1,2)");
-            String select=in.next();
+            String select = Utils.validateInput("\nSelect Time i.e 1,2", "[\\d][,][\\d][)]");
             String[] selected = select.split(",");
             selection = 0;
             for(int a=0;a<selected.length;a++){
@@ -157,8 +156,9 @@ public class CustomerPanel {
         String service = fileName;
         fileName = fileName+".txt";
         br.close();
-        boolean repeat = true, daySet = false;
+        boolean repeat = true, daySet = false ,activitySet =false;
         String day = "";
+        String activity="";
         ArrayList<String> list = new ArrayList<String>();
         
         br = new BufferedReader(new FileReader(fileName));
@@ -169,20 +169,24 @@ public class CustomerPanel {
         ArrayList<String> temp = new ArrayList<String>();
         
         while(repeat){
+        	if(activitySet==false){
+				activity = Utils.validateActivity(); // validates input for Activity
+        	}
             if(daySet==false){
-                day = validateDay(); // validates input for Day
+                day = Utils.validateDay("\nSelect day of appointment i.e.(Monday, ...,Friday):"); // validates input for Day
             }
             if(empSet==false){
-                ArrayList<String> employeeNames = getEmployeeNames(fileName); //checks if employee name exists ---
-                empName =  validateEmployees(employeeNames); //validates input for Selected Employee and it exists in file
+                ArrayList<String> employeeNames = Utils.getEmployeeNames(fileName); //checks if employee name exists ---
+                empName =  Utils.validateEmployees(employeeNames); //validates input for Selected Employee and it exists in file
 
             }
             
             int one = 0;
             for(int a=0;a<list.size();a++){
                 String recs[] = list.get(a).split(",");
-                if(recs[1].toLowerCase().equals(day) && (recs[0].toLowerCase().equals(empName) || empName.equals("*"))){
+                if(recs[1].toLowerCase().equals(day) && (recs[0].toLowerCase().equals(empName) || empName.equals("*"))&&(recs[2].toLowerCase().equals(activity))){
                     daySet = true;
+                    activitySet=true;
                     empSet = true;
                     temp.add(list.get(a));
                     one++;
@@ -198,7 +202,7 @@ public class CustomerPanel {
                     }
                 }
             }
-            if(daySet==true && empSet==true){
+            if(daySet==true && empSet==true && activitySet==true){
                 repeat = false;
                 break;
             }
@@ -206,6 +210,7 @@ public class CustomerPanel {
                 System.out.println("Please Enter Some Other Day!");
                 repeat = true;
             }
+            
             if(empSet == false){
                 System.out.println("Please Select Some Other Employee!");
                 repeat = true;
@@ -220,13 +225,13 @@ public class CustomerPanel {
         }
         int select = 0;
        // System.out.print("Select From Above: ");
-        //select = in.nextInt();
         String selected;
         String recs[];
         while(true){
-            System.out.print("Select From Above: ");
-	        select = in.nextInt();
-	        selected = temp.get(select-1);
+            int max = temp.size();
+            choice = Utils.validateIntegerInput("Select From Above: ", 1, max);
+            selection = Integer.parseInt(choice);
+	        selected = temp.get(selection-1);
 	        recs = selected.split(",");
 	        
 	        if(recs[4].equals("Un-available")){
@@ -270,9 +275,9 @@ public class CustomerPanel {
         for(int a=0;a<services.size();a++){
             System.out.println((a+1)+". "+services.get(a));
         }
-        System.out.print("Select a Service: ");
-        int choice = in.nextInt();
-        String fileName = services.get(choice-1);
+        String choice = Utils.validateIntegerInput("Select a Service: ", 1,4);
+        int selection = Integer.parseInt(choice);
+        String fileName = services.get(selection-1);
         fileName = fileName.toLowerCase();
         String service = fileName;
         fileName = fileName+".txt";
@@ -289,10 +294,11 @@ public class CustomerPanel {
         br.close();
         String delete ="";
         BufferedWriter bw = new BufferedWriter(new FileWriter("BookingSummaries.txt"));
-        System.out.print("Select from above to cancel: ");
-        int number = in.nextInt();
+        int max = bookings.size();
+        choice = Utils.validateIntegerInput("Select from above to cancel: ", 1, max);
+        selection = Integer.parseInt(choice);
         for(int a=0;a<bookings.size();a++){
-            if((number-1)==a){
+            if((selection-1)==a){
                 delete = bookings.get(a);
             }
             else{
@@ -314,7 +320,7 @@ public class CustomerPanel {
             String[] recs = records.get(a).split(",");
             String record = recs[0] + recs[2] + recs[1] + recs[3];
             String cancelledAppointment = del[6] + del[8] + " " + del[9]+ del[7] + del[10];
-            if( record.equals(cancelledAppointment)){
+            if( record.equalsIgnoreCase(cancelledAppointment)){
                 recs[4] = "available";
                 records.set(a, recs[0]+","+recs[1]+","+recs[2]+","+recs[3]+","+recs[4]);
             }
@@ -329,70 +335,6 @@ public class CustomerPanel {
         
         
     }
-    private static ArrayList<String> getEmployeeNames(String fileName){
-		String line="";
-		int i = 0;
-		ArrayList<String> employeeNames = new ArrayList<String>();
-		try {
-			FileReader fr;
-			fr = new FileReader(fileName);
-	        BufferedReader br = new BufferedReader(fr);
-			while( (line = br.readLine())!= null ){
-				String arr[] = line.split(",");
-				String employee = arr[0].toLowerCase();
-				if (!employeeNames.contains(employee)) {
-					employeeNames.add(i, employee);
-					i++;
-				}				
 
-			}
-			br.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return employeeNames;  
-    }
-	private static String validateEmployees(ArrayList<String> employeeNames){
-		boolean validEmployee = false;
-    	String selectedEmployee = null;
-    	do {
-            System.out.println("\nSelect an Employee (Enter * if you want to see all):");
-            String selectEmployee = in.next();
-            if (employeeNames.contains(selectEmployee.toLowerCase())){
-            	validEmployee = true;
-    		}else if (selectEmployee.equals("*")){
-				validEmployee = true;
-      		}
-
-            if (validEmployee){
-            	selectedEmployee = selectEmployee.toLowerCase();
-            }
-    	}while(!validEmployee);
-		return selectedEmployee;
-		
-	}
-	private static String validateDay(){
-		boolean validDay = false;
-		String selectedDay = null;
-    	do {
-            System.out.println("\nSelect day of appointment i.e.(Monday, ...,Friday):");
-            String selectDay = in.next();
-            switch(selectDay.toLowerCase()){
-	            case "monday":
-	            case "tuesday":
-	            case "wednesday":
-	            case "thursday":
-	            case "friday":
-	            	validDay = true;
-	            	break;
-            	default: 
-            		break;
-            }
-            if (validDay){
-            	selectedDay = selectDay.toLowerCase();
-            } 
-    	}while(!validDay);
-    	
-    	return selectedDay;
-	}
 }
+

@@ -20,25 +20,19 @@ public class OwnerPanel {
     	Scanner in2 = new Scanner(System.in);
         int choice = 0;
         String fileName = "";
-        System.out.print("Enter Service: ");
-        fileName = in.next();
+        fileName = Utils.validateInput("Enter Service: ", "^[A-Za-z]+$");
         fileName = fileName.toLowerCase();
         fileName = fileName+".txt";
         
         try
         {
             FileWriter fw=new FileWriter(fileName,true);          //open text file in writer append mode
-            BufferedWriter bw=new BufferedWriter(fw);       //gave access of file to buffer writer
-            System.out.println("Employee Name");       
-            String name = in.next();             //append , for easiness n data extraction
-            System.out.println("Employee Working Day(Monday-Sun)");
-            String day = in.next();
-            System.out.println("Activity: ");
-            String activity = in2.nextLine();
-            System.out.println("Enter Starting Time i.e (06:00)");
-            String start = in.next();
-            System.out.println("Enter Ending Time i.e (06:00)");
-            String end = in.next();
+            BufferedWriter bw=new BufferedWriter(fw);       //gave access of file to buffer writer     
+            String name = Utils.validateInput("Employee Name: ", "^[A-Za-z]+$");            //append , for easiness n data extraction
+            String day = Utils.validateDay("Employee Working Day(Monday-Friday):");
+            String activity = Utils.validateInput("Activity: ", "^[A-Za-z]+\\s[A-Za-z]+$");
+            String start = Utils.validateInput("Enter Starting Time i.e (06:00): ", "^[\\d]{2}[:][\\d]{2}$");
+            String end = Utils.validateInput("Enter Ending Time i.e (08:00): ", "^[\\d]{2}[:][\\d]{2}$");
             int partOne, partTwo;
             int gap = 30;
             String prev = "";
@@ -69,7 +63,7 @@ public class OwnerPanel {
                     start = partOne+":0"+partTwo;
                 }else
                     start = partOne+":"+partTwo;
-                bw.write(name+","+day+","+activity+","+prev+"-"+start+",available");
+                bw.write(name.toLowerCase() +","+ day.toLowerCase() +","+ activity.toLowerCase() +","+prev+"-"+start+",available");
                 bw.newLine();
         }
                 
@@ -95,8 +89,10 @@ public class OwnerPanel {
             System.out.println((a+1)+"- "+services.get(a));
         }
         System.out.print("Select a Service: ");
-        int choice = in.nextInt();
-        String fileName = services.get(choice-1);
+        int max = services.size();
+        String choice = Utils.validateIntegerInput("Select From Above: ", 1, max);
+        int selection = Integer.parseInt(choice);
+        String fileName = services.get(selection-1);
         fileName = fileName.toLowerCase();
         String service = fileName;
         fileName = fileName+".txt";

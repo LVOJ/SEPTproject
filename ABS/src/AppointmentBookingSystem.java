@@ -103,7 +103,7 @@ public class AppointmentBookingSystem {
 	                            {
 	                                case 1:
 	                                {
-	                                    customer.showBookingTimeTable();
+	                                	customer.showBookingTimeTable();
 	                                    break;
 	                                }
 	//                                case 2:

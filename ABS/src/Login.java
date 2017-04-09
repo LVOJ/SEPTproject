@@ -20,7 +20,7 @@ public class Login {
         String UserName,Password;
         String input ="";
 
-        input = Utils.validateIntegerInput("Choose Login Type\n1. Bussiness Owner\n2. Customer\n", 1, 2);
+        input = Utils.validateIntegerInput("Choose Login Type\n1. Business Owner\n2. Customer\n", 1, 2);
         int choice = Integer.parseInt(input);
         do
         {
