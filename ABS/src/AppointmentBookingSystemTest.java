@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -65,7 +67,11 @@ public class AppointmentBookingSystemTest {
 
          AppointmentBookingSystem.in=new Scanner(System.in);
          
-         OwnerPanel.AddEmployeeWorkingTime();
+            try {
+                OwnerPanel.AddEmployeeWorkingTime();
+            } catch (IOException ex) {
+                Logger.getLogger(AppointmentBookingSystemTest.class.getName()).log(Level.SEVERE, null, ex);
+            }
          
          assertEquals(length, getEmployeeLength());
     	
@@ -128,9 +134,9 @@ public class AppointmentBookingSystemTest {
      * Test of showWorkingTimeTable method, of class AppointmentBookingSystem.
      */
     @Test 
-    public void testShowWorkingTimeTable() {
+    public void testShowWorkingTimeTable() throws IOException {
     	System.setOut(new PrintStream(outContent));
-        OwnerPanel.ShowWorkingTimeTable();
+        OwnerPanel.showWorkingTimeTable();
         
         String expec=getTimeTable().trim().split("\n")[1].trim();
         String actual=outContent.toString().trim().split("\n")[1].trim();
@@ -180,7 +186,8 @@ public class AppointmentBookingSystemTest {
     	System.out.println("BookSlot");
         ArrayList<String> data = null;
         int slotNo = 0;
-        Booking.BookSlot(data, slotNo);
+        String s = "";
+        Booking.BookSlot(data, slotNo,s);
     }
 
     /**
@@ -195,7 +202,7 @@ public class AppointmentBookingSystemTest {
      * Test of main method, of class AppointmentBookingSystem.
     */
     @Test
-    public void testMain() {
+    public void testMain() throws IOException {
         System.out.println("main");
         String[] args = null;
         String data="3";

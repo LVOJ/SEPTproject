@@ -132,8 +132,13 @@ public class OwnerPanel {
             System.out.printf("%1s%10s%25s%20s%12s\n","Employee Name","Day","Activity","Time Available","Status");
             while((line=br.readLine())!=null)
             {
+                
+                
                 String arr[]=line.split(",");
-                System.out.printf("%1s%20s%25s%15s%20s\n",arr[0],arr[1],arr[2],arr[3],arr[4]);
+                if(arr.length==4)
+                    System.out.printf("%1s%20s%25s%15s%20s\n",arr[0],arr[1],arr[2],"",arr[3]);
+                else
+                    System.out.printf("%1s%20s%25s%15s%20s\n",arr[0],arr[1],arr[2],arr[3],arr[4]);
             }
             br.close();
         }

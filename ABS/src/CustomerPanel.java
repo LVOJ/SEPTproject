@@ -204,11 +204,24 @@ public class CustomerPanel {
             System.out.println((i+1)+"-"+temp.get(i));
         }
         int select = 0;
-        System.out.print("Select From Above: ");
+       // System.out.print("Select From Above: ");
+        //select = in.nextInt();
+        String selected;
+        String recs[];
+        while(true){
+            System.out.print("Select From Above: ");
         select = in.nextInt();
-        String selected = temp.get(select-1);
-        String recs[] = selected.split(",");
-        recs[3] = "Un-available";
+        selected = temp.get(select-1);
+        recs = selected.split(",");
+            if(recs.length==4){
+                System.out.println("Booking Unvailable");
+                System.out.println("Please select another");
+            }else{
+                break;
+            }
+            
+        }
+        
         String modified = recs[0]+","+recs[1]+","+recs[2]+","+recs[3];
         BufferedWriter bw = new BufferedWriter(new FileWriter(fileName));
         for(int a=0;a<list.size();a++){
@@ -283,7 +296,7 @@ public class CustomerPanel {
         for(int a=0;a<records.size();a++){
             String[] recs = records.get(a).split(",");
             if(recs[0].equals(del[6]) && recs[1].equals(del[7]) && 
-                    recs[2].equals(del[8]+" "+del[9]) && recs[3].equals(del[10]) ){
+                    recs[2].equals(del[8]+" "+del[9]) && recs[3].equals(del[9]) ){
                 recs[4] = "available";
                 records.set(a, recs[0]+","+recs[1]+","+recs[2]+","+recs[3]+","+recs[4]);
             }
