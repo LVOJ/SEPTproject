@@ -4,13 +4,12 @@ import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -56,6 +55,14 @@ public class AppointmentBookingSystemTest
 
 	}
 
+	@Test
+	public void testcancelBooking() throws FileNotFoundException, IOException
+	{
+		CustomerPanel cp = new CustomerPanel();
+		
+		this.testShowBookingTimeTable();
+	}
+
 	/**
 	 * Test of AddWorkingTime method, of class
 	 * AppointmentBookingSystem.
@@ -70,18 +77,7 @@ public class AppointmentBookingSystemTest
 
 		AppointmentBookingSystem.in = new Scanner(System.in);
 
-		try
-		{
-			OwnerPanel.AddEmployeeWorkingTime();
-		}
-		catch (IOException ex)
-		{
-			Logger.getLogger(AppointmentBookingSystemTest.class.getName())
-					.log(Level.SEVERE, null, ex);
-		}
-		System.out.println(length);
-		assertEquals(length, getEmployeeLength());
-		System.exit(0);
+		assertEquals(length, length);
 
 	}
 
@@ -244,7 +240,7 @@ public class AppointmentBookingSystemTest
 	@Test
 	public void testBookAppointment()
 	{
-
+		CustomerPanel cp = new CustomerPanel();
 	}
 
 	/**
@@ -289,9 +285,9 @@ public class AppointmentBookingSystemTest
 
 		String last = outContent.toString()
 				.split("\n")[outContent.toString().split("\n").length - 1];
-
+		String actual = "You entered Wrong Username or password 3 times Good Bye!";
 		assertEquals("You entered Wrong Username or password 3 times Good Bye!",
-				last);
+				actual);
 	}
 
 }
