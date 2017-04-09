@@ -104,6 +104,7 @@ public class CustomerPanel {
         for(a=0;a<services.size();a++){
             System.out.println((a+1)+". "+services.get(a));
         }
+
         String choice = Utils.validateIntegerInput("Select a Service: ", 1,a+1);
         int selection = Integer.parseInt(choice);
         String fileName = services.get(selection-1);
@@ -217,15 +218,15 @@ public class CustomerPanel {
         for (i = 0; i < temp.size(); i++) {
             System.out.println((i+1)+"."+temp.get(i));
         }
-        String select = "";
+        int select = 0;
        // System.out.print("Select From Above: ");
         //select = in.nextInt();
         String selected;
         String recs[];
         while(true){
-            select = Utils.validateIntegerInput("Select From Above: ", 1,i+1);
-            selection = Integer.parseInt(choice);
-	        selected = temp.get(selection-1);
+            System.out.print("Select From Above: ");
+	        select = in.nextInt();
+	        selected = temp.get(select-1);
 	        recs = selected.split(",");
 	        
 	        if(recs[4].equals("Un-available")){
@@ -258,8 +259,7 @@ public class CustomerPanel {
         writer2.close();
     }
     public void cancelBooking() throws FileNotFoundException, IOException{
-    	int a;
-    	String choice = "";
+        
         BufferedReader br = new BufferedReader(new FileReader("services.txt"));
         ArrayList<String> services = new ArrayList<String>();
         String line = "";
@@ -267,13 +267,12 @@ public class CustomerPanel {
             services.add(line);
         }
         System.out.println("Services");
-        for(a=0;a<services.size();a++){
+        for(int a=0;a<services.size();a++){
             System.out.println((a+1)+". "+services.get(a));
         }
         System.out.print("Select a Service: ");
-        choice = Utils.validateIntegerInput("Select a Service: ", 1,a+1);
-        int selection = Integer.parseInt(choice);
-        String fileName = services.get(selection-1);
+        int choice = in.nextInt();
+        String fileName = services.get(choice-1);
         fileName = fileName.toLowerCase();
         String service = fileName;
         fileName = fileName+".txt";
@@ -284,7 +283,7 @@ public class CustomerPanel {
         while((line=br.readLine())!=null){
             bookings.add(line);
         }
-        for( a=0;a<bookings.size();a++){
+        for(int a=0;a<bookings.size();a++){
             System.out.println((a+1)+". "+bookings.get(a));
         }
         br.close();
@@ -292,7 +291,7 @@ public class CustomerPanel {
         BufferedWriter bw = new BufferedWriter(new FileWriter("BookingSummaries.txt"));
         System.out.print("Select from above to cancel: ");
         int number = in.nextInt();
-        for(a=0;a<bookings.size();a++){
+        for(int a=0;a<bookings.size();a++){
             if((number-1)==a){
                 delete = bookings.get(a);
             }
@@ -311,7 +310,7 @@ public class CustomerPanel {
         while((line=br.readLine())!=null){
             records.add(line);
         }
-        for(a=0;a<records.size();a++){
+        for(int a=0;a<records.size();a++){
             String[] recs = records.get(a).split(",");
             if(recs[0].equals(del[6]) && recs[1].equals(del[7]) && 
                     recs[2].equals(del[8]+" "+del[9]) && recs[3].equals(del[9]) ){
@@ -321,7 +320,7 @@ public class CustomerPanel {
         }
         br.close();
         bw = new BufferedWriter(new FileWriter(fileName));
-        for(a=0;a<records.size();a++){
+        for(int a=0;a<records.size();a++){
             bw.write(records.get(a));
             bw.newLine();
         }

@@ -2,7 +2,7 @@ john,monday,hair color,06:00-06:30,Un-available
 john,monday,hair color,06:30-07:00,Un-available
 john,monday,hair color,07:00-07:30,Un-available
 john,monday,hair color,07:30-08:00,Un-available
-john,monday,hair color,08:00-08:30,available
+john,monday,hair color,08:00-08:30,Un-available
 kimm,tuesday,hair cut,14:00-14:30,available
 kimm,tuesday,hair cut,14:30-15:00,available
 kimm,tuesday,hair cut,15:00-15:30,available
