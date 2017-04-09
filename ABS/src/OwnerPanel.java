@@ -17,26 +17,14 @@ public class OwnerPanel {
      */
     public static void AddEmployeeWorkingTime() throws IOException
     {
-        Scanner in2 = new Scanner(System.in);
+    	Scanner in2 = new Scanner(System.in);
         int choice = 0;
-        BufferedReader br = new BufferedReader(new FileReader("services.txt"));
-        ArrayList<String> services = new ArrayList<String>();
-        ArrayList<String> activities = new ArrayList<String>();
-        String line = "";
-        while((line=br.readLine())!=null){
-            services.add(line);
-        }
-        System.out.println("Services");
-        for(int a=0;a<services.size();a++){
-            System.out.println((a+1)+"- "+services.get(a));
-        }
-        System.out.print("Select a Service: ");
-        choice = in.nextInt();
-        String fileName = services.get(choice-1);
+        String fileName = "";
+        System.out.print("Enter Service: ");
+        fileName = in.next();
         fileName = fileName.toLowerCase();
-        String service = fileName;
         fileName = fileName+".txt";
-        br.close();
+        
         try
         {
             FileWriter fw=new FileWriter(fileName,true);          //open text file in writer append mode
@@ -45,18 +33,8 @@ public class OwnerPanel {
             String name = in.next();             //append , for easiness n data extraction
             System.out.println("Employee Working Day(Monday-Sun)");
             String day = in.next();
-            br = new BufferedReader(new FileReader(service+"Activities.txt"));
-            line = "";
-            while((line=br.readLine())!=null){
-                activities.add(line);
-            }
-            System.out.println("Activities");
-            for(int a=0;a<activities.size();a++){
-                System.out.println((a+1)+". "+activities.get(a));
-            }
-            System.out.print("Select an Activity: ");
-            choice = in.nextInt();
-            String activity = activities.get(choice-1);
+            System.out.println("Activity: ");
+            String activity = in2.nextLine();
             System.out.println("Enter Starting Time i.e (06:00)");
             String start = in.next();
             System.out.println("Enter Ending Time i.e (06:00)");
@@ -64,7 +42,6 @@ public class OwnerPanel {
             int partOne, partTwo;
             int gap = 30;
             String prev = "";
-            br.close();
             while(!start.equals(end)){
                 prev = start;
                 String[] starting = start.split(":");

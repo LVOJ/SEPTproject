@@ -11,3 +11,4 @@ Customer a a booked Appointment on john monday hair color
 Customer a a booked Appointment on john monday hair color
 Customer a a booked Appointment on john monday hair color
 Customer a a booked Appointment on john monday hair color
+Customer a a booked Appointment on KIMOMO monday hair cut

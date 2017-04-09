@@ -9,3 +9,7 @@ kimm,tuesday,hair cut,15:00-15:30,available
 paul,friday,hair cut,15:10-15:40,available
 paul,friday,hair cut,15:40-16:10,available
 paul,friday,hair cut,16:10-16:40,available
+KIMOMO,monday,hair cut,09:00-09:30,available
+KIMOMO,monday,hair cut,09:30-10:00,available
+KIMOMO,monday,hair cut,10:00-10:30,Un-available
+KIMOMO,monday,hair cut,10:30-11:00,available
