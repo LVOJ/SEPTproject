@@ -254,7 +254,7 @@ public class CustomerPanel {
         }
         bw.close();
         BufferedWriter writer2 = new BufferedWriter(new FileWriter("BookingSummaries.txt",true));
-        writer2.write("Customer "+data2[0]+" "+data2[1]+" booked Appointment on "+recs[0]+" "+recs[1]+" "+recs[2]);
+        writer2.write("Customer "+data2[0]+" "+data2[1]+" booked Appointment on "+recs[0]+" "+recs[1]+" "+recs[2] +" " + recs[3]);
         writer2.newLine();
         writer2.close();
     }
@@ -312,8 +312,9 @@ public class CustomerPanel {
         }
         for(int a=0;a<records.size();a++){
             String[] recs = records.get(a).split(",");
-            if(recs[0].equals(del[6]) && recs[1].equals(del[7]) && 
-                    recs[2].equals(del[8]+" "+del[9]) && recs[3].equals(del[9]) ){
+            String record = recs[0] + recs[2] + recs[1] + recs[3];
+            String cancelledAppointment = del[6] + del[8] + " " + del[9]+ del[7] + del[10];
+            if( record.equals(cancelledAppointment)){
                 recs[4] = "available";
                 records.set(a, recs[0]+","+recs[1]+","+recs[2]+","+recs[3]+","+recs[4]);
             }
