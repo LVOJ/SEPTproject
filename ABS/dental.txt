@@ -1,0 +1,11 @@
+john,monday,teeth extraction,06:00-06:30,Un-available
+john,monday,teeth extraction,06:30-07:00,Un-available
+john,monday,teeth extraction,07:00-07:30,available
+john,monday,teeth extraction,07:30-08:00,Un-available
+john,monday,teeth extraction,08:00-08:30,Un-available
+kimm,tuesday,teeth cleaning,14:00-14:30,Un-available
+kimm,tuesday,teeth cleaning,14:30-15:00,Un-available
+kimm,tuesday,teeth cleaning,15:00-15:30,available
+paul,friday,teeth dressing,15:10-15:40,available
+paul,friday,teeth dressing,15:40-16:10,available
+paul,friday,teeth dressing,16:10-16:40,available
