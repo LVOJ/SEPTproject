@@ -1,3 +1,0 @@
-aqib,sunday,act111,06:00-06:30,Un-available
-aqib,sunday,temp22,06:00-06:30,Un-available
-aqib,sunday,temp22,07:00-07:30,available

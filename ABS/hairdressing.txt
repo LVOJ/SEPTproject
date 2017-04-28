@@ -1,19 +1,10 @@
-john,monday,hair color,06:00-06:30,available
-john,monday,hair color,06:30-07:00,available
-john,monday,hair color,07:00-07:30,available
-john,monday,hair color,07:30-08:00,available
-john,monday,hair color,08:00-08:30,available
-kimm,tuesday,hair cut,14:00-14:30,available
-kimm,tuesday,hair cut,14:30-15:00,available
-kimm,tuesday,hair cut,15:00-15:30,available
-paul,friday,hair cut,15:10-15:40,available
-paul,friday,hair cut,15:40-16:10,available
-paul,friday,hair cut,16:10-16:40,available
-KIMOMO,monday,hair cut,09:00-09:30,Un-available
-KIMOMO,monday,hair cut,09:30-10:00,Un-available
-KIMOMO,monday,hair cut,10:00-10:30,available
-KIMOMO,monday,hair cut,10:30-11:00,available
-joe,monday,hair wash,06:00-06:30,available
-joe,monday,hair wash,06:30-07:00,available
-joe,monday,hair wash,07:00-07:30,available
-joe,monday,hair wash,07:30-08:00,available
+john,monday,washing,06:00:00-06:30:00,available
+martin,monday,washing,06:30:00-07:00:00,available
+john,monday,washing,07:00:00-07:30:00,available
+null,monday,washing,08:00:00-08:30:00,available
+john,monday,washing,08:30:00-09:00:00,available
+eric,tuesday, color,08:00:00-08:30:00,available
+martin,tuesday, color,08:30:00-09:00:00,available
+eric,tuesday, color,09:00:00-09:30:00,available
+null,tuesday, color,09:30:00-10:00:00,available
+PROR,monday,hair test,09:00:00-10:00:00,available
