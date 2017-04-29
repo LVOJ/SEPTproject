@@ -1081,6 +1081,10 @@ public class BusinessOwnerPanel extends JFrame {
 		empWaorkingTime.setVisible(false);
 		updateEmpWaorkingTime.setVisible(false);
 		panel.setVisible(true);
-		panel.setBounds(0, 0, 547, 373);
+		panel.setBounds(0, 0, 547, 407);
 	}
 }
+
+/*I want to be fair to u . I need one more function in business owner panel .
+ *  How much will u charge. This function is for business owner to update the employee working time . 
+ *  They can change the employee working time . Or delete it .*/
