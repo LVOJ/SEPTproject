@@ -2,12 +2,15 @@ package BookingSystemGUI;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JToolBar;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -24,7 +27,8 @@ public class Main extends JFrame {
 			public void run() {
 				try {
 					Main frame = new Main();
-					frame.setVisible(true);
+//					frame.setVisible(true);
+					frame.dispose();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -36,43 +40,55 @@ public class Main extends JFrame {
 	 * Create the frame.
 	 */
 	public Main() {
-		setResizable(false);
-		setTitle("Appointment Booking System");
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		JDialog dialog = new JDialog(new JFrame(), "No min max buttons");
+        dialog.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent evt) {
+                System.exit(0);
+            }
+        });
+		dialog.setResizable(false);
+		dialog.setTitle("Appointment Booking System");
+		
 		contentPane = new JPanel();
-		setLocationRelativeTo(null);
+		
+		dialog.setVisible(true);
+		dialog.setSize(250, 110);
+		
+		dialog.setLocationRelativeTo(null);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		setContentPane(contentPane);
+		dialog.setContentPane(contentPane);
 		contentPane.setLayout(null);
+
 		
 		JButton btnLogin = new JButton("Login");
 		btnLogin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				new Login().setVisible(true);
-				dispose();
+				dialog.dispose();
 			}
 		});
-		btnLogin.setBounds(102, 108, 89, 23);
+		btnLogin.setBounds(25, 25, 85, 30);
 		contentPane.add(btnLogin);
 		
 		JButton btnRegister = new JButton("Register");
 		btnRegister.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				new Register().setVisible(true);
-				dispose();
+				dialog.dispose();
 			}
 		});
-		btnRegister.setBounds(225, 108, 89, 23);
+		btnRegister.setBounds(135, 25, 85, 30);
 		contentPane.add(btnRegister);
 		
-		JButton btnTerminate = new JButton("Terminate");
-		btnTerminate.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				System.exit(0);
-			}
-		});
-		btnTerminate.setBounds(151, 227, 120, 23);
-		contentPane.add(btnTerminate);
+//		JButton btnTerminate = new JButton("Close");
+//		btnTerminate.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent arg0) {
+//				System.exit(0);
+//			}
+//		});
+//		btnTerminate.setBounds(145, 60, 75, 23);
+//		contentPane.add(btnTerminate);
+	
+		  dispose();  
 	}
 }

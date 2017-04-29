@@ -31,29 +31,13 @@ public class Login extends JFrame {
 	public boolean authenticFlag;
 
 	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					Main frame = new Main();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
-	/**
 	 * Create the frame.
 	 */
 	public Login() {
 		setResizable(false);
-		setTitle("Appointment Booking System");
+		setTitle("Login");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 290, 230);
 		contentPane = new JPanel();
 		setLocationRelativeTo(null);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -70,30 +54,30 @@ public class Login extends JFrame {
 		contentPane.add(panel_2, BorderLayout.CENTER);
 		panel_2.setLayout(null);
 		
-		JLabel lblLogin = new JLabel("Login");
-		lblLogin.setBounds(122, 57, 76, 14);
+		JLabel lblLogin = new JLabel("Login Type:");
+		lblLogin.setBounds(35, 17, 76, 14);
 		panel_2.add(lblLogin);
 		
-		JLabel lblUsename = new JLabel("Usename");
-		lblUsename.setBounds(92, 119, 76, 14);
+		JLabel lblUsename = new JLabel("Username:");
+		lblUsename.setBounds(35, 59, 76, 14);
 		panel_2.add(lblUsename);
 		
-		JLabel lblPassword = new JLabel("Password");
-		lblPassword.setBounds(92, 161, 83, 14);
+		JLabel lblPassword = new JLabel("Password:");
+		lblPassword.setBounds(35, 83, 83, 14);
 		panel_2.add(lblPassword);
 		
 		textField = new JTextField();
-		textField.setBounds(189, 116, 127, 20);
+		textField.setBounds(112, 56, 127, 20);
 		panel_2.add(textField);
 		textField.setColumns(10);
 		
 		passwordField = new JPasswordField();
-		passwordField.setBounds(189, 158, 127, 20);
+		passwordField.setBounds(112, 81, 127, 20);
 		panel_2.add(passwordField);
 		
 		comboBox = new JComboBox();
-		comboBox.setModel(new DefaultComboBoxModel(new String[] {"---Select User--", "Business Owner", "Customer"}));
-		comboBox.setBounds(189, 54, 127, 20);
+		comboBox.setModel(new DefaultComboBoxModel(new String[] {"---Select User---", "Business Owner", "Customer"}));
+		comboBox.setBounds(112, 14, 127, 20);
 		panel_2.add(comboBox);
 		
 		JToggleButton tglbtnLogin = new JToggleButton("Login");
@@ -151,7 +135,7 @@ public class Login extends JFrame {
 			                    }
 			                }
 			                if(authenticFlag == false){
-			                	JOptionPane.showMessageDialog(null, "Wrong username or password");
+			                	JOptionPane.showMessageDialog(null, "Wrong username or password.");
 			                }
 			            }catch(IOException e){
 			            	e.printStackTrace();
@@ -163,7 +147,7 @@ public class Login extends JFrame {
 				}
 			}
 		});
-		tglbtnLogin.setBounds(226, 189, 90, 23);
+		tglbtnLogin.setBounds(150, 140, 90, 23);
 		panel_2.add(tglbtnLogin);
 		
 		JToggleButton tglbtnExit = new JToggleButton("Cancel");
@@ -173,7 +157,7 @@ public class Login extends JFrame {
 				dispose();
 			}
 		});
-		tglbtnExit.setBounds(65, 189, 121, 23);
+		tglbtnExit.setBounds(35, 140, 90, 23);
 		panel_2.add(tglbtnExit);
 	}
 	
