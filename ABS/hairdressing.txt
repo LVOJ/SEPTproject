@@ -27,3 +27,6 @@ TImothy,monday,hairkime,09:00:00-09:30:00,available
 TImothy,monday,hairkime,09:30:00-10:00:00,available
 TImothy,monday,hairkime,10:00:00-10:30:00,available
 TImothy,monday,hairkime,10:30:00-11:00:00,available
+KIMJONG,monday,test2,09:00:00-10:00:00,Un-available
+KIMJONG,monday,test2,10:00:00-11:00:00,Un-available
+KIMJONG,monday,test2,11:00:00-12:00:00,available

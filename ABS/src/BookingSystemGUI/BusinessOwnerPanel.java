@@ -62,6 +62,7 @@ public class BusinessOwnerPanel extends JFrame {
 	private JComboBox comboBox;
 	private JComboBox comboBox1;
 	private JComboBox comboBoxactive;
+	private JComboBox days;
 	private JTable table;
 	private JButton Addactivity;
 	private JPanel addsactivity;
@@ -422,7 +423,7 @@ public class BusinessOwnerPanel extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				int duration = 0;
 				if(comboBoxactive.getSelectedIndex()==0){
-					JOptionPane.showMessageDialog(null, "");
+					JOptionPane.showMessageDialog(null, "Please select activity");
 				}
 				if (durationCombo.getSelectedIndex() == 0) {
 					duration = 30;
@@ -431,30 +432,22 @@ public class BusinessOwnerPanel extends JFrame {
 					duration = 60;
 				}
 				String fileName=comboBox1.getSelectedItem().toString()+".txt";
-				String days = textField_2.getText().trim();
+				//String days = textField_2.getText().trim();
 				String workingtimes = textField_4.getText().trim();
 				String name = "NULL";
-				String[] dayArr = days.split(",");
+				if(days.getSelectedIndex()==0){
+					JOptionPane.showMessageDialog(null, "Please select DAY");
+				}
+				else{
+				String dayArr = days.getSelectedItem().toString();
+				}
 				String[] workingtimesArr = workingtimes.split(";");
-				for (int i = 0; i < dayArr.length; i++) {
-					if (!Utility.validateInput(dayArr[i], "[\\w]+", "Please enter a weekday i.e. Monday-Friday")) {
-						textField_2.grabFocus();
-						return;
-					}
-					if (!Utility.validateDay(dayArr[i], "Please enter a valid weekday i.e. Monday-Friday")) {
-						textField_2.grabFocus();
-						return;
-					}
+				
 					if (!Utility.validateInput(workingtimes, "^([\\d]{2}[:][\\d]{2}[,][\\d]{2}[:][\\d]{2}[,]*[;])+$",
 							"Please enter a time i.e. 06:00,09:00; Start Time:End Time;")) {
 						textField_4.grabFocus();
 						return;
 					}
-				}
-				if (dayArr.length != 1 || dayArr.length == 0) {
-					JOptionPane.showMessageDialog(null, "Enter correct number of days, separate by [,]");
-					return;
-				}
 				if (workingtimesArr.length != 1 || workingtimesArr.length == 0) {
 					JOptionPane.showMessageDialog(null, "Enter correct number of working time, separate by [,]");
 					return;
@@ -525,7 +518,7 @@ public class BusinessOwnerPanel extends JFrame {
 								// activitiesArr[a].toLowerCase()
 								// +","+timeStart+"-"+timeEnd+",available");
 								try {
-									bw.write(name.toLowerCase() + "," + dayArr[a].toLowerCase() + ","
+									bw.write(name.toLowerCase() + "," + days.getSelectedItem().toString().toLowerCase() + ","
 											+ comboBoxactive.getSelectedItem().toString() + "," + timeStart + "-" + timeEnd
 											+ ",available");
 								} catch (IOException e) {
@@ -554,24 +547,33 @@ public class BusinessOwnerPanel extends JFrame {
 			} 
 			}
 		});
+		days=new JComboBox();
+		days.setBounds(182, 83, 208, 54);
+		days.addItem("Select day");
+		days.addItem("Monday");
+		days.addItem("Tuesday");
+		days.addItem("Wednesday");
+		days.addItem("Thursday");
+		days.addItem("Friday");
 		JLabel lblSelectServi = new JLabel("Select Service");
 		lblSelectServi.setBounds(22, 48, 124, 14);
 		panel_11.add(lblSelectServi);
 		panel_11.setLayout(null);
 		panel_11.add(comboBox1);
 		panel_4.add(comboBox);
+		panel_11.add(days);
 		panel_11.add(lblWorkingDays);
 		panel_11.add(lblWorkingTimes);
 		panel_11.add(btnRegister2);
 		panel_11.add(lblactivity);
 		panel_11.add(comboBoxactive);
 
-		JScrollPane scrollPane_22 = new JScrollPane();
-		scrollPane_22.setBounds(182, 83, 208, 54);
-		panel_11.add(scrollPane_22);
-		textField_2 = new JTextArea();
-		scrollPane_22.setViewportView(textField_2);
-		textField_2.setColumns(10);
+		//JScrollPane scrollPane_22 = new JScrollPane();
+		//scrollPane_22.setBounds(182, 83, 208, 54);
+		//panel_11.add(scrollPane_22);
+		//textField_2 = new JTextArea();
+		//scrollPane_22.setViewportView(textField_2);
+		//textField_2.setColumns(10);
 
 		JScrollPane scrollPane_4 = new JScrollPane();
 		scrollPane_4.setBounds(182, 254, 211, 61);
