@@ -2,7 +2,7 @@ john,monday,washing,06:00:00-06:30:00,Un-available
 martin,monday,washing,06:30:00-07:00:00,available
 john,monday,washing,07:00:00-07:30:00,Un-available
 null,monday,washing,08:00:00-08:30:00,available
-john,monday,washing,08:30:00-09:00:00,available
+john,monday,washing,08:30:00-09:00:00,Un-available
 eric,tuesday, color,08:00:00-08:30:00,available
 martin,tuesday, color,09:00:00-09:30:00,available
 eric,tuesday, color,09:00:00-09:30:00,available

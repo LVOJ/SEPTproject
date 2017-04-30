@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
+import javax.swing.AbstractButton;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
@@ -39,6 +40,9 @@ import java.awt.event.ActionEvent;
 import javax.swing.JTable;
 import javax.swing.JScrollPane;
 import javax.swing.table.DefaultTableModel;
+
+import CommandLine.Utils;
+
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -70,6 +74,15 @@ public class BusinessOwnerPanel extends JFrame {
 	private JComboBox comboBox_4;
 	private JComboBox comboBox_5;
 	private JTextField textField;
+	private JComboBox selectService;
+	private JComboBox selectActivity;
+	private JComboBox selectDay;
+	private JComboBox selectEmp;
+	private JTable table_4;
+	private JTextField selectCustomer;
+	private JPanel bookForCustomer;
+	private ArrayList<String> list = new ArrayList<>();
+	private ArrayList<String> temp = new ArrayList<>();
 
 	public BusinessOwnerPanel(String[] userData) {
 		setResizable(false);
@@ -171,7 +184,7 @@ public class BusinessOwnerPanel extends JFrame {
 				panelToSee(deleteservice);
 			}
 		});
-		btnNewButton.setBounds(10, 276, 190, 23);
+		btnNewButton.setBounds(10, 306, 190, 23);
 		panel_1.add(btnNewButton);
 		
 		JButton btnEmployeesAvailable = new JButton("Employees Available");
@@ -200,6 +213,16 @@ public class BusinessOwnerPanel extends JFrame {
 		});
 		btnUpdateWorkingTime.setBounds(10, 136, 190, 23);
 		panel_1.add(btnUpdateWorkingTime);
+		
+		JButton btnBookForCustomer = new JButton("Book For Customer");
+		btnBookForCustomer.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				panelToSee(bookForCustomer);
+			
+			}
+		});
+		btnBookForCustomer.setBounds(10, 258, 190, 23);
+		panel_1.add(btnBookForCustomer);
 		
 		JPanel panel_2 = new JPanel();
 		contentPane.add(panel_2, BorderLayout.CENTER);
@@ -899,6 +922,224 @@ public class BusinessOwnerPanel extends JFrame {
 		comboBox_3.setEditable(true);
 		comboBox_3.setBounds(156, 290, 182, 20);
 		empWaorkingTime.add(comboBox_3);
+		
+		bookForCustomer = new JPanel();
+		bookForCustomer.setVisible(false);
+		bookForCustomer.setBounds(0, 0, 547, 407);
+		panel_2.add(bookForCustomer);
+		bookForCustomer.setLayout(null);
+		
+		JLabel label_3 = new JLabel("Select Service");
+		label_3.setBounds(10, 14, 127, 14);
+		bookForCustomer.add(label_3);
+		
+		selectService = new JComboBox();
+		selectService.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (selectService.getSelectedIndex() != 0) {
+					try {
+						activity(selectService.getSelectedItem().toString());
+					} catch (Exception e1) {
+						//e.printStackTrace();
+					}
+				}
+			}
+		});
+		selectService.setBounds(103, 11, 143, 20);
+		bookForCustomer.add(selectService);
+		
+		
+		JLabel label_4 = new JLabel("Select Activity");
+		label_4.setBounds(276, 14, 120, 14);
+		bookForCustomer.add(label_4);
+
+		selectActivity = new JComboBox();
+		selectActivity.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (selectActivity.getSelectedIndex() != 0) {
+					try {
+						dayOfApp(selectService.getSelectedItem().toString(),
+								selectActivity.getSelectedItem().toString());
+					} catch (Exception e1) {
+						//e.printStackTrace();
+					}
+				}
+			}
+		});
+		selectActivity.setBounds(401, 11, 136, 20);
+		bookForCustomer.add(selectActivity);
+		
+		JLabel label_5 = new JLabel("Select Day of Appointment");
+		label_5.setBounds(10, 49, 158, 14);
+		bookForCustomer.add(label_5);
+
+		selectDay = new JComboBox();
+		selectDay.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if (selectDay.getSelectedIndex() != 0) {
+					try {
+						employee(selectService.getSelectedItem().toString(),
+								selectActivity.getSelectedItem().toString(),
+								selectDay.getSelectedItem().toString());
+					} catch (Exception e) {
+						//e.printStackTrace();
+					}
+				}
+			}
+		});
+		selectDay.setBounds(178, 47, 172, 20);
+		bookForCustomer.add(selectDay);
+		
+		JLabel label_6 = new JLabel("Select Employee");
+		label_6.setBounds(10, 87, 158, 14);
+		bookForCustomer.add(label_6);
+		
+		selectEmp = new JComboBox();
+		selectEmp.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (selectEmp.getSelectedIndex() != 0) {
+					try {
+						availableSlots(selectService.getSelectedItem().toString(),
+								selectActivity.getSelectedItem().toString(),
+								selectDay.getSelectedItem().toString(),
+								selectEmp.getSelectedItem().toString());
+					} catch (Exception e1) {
+						//e.printStackTrace();
+						
+					}
+				}
+			}
+		});
+		selectEmp.setBounds(129, 83, 221, 20);
+		bookForCustomer.add(selectEmp);
+		
+		JLabel label_7 = new JLabel("Select Time Above and Save");
+		label_7.setBounds(26, 382, 197, 14);
+		bookForCustomer.add(label_7);
+		
+		JButton button_1 = new JButton("Save");
+		button_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(selectCustomer.getText().trim().equals("")){
+					JOptionPane.showMessageDialog(null, "Select Customer To Book For");
+					return;
+				}
+				String service = selectService.getSelectedItem().toString();
+				String fileName = service + ".txt";
+				int row = 0;
+				int rows = table_4.getRowCount();
+				String selected = "";
+				for(row = 0; row < rows; row ++){
+					try{
+					boolean status = (boolean) table_4.getModel().getValueAt(row, 5);
+					if(status == true){
+						selected = table_4.getModel().getValueAt(row, 0).toString() + ","+
+								table_4.getModel().getValueAt(row, 1).toString() + ","+
+								table_4.getModel().getValueAt(row, 2).toString() + ","+
+								table_4.getModel().getValueAt(row, 3).toString()+ ","+
+								table_4.getModel().getValueAt(row, 4).toString();
+						String recs[];
+						while (true) {
+							recs = selected.split(",");
+
+							if (recs[4].equals("Un-available")) {
+								System.out.println("Booking Un-Available");
+								System.out.println("Please select another");
+							} else {
+								recs[4] = "Un-available";
+								break;
+							}
+
+						}
+
+						String modified = recs[0] + "," + recs[1] + "," + recs[2]
+								+ "," + recs[3] + "," + recs[4];
+						
+						BufferedWriter bw = new BufferedWriter(new FileWriter(
+								fileName));
+						for (int a = 0; a < list.size(); a++) {
+							if (list.get(a).equals(selected)) {
+								list.set(a, modified);
+								bw.write(list.get(a));
+								bw.newLine();
+							} else {
+								bw.write(list.get(a));
+								bw.newLine();
+							}
+						}
+						bw.close();
+						BufferedWriter writer2 = new BufferedWriter(new FileWriter(
+								"BookingSummaries.txt", true));
+						String customerInfo = selectCustomer.getText();
+						String[] customerData = customerInfo.split(",");
+						writer2.write("Customer," + customerData[0] + "," + customerData[1]
+								+ ",booked Appointment on," + recs[0] + ","
+								+ recs[1] + "," + /* servicename */service + ","
+								+ recs[2] + "," + recs[3]);
+						writer2.newLine();
+						writer2.close();
+					}
+					}catch(Exception e1){
+						//e.printStackTrace();
+					}
+					
+				}
+				
+				if (selectEmp.getSelectedIndex() != 0) {
+					try {
+						availableSlots(selectService.getSelectedItem().toString(),
+								selectActivity.getSelectedItem().toString(),
+								selectDay.getSelectedItem().toString(),
+								selectEmp.getSelectedItem().toString());
+					} catch (Exception e1) {
+						//e.printStackTrace();
+						
+					}
+				}
+				selectCustomer.setText("");
+				JOptionPane.showMessageDialog(null, "Successfully Booked");
+
+			}
+		});
+		button_1.setBounds(363, 373, 89, 23);
+		bookForCustomer.add(button_1);
+		
+		JLabel lblSelectCustomer = new JLabel("Enter Customer");
+		lblSelectCustomer.setBounds(10, 123, 100, 14);
+		bookForCustomer.add(lblSelectCustomer);
+		
+		selectCustomer = new JTextField();
+		selectCustomer.setBounds(129, 120, 221, 20);
+		bookForCustomer.add(selectCustomer);
+		
+		JScrollPane scrollPane_7 = new JScrollPane();
+		scrollPane_7.setBounds(10, 148, 537, 223);
+		bookForCustomer.add(scrollPane_7);
+		
+		table_4 = new JTable();
+		table_4.setModel(new DefaultTableModel(new Object[][] {},
+				new String[] { "Employee", "Day", "Service", "Time", "Availability", "Book" }) {
+			Class[] columnTypes = new Class[] {
+					Object.class, Object.class, Object.class, Object.class, Object.class, Boolean.class
+				};
+			public Class getColumnClass(int columnIndex) {
+				return columnTypes[columnIndex];
+			}
+			boolean[] columnEditables = new boolean[] { false,false,false,false,false,true };
+			public boolean isCellEditable(int row, int column) {
+				return columnEditables[column];
+			}
+		});
+
+		table_4.getColumnModel().getColumn(0).setPreferredWidth(150);
+		table_4.getColumnModel().getColumn(1).setPreferredWidth(100);
+		table_4.getColumnModel().getColumn(2).setPreferredWidth(100);
+		table_4.getColumnModel().getColumn(3).setPreferredWidth(80);
+		table_4.getColumnModel().getColumn(4).setPreferredWidth(70);
+		table_4.getColumnModel().getColumn(5).setPreferredWidth(50);
+		table_4.setRowHeight(25);
+
+		scrollPane_7.setViewportView(table_4);
 		services();
 		
 	}
@@ -917,16 +1158,19 @@ public class BusinessOwnerPanel extends JFrame {
 			comboBox_1.removeAllItems();
 			comboBox_2.removeAllItems();
 			comboBox_4.removeAllItems();
+			selectService.removeAllItems();
 			servicedeleteCombo.addItem("Select Service");
 			comboBox.addItem("Select Services");
 			comboBox_2.addItem("Select Services");
 			comboBox_4.addItem("Select Services");
+			selectService.addItem("Select Services");
 			for (int a = 0; a < services.size(); a++) {
 				comboBox.addItem(services.get(a));
 				servicedeleteCombo.addItem(services.get(a));
 				comboBox_1.addItem(services.get(a));
 				comboBox_2.addItem(services.get(a));
 				comboBox_4.addItem(services.get(a));
+				selectService.addItem(services.get(a));
 			}
 
 		} catch (IOException e) {
@@ -1080,7 +1324,110 @@ public class BusinessOwnerPanel extends JFrame {
 		empAvailable.setVisible(false);
 		empWaorkingTime.setVisible(false);
 		updateEmpWaorkingTime.setVisible(false);
+		bookForCustomer.setVisible(false);
 		panel.setVisible(true);
 		panel.setBounds(0, 0, 547, 407);
 	}
+	
+	public void activity(String service) {
+		ArrayList<String> serviceNames = Utils.getActivities(service);
+		selectActivity.removeAllItems();
+		selectActivity.addItem("Select Activity");
+		for (int a = 0; a < serviceNames.size(); a++) {
+			selectActivity.addItem(serviceNames.get(a));
+		}
+
+	}
+
+	public void dayOfApp(String service, String activity) {
+		ArrayList<String> activityDays = Utils.getActivityAppointmentDays(
+				service, activity);
+		selectDay.removeAllItems();
+		selectDay.addItem("Select Day");
+		for (int a = 0; a < activityDays.size(); a++) {
+			selectDay.addItem(activityDays.get(a));
+		}
+
+	}
+
+	public void employee(String service, String activity, String day) {
+		service += ".txt";
+		ArrayList<String> employeeNames = Utils.getEmployeeNames(service,
+				activity, day);
+		selectEmp.removeAllItems();
+		;
+		selectEmp.addItem("Select Employee");
+		for (int a = 0; a < employeeNames.size(); a++) {
+			selectEmp.addItem(employeeNames.get(a));
+		}
+
+	}
+	
+	public void availableSlots(String service, String activity, String day,
+			String empName) {
+		list.clear();
+		temp.clear();
+			try {
+				String fileName = service + ".txt";
+				BufferedReader br;
+				br = new BufferedReader(new FileReader(fileName));
+				String line = "";
+				while ((line = br.readLine()) != null) {
+					list.add(line);
+				}
+
+				int one = 0;
+				for (int a = 0; a < list.size(); a++) {
+					String recs[] = list.get(a).split(",");
+					if (!recs[0].equals("null") && recs[4].equals("available")
+							&& (recs[1].toLowerCase().equals(day)
+									&& (recs[0].toLowerCase().equals(empName) || empName
+											.equals("*")) && (recs[2].toLowerCase()
+									.equals(activity)))) {
+						temp.add(list.get(a));
+						one++;
+					}
+				}
+				br.close();
+				int i;
+
+				DefaultTableModel model = (DefaultTableModel) table_4.getModel();
+				model.setRowCount(0);
+				Object[] rowData = new Object[6];
+				String recs[] = null;
+				for (i = 0; i < temp.size(); i++) {
+					recs = temp.get(i).split(",");
+					rowData[0] = recs[0];
+					rowData[1] = recs[1];
+					rowData[2] = recs[2];
+					rowData[3] = recs[3];
+					rowData[4] = recs[4];
+					rowData[5] = false;
+					model.addRow(rowData);
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+		}
+//	public void customers(){
+//		String fileName = "customerinfo.txt";
+//		BufferedReader br;
+//		try {
+//			br = new BufferedReader(new FileReader(fileName));
+//			String line = "";
+//			String[] recs = null;
+//			selectCustomer.removeAllItems();
+//			selectCustomer.addItem("Select Customer");
+//			while ((line = br.readLine()) != null) {
+//				recs = line.split(",");
+//				selectCustomer.addItem(recs[0]+","+recs[1]);
+//			}
+//			
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//
+//	}
 }
+
