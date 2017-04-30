@@ -40,12 +40,13 @@ public class Main extends JFrame {
 	 * Create the frame.
 	 */
 	public Main() {
-		JDialog dialog = new JDialog(new JFrame(), "No min max buttons");
-        dialog.addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent evt) {
-                System.exit(0);
-            }
-        });
+		//JDialog dialog = new JDialog(new JFrame(), "No min max buttons");
+		JFrame dialog = new JFrame();
+//		dialog.addWindowListener(new WindowAdapter() {
+//            public void windowClosing(WindowEvent evt) {
+//                System.exit(0);
+//            }
+//        });
 		dialog.setResizable(false);
 		dialog.setTitle("Appointment Booking System");
 		

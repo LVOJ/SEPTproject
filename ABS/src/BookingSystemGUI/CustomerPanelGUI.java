@@ -61,6 +61,7 @@ public class CustomerPanelGUI extends JFrame {
 	private JButton btnCancelBooking;
 	private JTable table_2;
 	private JPanel cancelBooking;
+	
 	public CustomerPanelGUI(String[] userData) {
 		setResizable(false);
 		setTitle("Appointment Booking System");
@@ -560,6 +561,7 @@ public class CustomerPanelGUI extends JFrame {
 		scrollPane_2.setViewportView(table_2);
 		
 		userDetails(userData);
+		
 	}
 
 	protected void viewToCancelMyBooking(String[] userData) {

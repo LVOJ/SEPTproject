@@ -100,7 +100,7 @@ public class BusinessOwnerPanel extends JFrame {
 		contentPane.add(panel_1, BorderLayout.WEST);
 		panel_1.setLayout(null);
 		
-		JButton btnNewEmployeeWorking = new JButton("Employee Working Time");
+		JButton btnNewEmployeeWorking = new JButton("Schedule Employee");
 		btnNewEmployeeWorking.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				panelToSee(empWaorkingTime);
@@ -256,85 +256,130 @@ public class BusinessOwnerPanel extends JFrame {
 		textField_1.setColumns(10);
 		
 		JLabel lblWorkingDays = new JLabel("Working Days");
-		lblWorkingDays.setBounds(22, 89, 102, 14);
+		lblWorkingDays.setBounds(82, 89, 102, 14);
 		
 		JLabel lblNewLabel = new JLabel("Enter Activities");
-		lblNewLabel.setBounds(22, 177, 90, 14);
+		lblNewLabel.setBounds(82, 177, 90, 14);
 		
 		JLabel lblWorkingTimes = new JLabel("Working Times");
-		lblWorkingTimes.setBounds(22, 273, 121, 14);
+		lblWorkingTimes.setBounds(82, 273, 121, 14);	
 		
-		JButton btnRegister = new JButton("Register");
-		btnRegister.setBounds(445, 240, 102, 23);
+		
+
+		
+		JButton btnRegister = new JButton("Add Activity");
+		btnRegister.setBounds(425, 323, 120, 23);
 		btnRegister.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				int duration = 0;
 				if(comboBox.getSelectedIndex() == 0){
 					JOptionPane.showMessageDialog(null, "Please select service name");
 					return;
-				}if(durationCombo.getSelectedIndex() == 0){
+				}
+				if(durationCombo.getSelectedIndex() == 0){
 					duration = 30;
-				}if(durationCombo.getSelectedIndex() == 1){
+				}
+				if(durationCombo.getSelectedIndex() == 1){
 					duration = 60;
 				}
-				String fileName = comboBox.getSelectedItem().toString()+".txt";
-				String name = "NULL";
 				String num = textField_1.getText().trim();
 				String days = textField_2.getText().trim();
 				String activities = textField_3.getText().trim();
 				String workingtimes = textField_4.getText().trim();
+
+				
+				String[] dayArr = days.split(",");
+				String[] activitiesArr = activities.split(",");
+				String[] workingtimesArr = workingtimes.split(";");
+				
+				String fileName = comboBox.getSelectedItem().toString()+".txt";
+				String name = "NULL";
+				
+				
+				
 				try{
-					int number = Integer.parseInt(num);
-					String[] dayArr = days.split(",");
-					String[] activitiesArr = activities.split(",");
-					String[] workingtimesArr = workingtimes.split(";");
+					for (int i = 0; i < dayArr.length; i++ ){
+						if(!Utility.validateInput(dayArr[i], "[\\w]+", "Please enter a weekday i.e. Monday-Friday")){
+							textField_2.grabFocus();
+							return;
+						}
+						if(!Utility.validateDay(dayArr[i], "Please enter a valid weekday i.e. Monday-Friday")){
+							textField_2.grabFocus();
+							return;
+						}
+					}
+					for (int i = 0; i < activitiesArr.length; i++ ){
+						if(!Utility.validateInput(activitiesArr[i], "([\\w][,]*)+", "Please enter an activity.")){
+							textField_3.grabFocus();
+							return;
+						}
+					}
+					if (!Utility.validateInput(num, "[\\d]+", "Please enter number of activities")){
+						textField_1.grabFocus();
+						return;
+					}
 					
-					if(dayArr.length != number){
+					if (!Utility.validateInput(workingtimes, "^([\\d]{2}[:][\\d]{2}[,][\\d]{2}[:][\\d]{2}[,]*[;])+$", "Please enter a time i.e. 06:00,09:00; Start Time:End Time;")){
+						textField_4.grabFocus();
+						return;
+					}
+					int number = Integer.parseInt(num);
+					
+					
+					if(dayArr.length != number || dayArr.length == 0){
 						JOptionPane.showMessageDialog(null, "Enter correct number of days, separate by [,]");
 						return;
 					}
-					if(activitiesArr.length != number){
+					if(activitiesArr.length != number || activitiesArr.length == 0){
 						JOptionPane.showMessageDialog(null, "Enter correct number of activities, separate by [,]");
 						return;
 					}
-					if(workingtimesArr.length != number){
+					if(workingtimesArr.length != number || workingtimesArr.length == 0){
 						JOptionPane.showMessageDialog(null, "Enter correct number of working time, separate by [,]");
 						return;
 					}
-					FileWriter fw=new FileWriter(fileName,true);          //open text file in writer append mode
-		            BufferedWriter bw=new BufferedWriter(fw);       //gave access of file to buffer writer     
-		            
-					for(int a = 0; a < number; a++){
-						String workingTimes[] = workingtimesArr[a].split(",");
-						int numOfSlots = 0;
-		            	//System.out.println(name+","+dayArr[a]+","+activitiesArr[a]+","+workingTimes[1]+"-"+workingTimes[2]+",available");
-						SimpleDateFormat format = new SimpleDateFormat("HH:mm");
-						Date date1 = format.parse(workingTimes[1]);
-						Date date2 = format.parse(workingTimes[2]);
-						long diff = date2.getTime() - date1.getTime();
-						long diffMinutes = diff / (60 * 1000);
-						if(diffMinutes % duration !=0){
-							JOptionPane.showMessageDialog(null, "The difference should not have remainders for this to work");
-							return;
-						}else{
-							numOfSlots = (int) (diffMinutes / duration);
-							for(int d = 0; d < numOfSlots; d++ ){
-								
-								Calendar cal = Calendar.getInstance();
-						        cal.setTime(date1);
-						        Time timeStart = new Time (cal.getTime().getTime());
-						        
-						        cal.add(Calendar.MINUTE, duration);
-						        Time timeEnd = new Time (cal.getTime().getTime());
-						        
-						        //System.out.println(name.toLowerCase() +","+ dayArr[a].toLowerCase() +","+ activitiesArr[a].toLowerCase() +","+timeStart+"-"+timeEnd+",available");
-								bw.write(name.toLowerCase() +","+ dayArr[a].toLowerCase() +","+ activitiesArr[a].toLowerCase() +","+timeStart+"-"+timeEnd+",available");
-				                bw.newLine();
-				                date1 = new Date(timeEnd.getTime());
+					
+		            if (workingtimesArr.length != number){
+		            	JOptionPane.showMessageDialog(null, "Enter correct number of working times, separated by [,]");
+						return;
+		            } 
+		            else {
+		            	FileWriter fw=new FileWriter(fileName,true);          //open text file in writer append mode
+			            BufferedWriter bw=new BufferedWriter(fw);       //gave access of file to buffer writer     
+		            	for(int a = 0; a < number; a++){
+							String workingTimes[] = workingtimesArr[a].split(",");
+							
+							int numOfSlots = 0;
+			            	//System.out.println(name+","+dayArr[a]+","+activitiesArr[a]+","+workingTimes[1]+"-"+workingTimes[2]+",available");
+							SimpleDateFormat format = new SimpleDateFormat("HH:mm");
+							Date date1 = format.parse(workingTimes[0]);
+							Date date2 = format.parse(workingTimes[1]);
+							long diff = date2.getTime() - date1.getTime();
+							long diffMinutes = diff / (60 * 1000);
+							if(diffMinutes % duration !=0){
+								JOptionPane.showMessageDialog(null, "The difference should not have remainders for this to work");
+								return;
+							}else{
+								numOfSlots = (int) (diffMinutes / duration);
+								for(int d = 0; d < numOfSlots; d++ ){
+									
+									Calendar cal = Calendar.getInstance();
+							        cal.setTime(date1);
+							        Time timeStart = new Time (cal.getTime().getTime());
+							        
+							        cal.add(Calendar.MINUTE, duration);
+							        Time timeEnd = new Time (cal.getTime().getTime());
+							        
+							        //System.out.println(name.toLowerCase() +","+ dayArr[a].toLowerCase() +","+ activitiesArr[a].toLowerCase() +","+timeStart+"-"+timeEnd+",available");
+									bw.write(name.toLowerCase() +","+ dayArr[a].toLowerCase() +","+ activitiesArr[a].toLowerCase() +","+timeStart+"-"+timeEnd+",available");
+					                bw.newLine();
+					                date1 = new Date(timeEnd.getTime());
+								}
 							}
-						}
-		            }
-		            bw.close();
+			            }
+		            	bw.close();
+					}
+		            
 		            
 		            JOptionPane.showMessageDialog(null, "Service Entered successfully");
 				}catch(Exception e){
@@ -352,7 +397,7 @@ public class BusinessOwnerPanel extends JFrame {
 		panel_4.add(textField_1);
 		
 		JScrollPane scrollPane_2 = new JScrollPane();
-		scrollPane_2.setBounds(112, 83, 208, 54);
+		scrollPane_2.setBounds(182, 83, 208, 54);
 		panel_4.add(scrollPane_2);
 		
 		textField_2 = new JTextArea();
@@ -360,7 +405,7 @@ public class BusinessOwnerPanel extends JFrame {
 		textField_2.setColumns(10);
 		
 		JScrollPane scrollPane_4 = new JScrollPane();
-		scrollPane_4.setBounds(112, 254, 211, 61);
+		scrollPane_4.setBounds(182, 254, 211, 61);
 		panel_4.add(scrollPane_4);
 		
 		textField_4 = new JTextArea();
@@ -368,7 +413,7 @@ public class BusinessOwnerPanel extends JFrame {
 		textField_4.setColumns(10);
 		
 		JScrollPane scrollPane_3 = new JScrollPane();
-		scrollPane_3.setBounds(112, 171, 208, 63);
+		scrollPane_3.setBounds(182, 171, 208, 63);
 		panel_4.add(scrollPane_3);
 		
 		textField_3 = new JTextArea();
@@ -379,13 +424,13 @@ public class BusinessOwnerPanel extends JFrame {
 		lblSelectServiced.setBounds(22, 48, 124, 14);
 		panel_4.add(lblSelectServiced);
 		
-		JLabel label = new JLabel("Working Times");
-		label.setBounds(22, 324, 90, 14);
+		JLabel label = new JLabel("Activity Duration (minutes)");
+		label.setBounds(22, 325, 150, 14);
 		panel_4.add(label);
 		
 		durationCombo = new JComboBox();
 		durationCombo.setModel(new DefaultComboBoxModel(new String[] {"30 min", "60 min"}));
-		durationCombo.setBounds(112, 321, 208, 20);
+		durationCombo.setBounds(182, 325, 208, 20);
 		panel_4.add(durationCombo);
 		bookingsummaries.setBounds(0, 0, 547, 373);
 		panel_2.add(bookingsummaries);
@@ -438,6 +483,10 @@ public class BusinessOwnerPanel extends JFrame {
 				String serviceName = textField_5.getText().trim();
 				if(serviceName.equals("")){
 					JOptionPane.showMessageDialog(null, "Enter Service Name");
+					return;
+				}
+				if (!Utility.validateInput(serviceName, "^[A-Za-z]+$", "Please enter valid service name e.g. hairdressing")){
+					textField_5.grabFocus();
 					return;
 				}
 				//serviceName +=".txt";
@@ -829,6 +878,11 @@ public class BusinessOwnerPanel extends JFrame {
 					JOptionPane.showMessageDialog(null, "Enter Employee name to proceed");
 					return;
 				}
+				String employeeName = comboBox_3.getSelectedItem().toString().trim();
+				if (!Utility.validateInput(employeeName, "[A-Za-z]+", "Please enter a valid name")){
+					comboBox.grabFocus();
+					return;
+				}
 				String service = comboBox_2.getSelectedItem().toString();
 				String fileName = service +".txt";
 				int rows = table_2.getRowCount();
@@ -1022,6 +1076,11 @@ public class BusinessOwnerPanel extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				if(selectCustomer.getText().trim().equals("")){
 					JOptionPane.showMessageDialog(null, "Select Customer To Book For");
+					return;
+				}
+				String customerName = selectCustomer.getText().trim();
+				if(!Utility.validateInput(customerName, "^[A-Za-z]+$", "Please enter a valid name i.e. Jim")){
+					selectCustomer.grabFocus();
 					return;
 				}
 				String service = selectService.getSelectedItem().toString();

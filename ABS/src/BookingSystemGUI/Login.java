@@ -117,7 +117,7 @@ public class Login extends JFrame {
 			                while((line=br.readLine())!=null)
 			                {
 			                    arr=line.split(",");       
-			                    if(arr[4].equals(UserName)) 
+			                    if(arr[4].equals(UserName.toLowerCase())) 
 			                    {
 			                        if(arr[5].equals(Password))  
 			                        {
@@ -125,11 +125,13 @@ public class Login extends JFrame {
 			                        	    authenticFlag = true;
 			                                new CustomerPanelGUI(arr).setVisible(true);
 			                                dispose();
+			                                break;
 			                            }
 			                            else if(CustomerFlag == true){
 			                            	authenticFlag = true;
 			                            	new BusinessOwnerPanel(arr).setVisible(true);
 			                                dispose();
+			                                break;
 			                            }            
 			                        }
 			                    }

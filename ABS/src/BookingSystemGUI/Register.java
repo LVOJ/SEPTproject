@@ -120,32 +120,45 @@ public class Register extends JFrame {
 		        	String address = textField_3.getText().trim();
 		        	String username = textField_4.getText().trim();
 		        	char[] password = passwordField.getPassword();
+		        	String passwordInput = String.valueOf(password);
 		        	char[] verifyPassword = verifyPasswordField.getPassword();
-		        	if(firstName.equals("")){
-		        		JOptionPane.showMessageDialog(null, "Please enter First Name.");
+		        	
+		        	if (!Utility.validateInput(firstName, "^[A-Za-z]+$", "Please enter a valid name i.e. Tom")){
+		        		textField.grabFocus();
 		        		return;
-		        	}if(lastName.equals("")){
-		        		JOptionPane.showMessageDialog(null, "Please enter Last Name.");
+		        	}
+		        	if(!Utility.validateInput(lastName, "^[A-Za-z]+$", "Please enter a valid name i.e. Smith")){
+		        		textField_1.grabFocus();
 		        		return;
-		        	}if(phone.equals("")){
-		        		JOptionPane.showMessageDialog(null, "Please enter Phone.");
+		        	}
+		        	if(!Utility.validateInput(phone, "^[0-9]{10}$", "Please enter a 10-digit Phone Number i.e 0412345678")){
+		        		textField_2.grabFocus();
 		        		return;
-		        	}if(address.equals("")){
-		        		JOptionPane.showMessageDialog(null, "Please enter Address.");
+		        	}
+		        	if(!Utility.validateInput(address, "^[\\d]+([.]|[-]|\\s)[A-Za-z]*([.]|[-]|\\s)[A-Za-z]*$", "Please enter a valid address i.e. 1 Sesame St")){
+		        		textField_3.grabFocus();
 		        		return;
-		        	}if(username.equals("")){
-		        		JOptionPane.showMessageDialog(null, "Please enter Username.");
+		        	}
+		        	if(!Utility.validateInput(username, "^[\\w]{1,15}$", "Please enter a valid username (Max length: 15)")){
+		        		textField_4.grabFocus();
 		        		return;
-		        	}if(password.equals("")){
-		        		JOptionPane.showMessageDialog(null, "Please enter Password.");
+		        	}
+		        	if(!Utility.validateUsername(username)){
+		        		JOptionPane.showMessageDialog(null, "Please enter a unique Username.", "Username already exists.", JOptionPane.WARNING_MESSAGE);
+		        		textField_4.grabFocus();
 		        		return;
-		        	}if(verifyPassword.equals("")){
-		        		JOptionPane.showMessageDialog(null, "Please enter Confirm Password.");
+		        	}
+		        	if(!Utility.validateInput(passwordInput, "^[\\w]{1,15}$", "Please enter a valid username (Max length: 15)")){
+		        		passwordField.grabFocus();
 		        		return;
 		        	}
 		        	
+		        	
+		        	
+		        	
 		        	if(Arrays.equals(password, verifyPassword) == false){
 		        		JOptionPane.showMessageDialog(null, "Please Confirm Password.");
+		        		verifyPasswordField.grabFocus();
 		        		return;
 		        	}
 		        	
