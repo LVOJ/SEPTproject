@@ -21,3 +21,9 @@ jim,monday,washing,08:00:00-08:30:00,available
 null,monday,washing,08:30:00-09:00:00,available
 null,tuesday,haircut,07:00:00-07:30:00,available
 null,tuesday,haircut,07:30:00-08:00:00,available
+null,monday,geawe,13:00:00-13:30:00,available
+null,monday,geawe,13:30:00-14:00:00,available
+TImothy,monday,hairkime,09:00:00-09:30:00,available
+TImothy,monday,hairkime,09:30:00-10:00:00,available
+TImothy,monday,hairkime,10:00:00-10:30:00,available
+TImothy,monday,hairkime,10:30:00-11:00:00,available
