@@ -723,10 +723,13 @@ public class CustomerPanelGUI extends JFrame {
 		ArrayList<String> employeeNames = Utils.getEmployeeNames(service,
 				activity, day);
 		comboBox_3.removeAllItems();
-		;
 		comboBox_3.addItem("Select Employee");
 		for (int a = 0; a < employeeNames.size(); a++) {
+			if(employeeNames.get(a)!=null&&!employeeNames.get(a).equalsIgnoreCase("null")){
 			comboBox_3.addItem(employeeNames.get(a));
+			System.out.println("in"+ employeeNames.get(a));
+			}
+			System.out.println("out"+ employeeNames.get(a));
 		}
 
 	}
