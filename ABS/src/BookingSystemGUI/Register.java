@@ -20,8 +20,12 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Register extends JFrame {
+	private static Logger logger = Logger.getLogger(CustomerPanelGUI.class.getName());
 
 	private JPanel contentPane;
 	private JTextField textField;
@@ -32,7 +36,24 @@ public class Register extends JFrame {
 	private JPasswordField passwordField;
 	private JPasswordField verifyPasswordField;
 
-
+	public static void main(String[] args) {
+		try {
+			logger.addHandler(new FileHandler("Register.log"));
+		} catch (IOException e3) {
+			System.out.println("Unable to create logger to write output to file");
+		}
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					Main frame = new Main();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					logger.log(Level.SEVERE, e.getMessage());
+					
+				}
+			}
+		});
+	}
 	/**
 	 * Create the frame.
 	 */
@@ -189,7 +210,8 @@ public class Register extends JFrame {
 		            dispose();
 		        }
 		        catch(IOException e1)        //catch any exception occur during this process
-		        {
+		        {	
+		        	logger.log(Level.SEVERE, e1.getMessage());
 		            System.out.println("There is an exception in File Handling: "+e1);
 		        }
 		    

@@ -19,9 +19,12 @@ import java.awt.event.ActionEvent;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Login extends JFrame {
-
+	private static Logger logger = Logger.getLogger(CustomerPanelGUI.class.getName());
 	private JPanel contentPane;
 	private JTextField textField;
 	private JPasswordField passwordField;
@@ -33,6 +36,24 @@ public class Login extends JFrame {
 	/**
 	 * Create the frame.
 	 */
+	public static void main(String[] args) {
+		try {
+			logger.addHandler(new FileHandler("Login.log"));
+		} catch (IOException e3) {
+			System.out.println("Unable to create logger to write output to file");
+		}
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					Main frame = new Main();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					logger.log(Level.SEVERE, e.getMessage());
+					//
+				}
+			}
+		});
+	}
 	public Login() {
 		setResizable(false);
 		setTitle("Login");
@@ -140,7 +161,7 @@ public class Login extends JFrame {
 			                	JOptionPane.showMessageDialog(null, "Wrong username or password.");
 			                }
 			            }catch(IOException e){
-			            	e.printStackTrace();
+			            	logger.log(Level.SEVERE, e.getMessage());
 			            }
 			        	
 			        	

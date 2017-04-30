@@ -3,10 +3,13 @@ package BookingSystemGUI;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 public class Utility {
+	private static Logger logger = Logger.getLogger(CustomerPanelGUI.class.getName());
 	public static boolean validateInput(String textEntered, String regex, String message){
     	boolean validInput = false;
     	if (textEntered.matches(regex)){
@@ -56,7 +59,7 @@ public class Utility {
 			uniqueUsername = true;
 			
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.log(Level.SEVERE, e.getMessage());
 		}
 		
 		return uniqueUsername;

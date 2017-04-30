@@ -32,14 +32,16 @@ import javax.swing.JTable;
 import javax.swing.JScrollPane;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JComboBox;
-
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import CommandLine.Utils;
 
 import javax.swing.JButton;
 import javax.swing.DefaultComboBoxModel;
 
 public class CustomerPanelGUI extends JFrame {
-
+	private static Logger logger = Logger.getLogger(CustomerPanelGUI.class.getName());
 	private JPanel contentPane;
 	private JPasswordField passwordField;
 	private JLabel lblKilimoKCornelius;
@@ -287,7 +289,7 @@ public class CustomerPanelGUI extends JFrame {
 						dayOfApp(comboBox.getSelectedItem().toString(),
 								comboBox_1.getSelectedItem().toString());
 					} catch (Exception e) {
-						//e.printStackTrace();
+						logger.log(Level.SEVERE, e.getMessage());
 					}
 				}
 			}
@@ -305,7 +307,7 @@ public class CustomerPanelGUI extends JFrame {
 								comboBox_1.getSelectedItem().toString(),
 								comboBox_2.getSelectedItem().toString());
 					} catch (Exception e) {
-						//e.printStackTrace();
+						logger.log(Level.SEVERE, e.getMessage());
 					}
 				}
 			}
@@ -324,7 +326,7 @@ public class CustomerPanelGUI extends JFrame {
 								comboBox_2.getSelectedItem().toString(),
 								comboBox_3.getSelectedItem().toString());
 					} catch (Exception e) {
-						//e.printStackTrace();
+						logger.log(Level.SEVERE, e.getMessage());
 						
 					}
 				}
@@ -423,7 +425,7 @@ public class CustomerPanelGUI extends JFrame {
 						writer2.close();
 					}
 					}catch(Exception e){
-						//e.printStackTrace();
+						logger.log(Level.SEVERE, e.getMessage());
 					}
 					
 				}
@@ -434,7 +436,7 @@ public class CustomerPanelGUI extends JFrame {
 								comboBox_2.getSelectedItem().toString(),
 								comboBox_3.getSelectedItem().toString());
 					} catch (Exception e) {
-						//e.printStackTrace();
+						logger.log(Level.SEVERE, e.getMessage());
 						
 					}
 				}
@@ -525,7 +527,7 @@ public class CustomerPanelGUI extends JFrame {
 					        }
 					        bw.close();
 						}catch(IOException e){
-							e.printStackTrace();
+							logger.log(Level.SEVERE, e.getMessage());
 						}
 					}
 
@@ -590,7 +592,7 @@ public class CustomerPanelGUI extends JFrame {
 			}
 			br.close();
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.log(Level.SEVERE, e.getMessage());
 		}
 
 		DefaultTableModel model = (DefaultTableModel) table_2.getModel();
@@ -655,7 +657,7 @@ public class CustomerPanelGUI extends JFrame {
 			}
 			br.close();
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.log(Level.SEVERE, e.getMessage());
 		}
 
 		DefaultTableModel model = (DefaultTableModel) table.getModel();
@@ -688,7 +690,7 @@ public class CustomerPanelGUI extends JFrame {
 			}
 
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.log(Level.SEVERE, e.getMessage());
 		}
 
 	}
@@ -773,7 +775,7 @@ public class CustomerPanelGUI extends JFrame {
 				model.addRow(rowData);
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.log(Level.SEVERE, e.getMessage());
 		}
 
 	}

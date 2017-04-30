@@ -8,15 +8,20 @@ import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import java.util.logging.Logger;
 import javax.swing.JToolBar;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
 import java.awt.event.ActionEvent;
 
 public class Main extends JFrame {
 
+	private static Logger logger = Logger.getLogger(CustomerPanelGUI.class.getName());
 	private JPanel contentPane;
 
 	/**
@@ -30,7 +35,7 @@ public class Main extends JFrame {
 //					frame.setVisible(true);
 					frame.dispose();
 				} catch (Exception e) {
-					e.printStackTrace();
+					logger.log(Level.SEVERE, e.getMessage());
 				}
 			}
 		});

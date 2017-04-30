@@ -23,6 +23,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.AbstractButton;
 import javax.swing.JComboBox;
@@ -47,7 +50,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class BusinessOwnerPanel extends JFrame {
-
+	
+	private static Logger logger = Logger.getLogger(BusinessOwnerPanel.class.getName());
 	private JPanel contentPane;
 	private JTextField textField_1;
 	private JTextArea textField_2;
@@ -142,7 +146,7 @@ public class BusinessOwnerPanel extends JFrame {
 		        }
 		        catch(Exception e)
 		        {
-		            e.printStackTrace();
+		        	logger.log(Level.SEVERE, e.getMessage());
 		        }
 		    
 			}
@@ -383,7 +387,7 @@ public class BusinessOwnerPanel extends JFrame {
 		            
 		            JOptionPane.showMessageDialog(null, "Service Entered successfully");
 				}catch(Exception e){
-					e.printStackTrace();
+					logger.log(Level.SEVERE, e.getMessage());
 				}
 			}
 		});
@@ -513,7 +517,7 @@ public class BusinessOwnerPanel extends JFrame {
 		        	//services();
 		        	
 				}catch(Exception e2){
-					e2.printStackTrace();
+					logger.log(Level.SEVERE, e2.getMessage());
 				}
 			dispose();
 			new BusinessOwnerPanel(userData).setVisible(true);
@@ -593,7 +597,7 @@ public class BusinessOwnerPanel extends JFrame {
 					//services();
 					JOptionPane.showMessageDialog(null, "Deleted Successfully");
 				}catch(IOException e1){
-					e1.printStackTrace();
+					logger.log(Level.SEVERE, e1.getMessage());
 				}
 				dispose();
 				new BusinessOwnerPanel(userData).setVisible(true);
@@ -739,7 +743,7 @@ public class BusinessOwnerPanel extends JFrame {
 					bw.close();
 					
 				} catch (IOException e1) {
-					e1.printStackTrace();
+					logger.log(Level.SEVERE, e1.getMessage());
 				}
 				JOptionPane.showMessageDialog(null, "Employee working time updated successfully");
 				empWorkingTimeNotNull(comboBox_4.getSelectedItem().toString());
@@ -789,7 +793,7 @@ public class BusinessOwnerPanel extends JFrame {
 					bw.close();
 					
 				} catch (IOException e1) {
-					e1.printStackTrace();
+					logger.log(Level.SEVERE, e1.getMessage());
 				}
 				JOptionPane.showMessageDialog(null, "Employee working time deleted successfully");
 				empWorkingTimeNotNull(comboBox_4.getSelectedItem().toString());
@@ -922,7 +926,7 @@ public class BusinessOwnerPanel extends JFrame {
 							bw.close();
 							
 						} catch (IOException e) {
-							e.printStackTrace();
+							logger.log(Level.SEVERE, e.getMessage());
 						}
 						
 					       
@@ -994,7 +998,7 @@ public class BusinessOwnerPanel extends JFrame {
 					try {
 						activity(selectService.getSelectedItem().toString());
 					} catch (Exception e1) {
-						//e.printStackTrace();
+						logger.log(Level.SEVERE, e1.getMessage());
 					}
 				}
 			}
@@ -1015,7 +1019,7 @@ public class BusinessOwnerPanel extends JFrame {
 						dayOfApp(selectService.getSelectedItem().toString(),
 								selectActivity.getSelectedItem().toString());
 					} catch (Exception e1) {
-						//e.printStackTrace();
+						logger.log(Level.SEVERE, e1.getMessage());
 					}
 				}
 			}
@@ -1035,8 +1039,8 @@ public class BusinessOwnerPanel extends JFrame {
 						employee(selectService.getSelectedItem().toString(),
 								selectActivity.getSelectedItem().toString(),
 								selectDay.getSelectedItem().toString());
-					} catch (Exception e) {
-						//e.printStackTrace();
+					} catch (Exception e1) {
+						logger.log(Level.SEVERE, e1.getMessage());
 					}
 				}
 			}
@@ -1058,7 +1062,7 @@ public class BusinessOwnerPanel extends JFrame {
 								selectDay.getSelectedItem().toString(),
 								selectEmp.getSelectedItem().toString());
 					} catch (Exception e1) {
-						//e.printStackTrace();
+						logger.log(Level.SEVERE, e1.getMessage());
 						
 					}
 				}
@@ -1151,7 +1155,7 @@ public class BusinessOwnerPanel extends JFrame {
 								selectDay.getSelectedItem().toString(),
 								selectEmp.getSelectedItem().toString());
 					} catch (Exception e1) {
-						//e.printStackTrace();
+						logger.log(Level.SEVERE, e1.getMessage());
 						
 					}
 				}
@@ -1233,7 +1237,7 @@ public class BusinessOwnerPanel extends JFrame {
 			}
 
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.log(Level.SEVERE, e.getMessage());
 		}
 
 	}
@@ -1259,7 +1263,7 @@ public class BusinessOwnerPanel extends JFrame {
 			}
 
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.log(Level.SEVERE, e.getMessage());
 		}
 
 	}
@@ -1295,7 +1299,7 @@ public class BusinessOwnerPanel extends JFrame {
 				model.addRow(rowData);
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.log(Level.SEVERE, e.getMessage());
 		}
 
 	}
@@ -1333,7 +1337,7 @@ public class BusinessOwnerPanel extends JFrame {
 				model.addRow(rowData);
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.log(Level.SEVERE, e.getMessage());
 		}
 
 	}
@@ -1370,7 +1374,7 @@ public class BusinessOwnerPanel extends JFrame {
 				model.addRow(rowData);
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.log(Level.SEVERE, e.getMessage());
 		}
 
 	}
@@ -1465,7 +1469,7 @@ public class BusinessOwnerPanel extends JFrame {
 					model.addRow(rowData);
 				}
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.log(Level.SEVERE, e.getMessage());
 			}
 
 		}
