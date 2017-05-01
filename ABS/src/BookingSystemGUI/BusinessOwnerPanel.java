@@ -1,5 +1,4 @@
 package BookingSystemGUI;
-
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
@@ -89,6 +88,8 @@ public class BusinessOwnerPanel extends JFrame {
 	private JComboBox selectActivity;
 	private JComboBox selectDay;
 	private JComboBox selectEmp;
+	private JComboBox shours;
+	private JComboBox ehours;
 	private JTable table_4;
 	private JTextField selectCustomer;
 	private JPanel bookForCustomer;
@@ -250,7 +251,40 @@ public class BusinessOwnerPanel extends JFrame {
 		addActivity.setBounds(0, 0, 547, 373);
 		panel_2.add(addActivity);
 		addActivity.setLayout(new BorderLayout(0, 0));
-
+		shours=new JComboBox();
+		shours.setBounds(182, 254, 120, 21);
+		shours.addItem("Select start time");
+		for(int i=0;i<24;i++){
+			if(i<=9){
+				String h="0"+i+":00";
+				shours.addItem(h);
+				h="0"+i+":30";
+				shours.addItem(h);
+			}
+			else{
+				String h=i+":00";
+				shours.addItem(h);
+				h=i+":30";
+				shours.addItem(h);
+			}
+		}
+		ehours=new JComboBox();
+		ehours.setBounds(350, 254, 120, 21);
+		ehours.addItem("Select End time");
+		for(int i=0;i<24;i++){
+			if(i<=9){
+				String h="0"+i+":00";
+				ehours.addItem(h);
+				h="0"+i+":30";
+				ehours.addItem(h);
+			}
+			else{
+				String h=i+":00";
+				ehours.addItem(h);
+				h=i+":30";
+				ehours.addItem(h);
+			}
+		}
 		JPanel panel_3 = new JPanel();
 		addActivity.add(panel_3, BorderLayout.NORTH);
 
@@ -424,6 +458,7 @@ public class BusinessOwnerPanel extends JFrame {
 				int duration = 0;
 				if(comboBoxactive.getSelectedIndex()==0){
 					JOptionPane.showMessageDialog(null, "Please select activity");
+					return;
 				}
 				if (durationCombo.getSelectedIndex() == 0) {
 					duration = 30;
@@ -431,9 +466,34 @@ public class BusinessOwnerPanel extends JFrame {
 				if (durationCombo.getSelectedIndex() == 1) {
 					duration = 60;
 				}
+				if(shours.getSelectedIndex()==0){
+					JOptionPane.showMessageDialog(null, "Please select start time");
+					return;
+				}
+				if(ehours.getSelectedIndex()==0){
+					JOptionPane.showMessageDialog(null, "Please select end time");
+					return;
+				}
+				String ss=shours.getSelectedItem().toString();
+				String ee=ehours.getSelectedItem().toString();
+				int aa=Integer.parseInt(ss.substring(0, 2));
+				int bb=Integer.parseInt(ee.substring(0, 2));
+				if(aa>bb){
+					JOptionPane.showMessageDialog(null, "Please select valid start time i.e start time should be smaller then end");
+					return;
+				}
+				else if(aa==bb){
+					int smin=Integer.parseInt(ss.substring(3, ss.length()));
+					int emin=Integer.parseInt(ss.substring(3, ee.length()));
+					if(emin==smin){
+						JOptionPane.showMessageDialog(null, "Please select valid start time i.e start time should be smaller then end");
+						return;
+					}
+				}
+				//System.out.println(aa);
 				String fileName=comboBox1.getSelectedItem().toString()+".txt";
 				//String days = textField_2.getText().trim();
-				String workingtimes = textField_4.getText().trim();
+				//String workingtimes = textField_4.getText().trim();
 				String name = "NULL";
 				if(days.getSelectedIndex()==0){
 					JOptionPane.showMessageDialog(null, "Please select DAY");
@@ -441,17 +501,17 @@ public class BusinessOwnerPanel extends JFrame {
 				else{
 				String dayArr = days.getSelectedItem().toString();
 				}
-				String[] workingtimesArr = workingtimes.split(";");
+				String[] workingtimesArr = {ss+","+ee};
 				
-					if (!Utility.validateInput(workingtimes, "^([\\d]{2}[:][\\d]{2}[,][\\d]{2}[:][\\d]{2}[,]*[;])+$",
-							"Please enter a time i.e. 06:00,09:00; Start Time:End Time;")) {
-						textField_4.grabFocus();
-						return;
-					}
-				if (workingtimesArr.length != 1 || workingtimesArr.length == 0) {
-					JOptionPane.showMessageDialog(null, "Enter correct number of working time, separate by [,]");
-					return;
-				}
+					//if (!Utility.validateInput(workingtimes, "^([\\d]{2}[:][\\d]{2}[,][\\d]{2}[:][\\d]{2}[,]*[;])+$",
+						//	"Please enter a time i.e. 06:00,09:00; Start Time:End Time;")) {
+						//textField_4.grabFocus();
+						//return;
+					//}
+				//if (workingtimesArr.length != 1 || workingtimesArr.length == 0) {
+					//JOptionPane.showMessageDialog(null, "Enter correct number of working time, separate by [,]");
+					//return;
+				//}
 
 				if (workingtimesArr.length != 1) {
 					JOptionPane.showMessageDialog(null, "Enter correct number of working times, separated by [,]");
@@ -477,7 +537,7 @@ public class BusinessOwnerPanel extends JFrame {
 																// buffer
 																// writer
 					for (int a = 0; a < 1; a++) {
-						String workingTimes[] = workingtimesArr[a].split(",");
+						String workingTimes[] = {ss,ee};
 
 						int numOfSlots = 0;
 						// System.out.println(name+","+dayArr[a]+","+activitiesArr[a]+","+workingTimes[1]+"-"+workingTimes[2]+",available");
@@ -575,13 +635,14 @@ public class BusinessOwnerPanel extends JFrame {
 		//scrollPane_22.setViewportView(textField_2);
 		//textField_2.setColumns(10);
 
-		JScrollPane scrollPane_4 = new JScrollPane();
-		scrollPane_4.setBounds(182, 254, 211, 61);
-		panel_11.add(scrollPane_4);
-
-		textField_4 = new JTextArea();
-		scrollPane_4.setViewportView(textField_4);
-		textField_4.setColumns(10);
+		//JScrollPane scrollPane_4 = new JScrollPane();
+		//scrollPane_4.setBounds(182, 254, 211, 61);
+		//panel_11.add(scrollPane_4);
+		panel_11.add(shours);
+		panel_11.add(ehours);
+		//textField_4 = new JTextArea();
+		//scrollPane_4.setViewportView(textField_4);
+		//textField_4.setColumns(10);
 
 		JLabel label = new JLabel("Activity Duration (minutes)");
 		label.setBounds(22, 325, 150, 14);
