@@ -288,7 +288,7 @@ public class BusinessOwnerPanel extends JFrame {
 		JPanel panel_3 = new JPanel();
 		addActivity.add(panel_3, BorderLayout.NORTH);
 
-		JLabel lblAddNewEmployee = new JLabel("Add Activity Time");
+		JLabel lblAddNewEmployee = new JLabel("Add Activity");
 		panel_3.add(lblAddNewEmployee);
 
 		JPanel panel_4 = new JPanel();
