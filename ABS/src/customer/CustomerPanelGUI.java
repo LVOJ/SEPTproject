@@ -47,24 +47,24 @@ public class CustomerPanelGUI extends JFrame {
 	private static Logger logger = Logger.getLogger(CustomerPanelGUI.class.getName());
 	private JPanel contentPane;
 	private JPasswordField passwordField;
-	private JLabel lblKilimoKCornelius;
-	private JLabel label;
-	private JLabel label_1;
-	private JLabel label_2;
-	private JLabel label_3;
+	private JLabel lblUserFirstName;
+	private JLabel lblUserLastName;
+	private JLabel lblUserPhone;
+	private JLabel lblUserAddress;
+	private JLabel lblUserName;
 	private JPanel profile;
 	private JPanel viewbooking;
-	private JTable table;
-	private JComboBox comboBox;
-	private JComboBox comboBox_1;
-	private JComboBox comboBox_2;
-	private JComboBox comboBox_3;
-	private JTable table_1;
+	private JTable viewBookingTable;
+	private JComboBox serviceComboBox;
+	private JComboBox activityComboBox;
+	private JComboBox dayComboBox;
+	private JComboBox employeeComboBox;
+	private JTable bookAppointmentTable;
 	private JPanel custombooking;
 	private ArrayList<String> list = new ArrayList<String>();
 	private ArrayList<String> temp = new ArrayList<String>();
 	private JButton btnCancelBooking;
-	private JTable table_2;
+	private JTable cancelBookingTable;
 	private JPanel cancelBooking;
 	
 	public CustomerPanelGUI(String[] userData) {
@@ -78,11 +78,11 @@ public class CustomerPanelGUI extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 
-		JPanel panel_2 = new JPanel();
-		panel_2.setBounds(0, 0, 175, 407);
-		panel_2.setPreferredSize(new Dimension(170, 10));
-		contentPane.add(panel_2);
-		panel_2.setLayout(null);
+		JPanel mainPanel = new JPanel();
+		mainPanel.setBounds(0, 0, 175, 407);
+		mainPanel.setPreferredSize(new Dimension(170, 10));
+		contentPane.add(mainPanel);
+		mainPanel.setLayout(null);
 
 		JToggleButton tglbtnWelcome = new JToggleButton("View My Booking");
 		tglbtnWelcome.addActionListener(new ActionListener() {
@@ -95,16 +95,16 @@ public class CustomerPanelGUI extends JFrame {
 			}
 		});
 		tglbtnWelcome.setBounds(10, 82, 160, 23);
-		panel_2.add(tglbtnWelcome);
+		mainPanel.add(tglbtnWelcome);
 
 		JToggleButton tglbtnBookCustomAppointment = new JToggleButton(
 				"Book Appointment");
 		tglbtnBookCustomAppointment.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				comboBox.setSelectedIndex(0);
-				comboBox_1.setSelectedIndex(0);
-				comboBox_2.setSelectedIndex(0);
-				comboBox_3.setSelectedIndex(0);
+				serviceComboBox.setSelectedIndex(0);
+				activityComboBox.setSelectedIndex(0);
+				dayComboBox.setSelectedIndex(0);
+				employeeComboBox.setSelectedIndex(0);
 				profile.setVisible(false);
 				viewbooking.setVisible(false);
 				custombooking.setVisible(true);
@@ -112,7 +112,7 @@ public class CustomerPanelGUI extends JFrame {
 			}
 		});
 		tglbtnBookCustomAppointment.setBounds(10, 149, 160, 23);
-		panel_2.add(tglbtnBookCustomAppointment);
+		mainPanel.add(tglbtnBookCustomAppointment);
 
 		JToggleButton tglbtnCancelBooking = new JToggleButton("Cancel Booking");
 		tglbtnCancelBooking.addActionListener(new ActionListener() {
@@ -125,7 +125,7 @@ public class CustomerPanelGUI extends JFrame {
 			}
 		});
 		tglbtnCancelBooking.setBounds(10, 208, 160, 23);
-		panel_2.add(tglbtnCancelBooking);
+		mainPanel.add(tglbtnCancelBooking);
 
 		JToggleButton tglbtnLogout = new JToggleButton("Logout");
 		tglbtnLogout.addActionListener(new ActionListener() {
@@ -135,7 +135,7 @@ public class CustomerPanelGUI extends JFrame {
 			}
 		});
 		tglbtnLogout.setBounds(10, 266, 160, 23);
-		panel_2.add(tglbtnLogout);
+		mainPanel.add(tglbtnLogout);
 		
 		JToggleButton tglbtnViewMyProfile = new JToggleButton("View My Profile");
 		tglbtnViewMyProfile.addActionListener(new ActionListener() {
@@ -147,92 +147,92 @@ public class CustomerPanelGUI extends JFrame {
 			}
 		});
 		tglbtnViewMyProfile.setBounds(10, 28, 160, 23);
-		panel_2.add(tglbtnViewMyProfile);
+		mainPanel.add(tglbtnViewMyProfile);
 
-		JPanel panel_3 = new JPanel();
-		panel_3.setBounds(175, 0, 582, 407);
-		contentPane.add(panel_3);
-		panel_3.setLayout(null);
+		JPanel startPanel = new JPanel();
+		startPanel.setBounds(175, 0, 582, 407);
+		contentPane.add(startPanel);
+		startPanel.setLayout(null);
 
 		profile = new JPanel();
 		profile.setBounds(0, 0, 584, 406);
-		panel_3.add(profile);
+		startPanel.add(profile);
 		profile.setLayout(new BorderLayout(0, 0));
 
-		JPanel panel_1 = new JPanel();
-		profile.add(panel_1, BorderLayout.NORTH);
+		JPanel profilePanel = new JPanel();
+		profile.add(profilePanel, BorderLayout.NORTH);
 
 		JLabel lblMyPersonalProfile = new JLabel(
 				"MY PERSONAL PROFILE INFORMATION");
-		panel_1.add(lblMyPersonalProfile);
+		profilePanel.add(lblMyPersonalProfile);
 
-		JPanel panel_4 = new JPanel();
-		profile.add(panel_4, BorderLayout.CENTER);
-		panel_4.setLayout(null);
+		JPanel profileDetailsPanel = new JPanel();
+		profile.add(profileDetailsPanel, BorderLayout.CENTER);
+		profileDetailsPanel.setLayout(null);
 
-		JLabel lblFirstName = new JLabel("First Name");
+		JLabel lblFirstName = new JLabel("First Name:");
 		lblFirstName.setBounds(33, 55, 106, 14);
-		panel_4.add(lblFirstName);
+		profileDetailsPanel.add(lblFirstName);
 
-		JLabel lblLastName = new JLabel("Last Name");
+		JLabel lblLastName = new JLabel("Last Name:");
 		lblLastName.setBounds(33, 93, 106, 14);
-		panel_4.add(lblLastName);
+		profileDetailsPanel.add(lblLastName);
 
-		JLabel lblPhone = new JLabel("Phone");
+		JLabel lblPhone = new JLabel("Phone:");
 		lblPhone.setBounds(33, 131, 106, 14);
-		panel_4.add(lblPhone);
+		profileDetailsPanel.add(lblPhone);
 
-		JLabel lblAddress = new JLabel("Address");
+		JLabel lblAddress = new JLabel("Address:");
 		lblAddress.setBounds(33, 171, 106, 14);
-		panel_4.add(lblAddress);
+		profileDetailsPanel.add(lblAddress);
 
-		JLabel lblUsername = new JLabel("UserName");
+		JLabel lblUsername = new JLabel("Username:");
 		lblUsername.setBounds(33, 211, 106, 14);
-		panel_4.add(lblUsername);
+		profileDetailsPanel.add(lblUsername);
 
-		JLabel lblPassword = new JLabel("Password");
+		JLabel lblPassword = new JLabel("Password:");
 		lblPassword.setBounds(33, 250, 106, 14);
-		panel_4.add(lblPassword);
+		profileDetailsPanel.add(lblPassword);
 
-		lblKilimoKCornelius = new JLabel("KILIMO K CORNELIUS");
-		lblKilimoKCornelius.setBounds(149, 55, 307, 14);
-		panel_4.add(lblKilimoKCornelius);
+		lblUserFirstName = new JLabel("First Name");
+		lblUserFirstName.setBounds(149, 55, 307, 14);
+		profileDetailsPanel.add(lblUserFirstName);
 
-		label = new JLabel("KILIMO K CORNELIUS");
-		label.setBounds(149, 93, 307, 14);
-		panel_4.add(label);
+		lblUserLastName = new JLabel("Last Name");
+		lblUserLastName.setBounds(149, 93, 307, 14);
+		profileDetailsPanel.add(lblUserLastName);
 
-		label_1 = new JLabel("KILIMO K CORNELIUS");
-		label_1.setBounds(149, 131, 307, 14);
-		panel_4.add(label_1);
+		lblUserPhone = new JLabel("Phone");
+		lblUserPhone.setBounds(149, 131, 307, 14);
+		profileDetailsPanel.add(lblUserPhone);
 
-		label_2 = new JLabel("KILIMO K CORNELIUS");
-		label_2.setBounds(149, 171, 307, 14);
-		panel_4.add(label_2);
+		lblUserAddress = new JLabel("Address");
+		lblUserAddress.setBounds(149, 171, 307, 14);
+		profileDetailsPanel.add(lblUserAddress);
 
-		label_3 = new JLabel("KILIMO K CORNELIUS");
-		label_3.setBounds(149, 211, 307, 14);
-		panel_4.add(label_3);
+		lblUserName = new JLabel("Username");
+		lblUserName.setBounds(149, 211, 307, 14);
+		profileDetailsPanel.add(lblUserName);
 
 		passwordField = new JPasswordField();
 		passwordField.setEditable(false);
 		passwordField.setBounds(149, 247, 307, 20);
-		panel_4.add(passwordField);
+		profileDetailsPanel.add(passwordField);
 
 		viewbooking = new JPanel();
 		viewbooking.setVisible(false);
 		viewbooking.setBounds(0, 0, 584, 406);
-		panel_3.add(viewbooking);
+		startPanel.add(viewbooking);
 		viewbooking.setLayout(null);
 
-		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 11, 564, 350);
-		viewbooking.add(scrollPane);
+		JScrollPane viewBookingScrollPane = new JScrollPane();
+		viewBookingScrollPane.setBounds(10, 11, 564, 350);
+		viewbooking.add(viewBookingScrollPane);
 
-		table = new JTable();
+		viewBookingTable = new JTable();
 		//table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		table.setRowHeight(25);
-		table.setModel(new DefaultTableModel(new Object[][] {}, new String[] {
+		viewBookingTable.setRowHeight(25);
+		viewBookingTable.setModel(new DefaultTableModel(new Object[][] {}, new String[] {
 				"Employee Name", "Day Booked", "Service", "Activity ",	"Time Available" }) {
 			boolean[] columnEditables = new boolean[] { false, false, false,
 					false, false };
@@ -242,13 +242,13 @@ public class CustomerPanelGUI extends JFrame {
 			}
 		});
 		
-		table.getColumnModel().getColumn(0).setPreferredWidth(85);
-		scrollPane.setViewportView(table);
+		viewBookingTable.getColumnModel().getColumn(0).setPreferredWidth(85);
+		viewBookingScrollPane.setViewportView(viewBookingTable);
 
 		custombooking = new JPanel();
 		custombooking.setVisible(false);
 		custombooking.setBounds(0, 0, 584, 407);
-		panel_3.add(custombooking);
+		startPanel.add(custombooking);
 		custombooking.setLayout(null);
 
 		JLabel lblSelectService = new JLabel("Select Service");
@@ -267,67 +267,67 @@ public class CustomerPanelGUI extends JFrame {
 		lblSelectEmployee.setBounds(10, 130, 158, 14);
 		custombooking.add(lblSelectEmployee);
 
-		comboBox = new JComboBox();
-		comboBox.addActionListener(new ActionListener() {
+		serviceComboBox = new JComboBox();
+		serviceComboBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				if (comboBox.getSelectedIndex() != 0) {
+				if (serviceComboBox.getSelectedIndex() != 0) {
 					try {
-						activity(comboBox.getSelectedItem().toString());
+						activity(serviceComboBox.getSelectedItem().toString());
 					} catch (Exception e) {
 						//e.printStackTrace();
 					}
 				}
 			}
 		});
-		comboBox.setBounds(172, 8, 168, 20);
-		custombooking.add(comboBox);
+		serviceComboBox.setBounds(172, 8, 168, 20);
+		custombooking.add(serviceComboBox);
 		services();
 
-		comboBox_1 = new JComboBox();
-		comboBox_1.setModel(new DefaultComboBoxModel(new String[] {"Select Activity"}));
-		comboBox_1.addActionListener(new ActionListener() {
+		activityComboBox = new JComboBox();
+		activityComboBox.setModel(new DefaultComboBoxModel(new String[] {"Select Activity"}));
+		activityComboBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				if (comboBox_1.getSelectedIndex() != 0) {
+				if (activityComboBox.getSelectedIndex() != 0) {
 					try {
-						dayOfApp(comboBox.getSelectedItem().toString(),
-								comboBox_1.getSelectedItem().toString());
+						dayOfApp(serviceComboBox.getSelectedItem().toString(),
+								activityComboBox.getSelectedItem().toString());
 					} catch (Exception e) {
 						logger.log(Level.SEVERE, e.getMessage());
 					}
 				}
 			}
 		});
-		comboBox_1.setBounds(172, 43, 168, 20);
-		custombooking.add(comboBox_1);
+		activityComboBox.setBounds(172, 43, 168, 20);
+		custombooking.add(activityComboBox);
 
-		comboBox_2 = new JComboBox();
-		comboBox_2.setModel(new DefaultComboBoxModel(new String[] {"Select Day"}));
-		comboBox_2.addActionListener(new ActionListener() {
+		dayComboBox = new JComboBox();
+		dayComboBox.setModel(new DefaultComboBoxModel(new String[] {"Select Day"}));
+		dayComboBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				if (comboBox_2.getSelectedIndex() != 0) {
+				if (dayComboBox.getSelectedIndex() != 0) {
 					try {
-						employee(comboBox.getSelectedItem().toString(),
-								comboBox_1.getSelectedItem().toString(),
-								comboBox_2.getSelectedItem().toString());
+						employee(serviceComboBox.getSelectedItem().toString(),
+								activityComboBox.getSelectedItem().toString(),
+								dayComboBox.getSelectedItem().toString());
 					} catch (Exception e) {
 						logger.log(Level.SEVERE, e.getMessage());
 					}
 				}
 			}
 		});
-		comboBox_2.setBounds(172, 84, 168, 20);
-		custombooking.add(comboBox_2);
+		dayComboBox.setBounds(172, 84, 168, 20);
+		custombooking.add(dayComboBox);
 
-		comboBox_3 = new JComboBox();
-		comboBox_3.setModel(new DefaultComboBoxModel(new String[] {"Select Employee"}));
-		comboBox_3.addActionListener(new ActionListener() {
+		employeeComboBox = new JComboBox();
+		employeeComboBox.setModel(new DefaultComboBoxModel(new String[] {"Select Employee"}));
+		employeeComboBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				if (comboBox_3.getSelectedIndex() != 0) {
+				if (employeeComboBox.getSelectedIndex() != 0) {
 					try {
-						availableSlots(comboBox.getSelectedItem().toString(),
-								comboBox_1.getSelectedItem().toString(),
-								comboBox_2.getSelectedItem().toString(),
-								comboBox_3.getSelectedItem().toString());
+						availableSlots(serviceComboBox.getSelectedItem().toString(),
+								activityComboBox.getSelectedItem().toString(),
+								dayComboBox.getSelectedItem().toString(),
+								employeeComboBox.getSelectedItem().toString());
 					} catch (Exception e) {
 						logger.log(Level.SEVERE, e.getMessage());
 						
@@ -335,16 +335,16 @@ public class CustomerPanelGUI extends JFrame {
 				}
 			}
 		});
-		comboBox_3.setBounds(172, 127, 168, 20);
-		custombooking.add(comboBox_3);
+		employeeComboBox.setBounds(172, 127, 168, 20);
+		custombooking.add(employeeComboBox);
 
-		JScrollPane scrollPane_1 = new JScrollPane();
-		scrollPane_1.setBounds(10, 155, 564, 211);
-		custombooking.add(scrollPane_1);
+		JScrollPane bookAppointmentScrollPane = new JScrollPane();
+		bookAppointmentScrollPane.setBounds(10, 155, 564, 211);
+		custombooking.add(bookAppointmentScrollPane);
 
-		table_1 = new JTable();
+		bookAppointmentTable = new JTable();
 		//table_1.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		table_1.setModel(new DefaultTableModel(new Object[][] {},
+		bookAppointmentTable.setModel(new DefaultTableModel(new Object[][] {},
 				new String[] { "Employee", "Day", "Service", "Time", "Availability", "Book" }) {
 			Class[] columnTypes = new Class[] {
 					Object.class, Object.class, Object.class, Object.class, Object.class, Boolean.class
@@ -358,14 +358,14 @@ public class CustomerPanelGUI extends JFrame {
 			}
 		});
 
-		table_1.getColumnModel().getColumn(0).setPreferredWidth(150);
-		table_1.getColumnModel().getColumn(1).setPreferredWidth(100);
-		table_1.getColumnModel().getColumn(2).setPreferredWidth(100);
-		table_1.getColumnModel().getColumn(3).setPreferredWidth(80);
-		table_1.getColumnModel().getColumn(4).setPreferredWidth(70);
-		table_1.getColumnModel().getColumn(5).setPreferredWidth(50);
-		table_1.setRowHeight(25);
-		scrollPane_1.setViewportView(table_1);
+		bookAppointmentTable.getColumnModel().getColumn(0).setPreferredWidth(150);
+		bookAppointmentTable.getColumnModel().getColumn(1).setPreferredWidth(100);
+		bookAppointmentTable.getColumnModel().getColumn(2).setPreferredWidth(100);
+		bookAppointmentTable.getColumnModel().getColumn(3).setPreferredWidth(80);
+		bookAppointmentTable.getColumnModel().getColumn(4).setPreferredWidth(70);
+		bookAppointmentTable.getColumnModel().getColumn(5).setPreferredWidth(50);
+		bookAppointmentTable.setRowHeight(25);
+		bookAppointmentScrollPane.setViewportView(bookAppointmentTable);
 
 		JLabel lblSelectTime = new JLabel("Select Time Above and Save");
 		lblSelectTime.setBounds(261, 377, 197, 14);
@@ -374,20 +374,20 @@ public class CustomerPanelGUI extends JFrame {
 		JButton btnSave = new JButton("Save");
 		btnSave.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				String service = comboBox.getSelectedItem().toString();
+				String service = serviceComboBox.getSelectedItem().toString();
 				String fileName = service + ".txt";
 				int row = 0;
-				int rows = table_1.getRowCount();
+				int rows = bookAppointmentTable.getRowCount();
 				String selected = "";
 				for(row = 0; row < rows; row ++){
 					try{
-					boolean status = (boolean) table_1.getModel().getValueAt(row, 5);
+					boolean status = (boolean) bookAppointmentTable.getModel().getValueAt(row, 5);
 					if(status == true){
-						selected = table_1.getModel().getValueAt(row, 0).toString() + ","+
-								table_1.getModel().getValueAt(row, 1).toString() + ","+
-								table_1.getModel().getValueAt(row, 2).toString() + ","+
-								table_1.getModel().getValueAt(row, 3).toString()+ ","+
-								table_1.getModel().getValueAt(row, 4).toString();
+						selected = bookAppointmentTable.getModel().getValueAt(row, 0).toString() + ","+
+								bookAppointmentTable.getModel().getValueAt(row, 1).toString() + ","+
+								bookAppointmentTable.getModel().getValueAt(row, 2).toString() + ","+
+								bookAppointmentTable.getModel().getValueAt(row, 3).toString()+ ","+
+								bookAppointmentTable.getModel().getValueAt(row, 4).toString();
 						String recs[];
 						while (true) {
 							recs = selected.split(",");
@@ -432,12 +432,12 @@ public class CustomerPanelGUI extends JFrame {
 					}
 					
 				}
-				if (comboBox_3.getSelectedIndex() != 0) {
+				if (employeeComboBox.getSelectedIndex() != 0) {
 					try {
-						availableSlots(comboBox.getSelectedItem().toString(),
-								comboBox_1.getSelectedItem().toString(),
-								comboBox_2.getSelectedItem().toString(),
-								comboBox_3.getSelectedItem().toString());
+						availableSlots(serviceComboBox.getSelectedItem().toString(),
+								activityComboBox.getSelectedItem().toString(),
+								dayComboBox.getSelectedItem().toString(),
+								employeeComboBox.getSelectedItem().toString());
 					} catch (Exception e) {
 						logger.log(Level.SEVERE, e.getMessage());
 						
@@ -452,7 +452,7 @@ public class CustomerPanelGUI extends JFrame {
 		
 		cancelBooking = new JPanel();
 		cancelBooking.setBounds(10, 0, 572, 406);
-		panel_3.add(cancelBooking);
+		startPanel.add(cancelBooking);
 		cancelBooking.setLayout(null);
 		
 		btnCancelBooking = new JButton("Cancel Booking");
@@ -463,15 +463,15 @@ public class CustomerPanelGUI extends JFrame {
 				String service = "", activity = "", day = "", empName = "", time = "";
 				
 				int row = 0;
-				int rows = table_2.getRowCount();
+				int rows = cancelBookingTable.getRowCount();
 				for(row = 0; row < rows; row++){
-					boolean status = (boolean) table_2.getModel().getValueAt(row, 5);
+					boolean status = (boolean) cancelBookingTable.getModel().getValueAt(row, 5);
 					if(status == true){
-						time = table_2.getModel().getValueAt(row, 4).toString();
-						activity = table_2.getModel().getValueAt(row, 3).toString();
-						service = table_2.getModel().getValueAt(row, 2).toString();
-						day = table_2.getModel().getValueAt(row, 1).toString();
-						empName = table_2.getModel().getValueAt(row, 0).toString();
+						time = cancelBookingTable.getModel().getValueAt(row, 4).toString();
+						activity = cancelBookingTable.getModel().getValueAt(row, 3).toString();
+						service = cancelBookingTable.getModel().getValueAt(row, 2).toString();
+						day = cancelBookingTable.getModel().getValueAt(row, 1).toString();
+						empName = cancelBookingTable.getModel().getValueAt(row, 0).toString();
 						
 				        ArrayList<String> bookedSlotsList = new ArrayList<>();
 						try{
@@ -542,13 +542,13 @@ public class CustomerPanelGUI extends JFrame {
 		btnCancelBooking.setBounds(426, 362, 136, 23);
 		cancelBooking.add(btnCancelBooking);
 		
-		JScrollPane scrollPane_2 = new JScrollPane();
-		scrollPane_2.setBounds(0, 0, 562, 356);
-		cancelBooking.add(scrollPane_2);
+		JScrollPane cancelBookingScrollPane = new JScrollPane();
+		cancelBookingScrollPane.setBounds(0, 0, 562, 356);
+		cancelBooking.add(cancelBookingScrollPane);
 		
-		table_2 = new JTable();
-		table_2.setRowHeight(25);
-		table_2.setModel(new DefaultTableModel(new Object[][] {}, new String[] {
+		cancelBookingTable = new JTable();
+		cancelBookingTable.setRowHeight(25);
+		cancelBookingTable.setModel(new DefaultTableModel(new Object[][] {}, new String[] {
 				"Employee Name", "Day Booked", "Service", "Activity ","Time Available", "Cancel" }) {
 			Class[] columnTypes = new Class[] {
 					Object.class, Object.class, Object.class, Object.class, Object.class, Boolean.class
@@ -563,7 +563,7 @@ public class CustomerPanelGUI extends JFrame {
 			}
 		});
 		
-		scrollPane_2.setViewportView(table_2);
+		cancelBookingScrollPane.setViewportView(cancelBookingTable);
 		
 		userDetails(userData);
 		
@@ -598,7 +598,7 @@ public class CustomerPanelGUI extends JFrame {
 			logger.log(Level.SEVERE, e.getMessage());
 		}
 
-		DefaultTableModel model = (DefaultTableModel) table_2.getModel();
+		DefaultTableModel model = (DefaultTableModel) cancelBookingTable.getModel();
 		Object[] rowData = new Object[6];
 		model.setRowCount(0);
 
@@ -619,15 +619,15 @@ public class CustomerPanelGUI extends JFrame {
 
 		{
 			if (i == 0) {
-				lblKilimoKCornelius.setText(userData[i]);
+				lblUserFirstName.setText(userData[i]);
 			} else if (i == 1) {
-				label.setText(userData[i]);
+				lblUserLastName.setText(userData[i]);
 			} else if (i == 2) {
-				label_1.setText(userData[i]);
+				lblUserPhone.setText(userData[i]);
 			} else if (i == 3) {
-				label_2.setText(userData[i]);
+				lblUserAddress.setText(userData[i]);
 			} else if (i == 4) {
-				label_3.setText(userData[i]);
+				lblUserName.setText(userData[i]);
 			} else if (i == 5) {
 				passwordField.setText(userData[i]);
 			}
@@ -663,7 +663,7 @@ public class CustomerPanelGUI extends JFrame {
 			logger.log(Level.SEVERE, e.getMessage());
 		}
 
-		DefaultTableModel model = (DefaultTableModel) table.getModel();
+		DefaultTableModel model = (DefaultTableModel) viewBookingTable.getModel();
 		Object[] rowData = new Object[5];
 		model.setRowCount(0);
 
@@ -687,9 +687,9 @@ public class CustomerPanelGUI extends JFrame {
 			while ((line = br.readLine()) != null) {
 				services.add(line);
 			}
-			comboBox.addItem("Select Services");
+			serviceComboBox.addItem("Select Services");
 			for (int a = 0; a < services.size(); a++) {
-				comboBox.addItem(services.get(a));
+				serviceComboBox.addItem(services.get(a));
 			}
 
 		} catch (IOException e) {
@@ -700,11 +700,10 @@ public class CustomerPanelGUI extends JFrame {
 
 	public void activity(String service) {
 		ArrayList<String> serviceNames = Utils.getActivities(service);
-		comboBox_1.removeAllItems();
-		;
-		comboBox_1.addItem("Select Activity");
+		activityComboBox.removeAllItems();
+		activityComboBox.addItem("Select Activity");
 		for (int a = 0; a < serviceNames.size(); a++) {
-			comboBox_1.addItem(serviceNames.get(a));
+			activityComboBox.addItem(serviceNames.get(a));
 		}
 
 	}
@@ -712,11 +711,10 @@ public class CustomerPanelGUI extends JFrame {
 	public void dayOfApp(String service, String activity) {
 		ArrayList<String> activityDays = Utils.getActivityAppointmentDays(
 				service, activity);
-		comboBox_2.removeAllItems();
-		;
-		comboBox_2.addItem("Select Day");
+		dayComboBox.removeAllItems();
+		dayComboBox.addItem("Select Day");
 		for (int a = 0; a < activityDays.size(); a++) {
-			comboBox_2.addItem(activityDays.get(a));
+			dayComboBox.addItem(activityDays.get(a));
 		}
 
 	}
@@ -725,11 +723,11 @@ public class CustomerPanelGUI extends JFrame {
 		service += ".txt";
 		ArrayList<String> employeeNames = Utils.getEmployeeNames(service,
 				activity, day);
-		comboBox_3.removeAllItems();
-		comboBox_3.addItem("Select Employee");
+		employeeComboBox.removeAllItems();
+		employeeComboBox.addItem("Select Employee");
 		for (int a = 0; a < employeeNames.size(); a++) {
 			if(employeeNames.get(a)!=null&&!employeeNames.get(a).equalsIgnoreCase("null")){
-			comboBox_3.addItem(employeeNames.get(a));
+			employeeComboBox.addItem(employeeNames.get(a));
 			System.out.println("in"+ employeeNames.get(a));
 			}
 			System.out.println("out"+ employeeNames.get(a));
@@ -766,7 +764,7 @@ public class CustomerPanelGUI extends JFrame {
 			br.close();
 			int i;
 
-			DefaultTableModel model = (DefaultTableModel) table_1.getModel();
+			DefaultTableModel model = (DefaultTableModel) bookAppointmentTable.getModel();
 			model.setRowCount(0);
 			Object[] rowData = new Object[6];
 			String recs[] = null;

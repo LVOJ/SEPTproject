@@ -31,9 +31,9 @@ import java.util.logging.Logger;
 public class Login extends JFrame {
 	private static Logger logger = Logger.getLogger(CustomerPanelGUI.class.getName());
 	private JPanel contentPane;
-	private JTextField textField;
+	private JTextField usernameField;
 	private JPasswordField passwordField;
-	private JComboBox comboBox;
+	private JComboBox userTypeComboBox;
 	public boolean OwnerFlag;
 	public boolean CustomerFlag;
 	public boolean authenticFlag;
@@ -53,47 +53,47 @@ public class Login extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(new BorderLayout(0, 0));
 		
-		JPanel panel = new JPanel();
+	/*	JPanel panel = new JPanel();
 		contentPane.add(panel, BorderLayout.NORTH);
 		
 		JPanel panel_1 = new JPanel();
-		contentPane.add(panel_1, BorderLayout.SOUTH);
+		contentPane.add(panel_1, BorderLayout.SOUTH);*/
 		
-		JPanel panel_2 = new JPanel();
-		contentPane.add(panel_2, BorderLayout.CENTER);
-		panel_2.setLayout(null);
+		JPanel loginPanel = new JPanel();
+		contentPane.add(loginPanel, BorderLayout.CENTER);
+		loginPanel.setLayout(null);
 		
 		JLabel lblLogin = new JLabel("Login Type:");
 		lblLogin.setBounds(35, 17, 76, 14);
-		panel_2.add(lblLogin);
+		loginPanel.add(lblLogin);
 		
 		JLabel lblUsename = new JLabel("Username:");
 		lblUsename.setBounds(35, 59, 76, 14);
-		panel_2.add(lblUsename);
+		loginPanel.add(lblUsename);
 		
 		JLabel lblPassword = new JLabel("Password:");
 		lblPassword.setBounds(35, 83, 83, 14);
-		panel_2.add(lblPassword);
+		loginPanel.add(lblPassword);
 		
-		textField = new JTextField();
-		textField.setBounds(112, 56, 127, 20);
-		panel_2.add(textField);
-		textField.setColumns(10);
+		usernameField = new JTextField();
+		usernameField.setBounds(112, 56, 127, 20);
+		loginPanel.add(usernameField);
+		usernameField.setColumns(10);
 		
 		passwordField = new JPasswordField();
 		passwordField.setBounds(112, 81, 127, 20);
-		panel_2.add(passwordField);
+		loginPanel.add(passwordField);
 		
-		comboBox = new JComboBox();
-		comboBox.setModel(new DefaultComboBoxModel(new String[] {"---Select User---", "Business Owner", "Customer"}));
-		comboBox.setBounds(112, 14, 127, 20);
-		panel_2.add(comboBox);
+		userTypeComboBox = new JComboBox();
+		userTypeComboBox.setModel(new DefaultComboBoxModel(new String[] {"---Select User---", "Business Owner", "Customer"}));
+		userTypeComboBox.setBounds(112, 14, 127, 20);
+		loginPanel.add(userTypeComboBox);
 		
 		JToggleButton tglbtnLogin = new JToggleButton("Login");
 		tglbtnLogin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				 
-				if(comboBox.getSelectedIndex() == 0){
+				if(userTypeComboBox.getSelectedIndex() == 0){
 					JOptionPane.showMessageDialog(null, "Please select Login Type !!");
 					return;
 				}else{
@@ -101,7 +101,7 @@ public class Login extends JFrame {
 			        String Password;
 			        String UserName ="";
 			        
-			        if(comboBox.getSelectedIndex() == 1){
+			        if(userTypeComboBox.getSelectedIndex() == 1){
 			        	File = "business.txt"; 
 			        	OwnerFlag=false;         //false due to owner entry
 	                    CustomerFlag = true;
@@ -112,7 +112,7 @@ public class Login extends JFrame {
 	                    CustomerFlag = false;
 			        }
 			        
-			        UserName = textField.getText().trim();
+			        UserName = usernameField.getText().trim();
 			        Password = passwordField.getText().trim();
 			        if (UserName.equals("") || Password.equals("")){
 			        	JOptionPane.showMessageDialog(null, "Please enter both username and password !!");
@@ -159,7 +159,7 @@ public class Login extends JFrame {
 			}
 		});
 		tglbtnLogin.setBounds(150, 140, 90, 23);
-		panel_2.add(tglbtnLogin);
+		loginPanel.add(tglbtnLogin);
 		
 		JToggleButton tglbtnExit = new JToggleButton("Cancel");
 		tglbtnExit.addActionListener(new ActionListener() {
@@ -169,7 +169,7 @@ public class Login extends JFrame {
 			}
 		});
 		tglbtnExit.setBounds(35, 140, 90, 23);
-		panel_2.add(tglbtnExit);
+		loginPanel.add(tglbtnExit);
 	}
 	
 }
