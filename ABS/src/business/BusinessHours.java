@@ -24,13 +24,13 @@ import java.util.ArrayList;
 public class BusinessHours extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
-	private JTextField textField;
-	private JTextField textField_1;
-	private JTextField textField_2;
+	private JTextField MondayTextField;
+	private JTextField TuesdayTextField;
+	private JTextField WednesdayTextField;
 	String[] userData;
-	private JTextField textField_5;
-	private JTextField textField_4;
-	private JTextField textField_3;
+	private JTextField SaturdayTextField;
+	private JTextField FridayTextField;
+	private JTextField ThursdayTextField;
 	
 	public BusinessHours(JFrame frame, String[] userData) {
 		super(frame, true);
@@ -56,47 +56,47 @@ public class BusinessHours extends JDialog {
 		lblBusinessTelephone.setBounds(10, 75, 151, 25);
 		contentPanel.add(lblBusinessTelephone);
 		
-		textField = new JTextField();
-		textField.setBounds(128, 13, 217, 20);
-		contentPanel.add(textField);
-		textField.setColumns(10);
+		MondayTextField = new JTextField();
+		MondayTextField.setBounds(128, 13, 217, 20);
+		contentPanel.add(MondayTextField);
+		MondayTextField.setColumns(10);
 		
-		textField_1 = new JTextField();
-		textField_1.setColumns(10);
-		textField_1.setBounds(128, 41, 217, 20);
-		contentPanel.add(textField_1);
+		TuesdayTextField = new JTextField();
+		TuesdayTextField.setColumns(10);
+		TuesdayTextField.setBounds(128, 41, 217, 20);
+		contentPanel.add(TuesdayTextField);
 		
-		textField_2 = new JTextField();
-		textField_2.setColumns(10);
-		textField_2.setBounds(128, 77, 217, 20);
-		contentPanel.add(textField_2);
+		WednesdayTextField = new JTextField();
+		WednesdayTextField.setColumns(10);
+		WednesdayTextField.setBounds(128, 77, 217, 20);
+		contentPanel.add(WednesdayTextField);
 		
 		JLabel lblSaturday = new JLabel("Saturday");
 		lblSaturday.setBounds(10, 169, 151, 25);
 		contentPanel.add(lblSaturday);
 		
-		textField_5 = new JTextField();
-		textField_5.setColumns(10);
-		textField_5.setBounds(128, 171, 217, 20);
-		contentPanel.add(textField_5);
+		SaturdayTextField = new JTextField();
+		SaturdayTextField.setColumns(10);
+		SaturdayTextField.setBounds(128, 171, 217, 20);
+		contentPanel.add(SaturdayTextField);
 		
 		JLabel lblFriday = new JLabel("Friday");
 		lblFriday.setBounds(10, 133, 162, 25);
 		contentPanel.add(lblFriday);
 		
-		textField_4 = new JTextField();
-		textField_4.setColumns(10);
-		textField_4.setBounds(128, 135, 217, 20);
-		contentPanel.add(textField_4);
+		FridayTextField = new JTextField();
+		FridayTextField.setColumns(10);
+		FridayTextField.setBounds(128, 135, 217, 20);
+		contentPanel.add(FridayTextField);
 		
 		JLabel lblThursday = new JLabel("Thursday");
 		lblThursday.setBounds(10, 105, 162, 25);
 		contentPanel.add(lblThursday);
 		
-		textField_3 = new JTextField();
-		textField_3.setColumns(10);
-		textField_3.setBounds(128, 107, 217, 20);
-		contentPanel.add(textField_3);
+		ThursdayTextField = new JTextField();
+		ThursdayTextField.setColumns(10);
+		ThursdayTextField.setBounds(128, 107, 217, 20);
+		contentPanel.add(ThursdayTextField);
 		{
 			JPanel buttonPane = new JPanel();
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
@@ -106,12 +106,12 @@ public class BusinessHours extends JDialog {
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 
-						String Monday = textField.getText().trim();
-						String Tuesday = textField_1.getText().trim();
-						String Wednesday = textField_2.getText().trim();
-						String Thursday = textField_3.getText().trim();
-						String Friday = textField_4.getText().trim();
-						String Saturday = textField_5.getText().trim();
+						String Monday = MondayTextField.getText().trim();
+						String Tuesday = TuesdayTextField.getText().trim();
+						String Wednesday = WednesdayTextField.getText().trim();
+						String Thursday = ThursdayTextField.getText().trim();
+						String Friday = FridayTextField.getText().trim();
+						String Saturday = SaturdayTextField.getText().trim();
 						String businessOwner = userData[4];
 						if(Monday.equals("") || Tuesday.equals("") || Wednesday.equals("") || Thursday.equals("") 
 								|| Friday.equals("") || Saturday.equals("")){
@@ -160,12 +160,12 @@ public class BusinessHours extends JDialog {
 	private void fillBusinessHours(){
 		ArrayList<String> businessHours = getBusinessDetails(userData);
 		if(businessHours.size() > 5){
-			textField.setText(businessHours.get(0));
-			textField_1.setText(businessHours.get(1));
-			textField_2.setText(businessHours.get(2));
-			textField_3.setText(businessHours.get(3));
-			textField_4.setText(businessHours.get(4));
-			textField_5.setText(businessHours.get(5));
+			MondayTextField.setText(businessHours.get(0));
+			TuesdayTextField.setText(businessHours.get(1));
+			WednesdayTextField.setText(businessHours.get(2));
+			ThursdayTextField.setText(businessHours.get(3));
+			FridayTextField.setText(businessHours.get(4));
+			SaturdayTextField.setText(businessHours.get(5));
 		}
 	}
 	public ArrayList<String> getBusinessDetails(String[] userData){

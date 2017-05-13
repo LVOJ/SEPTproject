@@ -66,24 +66,24 @@ public class BusinessOwnerPanel extends JFrame {
 	private JPanel contentPane;
 	private JTable table;
 	private JPanel bookingsummaries;
-	private JTextField textField_5;
+	private JTextField newServiceTextField;
 	private JPanel newservice;
 	private JPanel deleteservice;
 	private JComboBox servicedeleteCombo;
-	private JTable table_1;
-	private JComboBox comboBox_1;
+	private JTable empTable;
+	private JComboBox EmpAvailableComboBox;
 	private JPanel empAvailable;
 	private JPanel updateEmpWaorkingTime;
-	private JComboBox comboBox_3;
-	private JPanel empWaorkingTime;
-	private JTable table_3;
-	private JComboBox comboBox_4;
-	private JComboBox comboBox_5;
+	private JComboBox empWorkingTimeComboBox;
+	private JPanel empWorkingTime;
+	private JTable DurationTable;
+	private JComboBox comboBoxService;
+	private JComboBox EmployeeComboBox;
 	private JComboBox selectService;
 	private JComboBox selectActivity;
 	private JComboBox selectDay;
 	private JComboBox selectEmp;
-	private JTable table_4;
+	private JTable EmployeeWorkingTimeTable;
 	private JTextField selectCustomer;
 	private JPanel bookForCustomer;
 	private ArrayList<String> list = new ArrayList<>();
@@ -91,23 +91,23 @@ public class BusinessOwnerPanel extends JFrame {
 	String[] userData;
 	private Image img;
 	private JLabel businessTitle;
-	private JComboBox comboBox_6;
-	private JComboBox comboBox_7;
+	private JComboBox ComboBoxServiceName;
+	private JComboBox deleteServiceComboBox;
 	private JPanel addActivity;
-	private JTextField textField_6;
-	private JComboBox comboBox_8;
+	private JTextField AddActivityNameTextField;
+	private JComboBox AddActivityComboBox;
 	private FileChannel chanel;
 	private FileLock lock;
-	private JComboBox comboBox_16;
-	private JComboBox comboBox_17;
+	private JComboBox StartTimeComboBox;
+	private JComboBox EndTimeComboBox;
 	private JComboBox comboBox;
 	private JComboBox comboBox_13;
 	private ArrayList<String> daysList = new ArrayList<>();
-	private JComboBox comboBox_2;
-	private JComboBox comboBox_9;
-	private JComboBox comboBox_10;
-	private JComboBox comboBox_11;
-	private JComboBox comboBox_12;
+	private JComboBox SelectDayComboBox;
+	private JComboBox SelectDurationComboBox;
+	private JComboBox StarTimeComboBox1;
+	private JComboBox EndTimeComboBox1;
+	private JComboBox DurationComboBox1;
 
 	public BusinessOwnerPanel(String[] userData) {
 		setResizable(false);
@@ -167,7 +167,7 @@ public class BusinessOwnerPanel extends JFrame {
 		btnNewEmployeeWorking.setBackground(SystemColor.activeCaption);
 		btnNewEmployeeWorking.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				panelToSee(empWaorkingTime);
+				panelToSee(empWorkingTime);
 			}
 		});
 		btnNewEmployeeWorking.setBounds(10, 102, 180, 23);
@@ -345,11 +345,11 @@ public class BusinessOwnerPanel extends JFrame {
 		panel_2.add(newservice);
 		newservice.setLayout(null);
 
-		textField_5 = new JTextField();
-		textField_5.setText("");
-		textField_5.setBounds(159, 138, 147, 20);
-		newservice.add(textField_5);
-		textField_5.setColumns(10);
+		newServiceTextField = new JTextField();
+		newServiceTextField.setText("");
+		newServiceTextField.setBounds(159, 138, 147, 20);
+		newservice.add(newServiceTextField);
+		newServiceTextField.setColumns(10);
 
 		JLabel lblServiceName = new JLabel("Service Name");
 		lblServiceName.setBounds(42, 140, 107, 17);
@@ -359,7 +359,7 @@ public class BusinessOwnerPanel extends JFrame {
 		btnSave.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
-				String serviceName = textField_5.getText().trim().toLowerCase();
+				String serviceName = newServiceTextField.getText().trim().toLowerCase();
 				if (serviceName.equals("")) {
 					JOptionPane.showMessageDialog(null, "Enter Service Name");
 					return;
@@ -523,39 +523,39 @@ public class BusinessOwnerPanel extends JFrame {
 		JLabel lblDeleteActivityHere = new JLabel("Delete Activity Here Here");
 		panel_12.add(lblDeleteActivityHere);
 
-		comboBox_6 = new JComboBox();
-		comboBox_6.addActionListener(new ActionListener() {
+		ComboBoxServiceName = new JComboBox();
+		ComboBoxServiceName.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (comboBox_6.getSelectedIndex() != 0) {
+				if (ComboBoxServiceName.getSelectedIndex() != 0) {
 					ArrayList<String> serviceNames = Utils
-							.getActivities(comboBox_6.getSelectedItem()
+							.getActivities(ComboBoxServiceName.getSelectedItem()
 									.toString());
-					comboBox_7.removeAllItems();
-					comboBox_7.addItem("Select Activity");
+					deleteServiceComboBox.removeAllItems();
+					deleteServiceComboBox.addItem("Select Activity");
 					for (int a = 0; a < serviceNames.size(); a++) {
-						comboBox_7.addItem(serviceNames.get(a));
+						deleteServiceComboBox.addItem(serviceNames.get(a));
 					}
 				}
 			}
 		});
-		comboBox_6.setBounds(182, 220, 183, 20);
-		deleteservice.add(comboBox_6);
+		ComboBoxServiceName.setBounds(182, 220, 183, 20);
+		deleteservice.add(ComboBoxServiceName);
 
 		JButton btnDeleteActivity = new JButton("Delete Activity");
 		btnDeleteActivity.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (comboBox_6.getSelectedIndex() == 0) {
+				if (ComboBoxServiceName.getSelectedIndex() == 0) {
 					JOptionPane.showMessageDialog(null,
 							"Select Service Where to delete Activity");
 					return;
 				}
-				if (comboBox_7.getSelectedIndex() == 0) {
+				if (deleteServiceComboBox.getSelectedIndex() == 0) {
 					JOptionPane.showMessageDialog(null,
 							"Select Activity to delete Activity");
 					return;
 				}
-				String service = comboBox_6.getSelectedItem().toString();
-				String activity = comboBox_7.getSelectedItem().toString();
+				String service = ComboBoxServiceName.getSelectedItem().toString();
+				String activity = deleteServiceComboBox.getSelectedItem().toString();
 
 				String fileName = service + ".txt";
 				try {
@@ -599,14 +599,14 @@ public class BusinessOwnerPanel extends JFrame {
 					bw.close();
 					JOptionPane.showMessageDialog(null,
 							"Activity Deleted Successfully");
-					if (comboBox_6.getSelectedIndex() != 0) {
+					if (ComboBoxServiceName.getSelectedIndex() != 0) {
 						ArrayList<String> serviceNames = Utils
-								.getActivities(comboBox_6.getSelectedItem()
+								.getActivities(ComboBoxServiceName.getSelectedItem()
 										.toString());
-						comboBox_7.removeAllItems();
-						comboBox_7.addItem("Select Activity");
+						deleteServiceComboBox.removeAllItems();
+						deleteServiceComboBox.addItem("Select Activity");
 						for (int a = 0; a < serviceNames.size(); a++) {
-							comboBox_7.addItem(serviceNames.get(a));
+							deleteServiceComboBox.addItem(serviceNames.get(a));
 						}
 					}
 				} catch (IOException e1) {
@@ -618,9 +618,9 @@ public class BusinessOwnerPanel extends JFrame {
 		btnDeleteActivity.setBounds(182, 316, 183, 23);
 		deleteservice.add(btnDeleteActivity);
 
-		comboBox_7 = new JComboBox();
-		comboBox_7.setBounds(182, 270, 183, 20);
-		deleteservice.add(comboBox_7);
+		deleteServiceComboBox = new JComboBox();
+		deleteServiceComboBox.setBounds(182, 270, 183, 20);
+		deleteservice.add(deleteServiceComboBox);
 
 		JLabel lblSelectService_2 = new JLabel("Select Service");
 		lblSelectService_2.setBounds(21, 223, 151, 14);
@@ -640,9 +640,9 @@ public class BusinessOwnerPanel extends JFrame {
 		scrollPane_1.setBounds(10, 71, 517, 280);
 		empAvailable.add(scrollPane_1);
 
-		table_1 = new JTable();
-		table_1.setRowHeight(25);
-		table_1.setModel(new DefaultTableModel(new Object[][] {},
+		empTable = new JTable();
+		empTable.setRowHeight(25);
+		empTable.setModel(new DefaultTableModel(new Object[][] {},
 				new String[] { "Employee Name", "Day", "Activity",
 						"Time Available", "Status" }) {
 			boolean[] columnEditables = new boolean[] { false, false, false,
@@ -652,16 +652,16 @@ public class BusinessOwnerPanel extends JFrame {
 				return columnEditables[column];
 			}
 		});
-		scrollPane_1.setViewportView(table_1);
+		scrollPane_1.setViewportView(empTable);
 
-		comboBox_1 = new JComboBox();
-		comboBox_1.addActionListener(new ActionListener() {
+		EmpAvailableComboBox = new JComboBox();
+		EmpAvailableComboBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				empAvailable(comboBox_1.getSelectedItem().toString());
+				empAvailable(EmpAvailableComboBox.getSelectedItem().toString());
 			}
 		});
-		comboBox_1.setBounds(106, 35, 152, 25);
-		empAvailable.add(comboBox_1);
+		EmpAvailableComboBox.setBounds(106, 35, 152, 25);
+		empAvailable.add(EmpAvailableComboBox);
 
 		JLabel lblSelectService = new JLabel("Select Service");
 		lblSelectService.setBounds(10, 35, 91, 25);
@@ -680,13 +680,13 @@ public class BusinessOwnerPanel extends JFrame {
 		label_11.setBounds(286, 35, 114, 25);
 		empAvailable.add(label_11);
 
-		comboBox_2 = new JComboBox();
-		comboBox_2.addActionListener(new ActionListener() {
+		SelectDayComboBox = new JComboBox();
+		SelectDayComboBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (comboBox_2.getSelectedIndex() != 0) {
+				if (SelectDayComboBox.getSelectedIndex() != 0) {
 					try {
-						empAvailableParticularDay(comboBox_1.getSelectedItem()
-								.toString(), comboBox_2.getSelectedItem()
+						empAvailableParticularDay(EmpAvailableComboBox.getSelectedItem()
+								.toString(), SelectDayComboBox.getSelectedItem()
 								.toString());
 					} catch (Exception e3) {
 						e3.printStackTrace();
@@ -694,12 +694,12 @@ public class BusinessOwnerPanel extends JFrame {
 				}
 			}
 		});
-		comboBox_2.addItem("Select Day");
+		SelectDayComboBox.addItem("Select Day");
 		for (int a = 0; a < daysList.size(); a++) {
-			comboBox_2.addItem(daysList.get(a));
+			SelectDayComboBox.addItem(daysList.get(a));
 		}
-		comboBox_2.setBounds(413, 35, 114, 25);
-		empAvailable.add(comboBox_2);
+		SelectDayComboBox.setBounds(413, 35, 114, 25);
+		empAvailable.add(SelectDayComboBox);
 
 		updateEmpWaorkingTime = new JPanel();
 		updateEmpWaorkingTime.setVisible(false);
@@ -707,18 +707,18 @@ public class BusinessOwnerPanel extends JFrame {
 		panel_2.add(updateEmpWaorkingTime);
 		updateEmpWaorkingTime.setLayout(null);
 
-		comboBox_4 = new JComboBox();
-		comboBox_4.addActionListener(new ActionListener() {
+		comboBoxService = new JComboBox();
+		comboBoxService.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (comboBox_4.getSelectedIndex() != 0) {
-					empWorkingTimeNotNull(comboBox_4.getSelectedItem()
+				if (comboBoxService.getSelectedIndex() != 0) {
+					empWorkingTimeNotNull(comboBoxService.getSelectedItem()
 							.toString());
-					employees(comboBox_4.getSelectedItem().toString());
+					employees(comboBoxService.getSelectedItem().toString());
 				}
 			}
 		});
-		comboBox_4.setBounds(158, 42, 202, 20);
-		updateEmpWaorkingTime.add(comboBox_4);
+		comboBoxService.setBounds(158, 42, 202, 20);
+		updateEmpWaorkingTime.add(comboBoxService);
 
 		JLabel label_1 = new JLabel("Select Service");
 		label_1.setBounds(51, 43, 102, 14);
@@ -728,66 +728,66 @@ public class BusinessOwnerPanel extends JFrame {
 		label_2.setBounds(24, 331, 136, 14);
 		updateEmpWaorkingTime.add(label_2);
 
-		comboBox_5 = new JComboBox();
-		comboBox_5.setEditable(true);
-		comboBox_5.setBounds(138, 327, 182, 20);
-		updateEmpWaorkingTime.add(comboBox_5);
+		EmployeeComboBox = new JComboBox();
+		EmployeeComboBox.setEditable(true);
+		EmployeeComboBox.setBounds(138, 327, 182, 20);
+		updateEmpWaorkingTime.add(EmployeeComboBox);
 
 		JButton button_2 = new JButton("Update");
 		button_2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (comboBox_4.getSelectedIndex() == 0) {
+				if (comboBoxService.getSelectedIndex() == 0) {
 					JOptionPane.showMessageDialog(null,
 							"Please Select Service To Proceed");
 					return;
 				}
-				if (comboBox_5.getSelectedItem().toString().trim().equals("")
-						|| comboBox_3.getSelectedItem().toString().trim()
+				if (EmployeeComboBox.getSelectedItem().toString().trim().equals("")
+						|| empWorkingTimeComboBox.getSelectedItem().toString().trim()
 								.equals("")) {
 					JOptionPane.showMessageDialog(null,
 							"Enter Employee name to proceed");
 					return;
 				}
-				if (comboBox_10.getSelectedIndex() == 0) {
+				if (StarTimeComboBox1.getSelectedIndex() == 0) {
 					JOptionPane.showMessageDialog(null,
 							"Please Select Start Time To Proceed");
 					return;
 				}
-				if (comboBox_11.getSelectedIndex() == 0) {
+				if (EndTimeComboBox1.getSelectedIndex() == 0) {
 					JOptionPane.showMessageDialog(null,
 							"Please Select End Time To Proceed");
 					return;
 				}
-				if (comboBox_12.getSelectedIndex() == 0) {
+				if (DurationComboBox1.getSelectedIndex() == 0) {
 					JOptionPane.showMessageDialog(null,
 							"Please Select Duration To Proceed");
 					return;
 				}
 				
-				String newtimeAvailable = comboBox_10.getSelectedItem().toString()+"-"+comboBox_11.getSelectedItem().toString();
+				String newtimeAvailable = StarTimeComboBox1.getSelectedItem().toString()+"-"+EndTimeComboBox1.getSelectedItem().toString();
 				int duration = 0;
-				if(comboBox_12.getSelectedIndex() == 1){
+				if(DurationComboBox1.getSelectedIndex() == 1){
 					duration = 30;
-				}if(comboBox_12.getSelectedIndex() == 2){
+				}if(DurationComboBox1.getSelectedIndex() == 2){
 					duration = 60;
 				}
 
-				String service = comboBox_4.getSelectedItem().toString();
+				String service = comboBoxService.getSelectedItem().toString();
 				String fileName = service + ".txt";
 				int row = -1;
-				row = table_3.getSelectedRow();
+				row = DurationTable.getSelectedRow();
 				if (row < 0) {
 					JOptionPane.showMessageDialog(null,
 							"Please Select row to update to proceed");
 					return;
 				}
 				String emp,   activity, startTime;
-				emp = table_3.getModel().getValueAt(row, 0).toString();
-				activity = table_3.getModel().getValueAt(row, 1).toString();
-				startTime = table_3.getModel().getValueAt(row, 2).toString();
+				emp = DurationTable.getModel().getValueAt(row, 0).toString();
+				activity = DurationTable.getModel().getValueAt(row, 1).toString();
+				startTime = DurationTable.getModel().getValueAt(row, 2).toString();
 
-				String newstartTime = comboBox_10.getSelectedItem().toString();
-				String newendTime = comboBox_11.getSelectedItem().toString();
+				String newstartTime = StarTimeComboBox1.getSelectedItem().toString();
+				String newendTime = EndTimeComboBox1.getSelectedItem().toString();
 				
 				try {
 					SimpleDateFormat format = new SimpleDateFormat("HH:mm");
@@ -864,8 +864,8 @@ public class BusinessOwnerPanel extends JFrame {
 					e1.printStackTrace();
 				}
 				JOptionPane.showMessageDialog(null, "Employee working time updated successfully");
-				empWorkingTimeNotNull(comboBox_4.getSelectedItem().toString());
-				employees(comboBox_4.getSelectedItem().toString());
+				empWorkingTimeNotNull(comboBoxService.getSelectedItem().toString());
+				employees(comboBoxService.getSelectedItem().toString());
 			}
 		});
 		button_2.setBounds(354, 335, 102, 23);
@@ -874,15 +874,15 @@ public class BusinessOwnerPanel extends JFrame {
 		JButton button_3 = new JButton("Delete");
 		button_3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (comboBox_4.getSelectedIndex() == 0) {
+				if (comboBoxService.getSelectedIndex() == 0) {
 					JOptionPane.showMessageDialog(null,	"Please Select Service To Proceed");
 					return;
 				}
 				
-				String service = comboBox_4.getSelectedItem().toString();
+				String service = comboBoxService.getSelectedItem().toString();
 				String fileName = service + ".txt";
 				int row = -1;
-				row = table_3.getSelectedRow();
+				row = DurationTable.getSelectedRow();
 				if (row < 0) {
 					JOptionPane.showMessageDialog(null, "Please Select row to update to proceed");
 					return;
@@ -890,8 +890,8 @@ public class BusinessOwnerPanel extends JFrame {
 				int confirm = JOptionPane.showConfirmDialog(null, "You are deleting employee working time. Proceed", "Confirm", 2);
 				if(confirm == 0){
 					String emp,   activity;
-					emp = table_3.getModel().getValueAt(row, 0).toString();
-					activity = table_3.getModel().getValueAt(row, 1).toString();
+					emp = DurationTable.getModel().getValueAt(row, 0).toString();
+					activity = DurationTable.getModel().getValueAt(row, 1).toString();
 	
 					try {
 						ArrayList<String> list = new ArrayList<>();
@@ -935,8 +935,8 @@ public class BusinessOwnerPanel extends JFrame {
 						e1.printStackTrace();
 					}
 					JOptionPane.showMessageDialog(null, "Employee working time deleted successfully");
-					empWorkingTimeNotNull(comboBox_4.getSelectedItem().toString());
-					employees(comboBox_4.getSelectedItem().toString());
+					empWorkingTimeNotNull(comboBoxService.getSelectedItem().toString());
+					employees(comboBoxService.getSelectedItem().toString());
 				}
 			}
 		});
@@ -947,27 +947,27 @@ public class BusinessOwnerPanel extends JFrame {
 		scrollPane_6.setBounds(10, 73, 527, 232);
 		updateEmpWaorkingTime.add(scrollPane_6);
 
-		table_3 = new JTable();
-		table_3.addMouseListener(new MouseAdapter() {
+		DurationTable = new JTable();
+		DurationTable.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				int row = table_3.getSelectedRow();
-				String employee = table_3.getModel().getValueAt(row, 0)
+				int row = DurationTable.getSelectedRow();
+				String employee = DurationTable.getModel().getValueAt(row, 0)
 						.toString();
-				String startTime = table_3.getModel().getValueAt(row, 2)
+				String startTime = DurationTable.getModel().getValueAt(row, 2)
 						.toString();
-				String endTime = table_3.getModel().getValueAt(row, 3)
+				String endTime = DurationTable.getModel().getValueAt(row, 3)
 						.toString();
-				String duration = table_3.getModel().getValueAt(row, 4)
+				String duration = DurationTable.getModel().getValueAt(row, 4)
 						.toString()+" min";
-				comboBox_5.setSelectedItem(employee);
-				comboBox_10.setSelectedItem(startTime);
-				comboBox_11.setSelectedItem(endTime);
-				comboBox_12.setSelectedItem(duration);
+				EmployeeComboBox.setSelectedItem(employee);
+				StarTimeComboBox1.setSelectedItem(startTime);
+				EndTimeComboBox1.setSelectedItem(endTime);
+				DurationComboBox1.setSelectedItem(duration);
 			}
 		});
-		table_3.setRowHeight(25);
-		table_3.setModel(new DefaultTableModel(new Object[][] {}, new String[] {
+		DurationTable.setRowHeight(25);
+		DurationTable.setModel(new DefaultTableModel(new Object[][] {}, new String[] {
 				"Employee Name", "Activity", "Start Time", "End Time" , "Duration" }) {
 			boolean[] columnEditables = new boolean[] { false, false, false, false, false };
 
@@ -982,7 +982,7 @@ public class BusinessOwnerPanel extends JFrame {
 				return columnTypes[columnIndex];
 			}
 		});
-		scrollPane_6.setViewportView(table_3);
+		scrollPane_6.setViewportView(DurationTable);
 
 		JPanel panel_9 = new JPanel();
 		panel_9.setBackground(Color.LIGHT_GRAY);
@@ -993,8 +993,8 @@ public class BusinessOwnerPanel extends JFrame {
 				"Update Employee Working Time");
 		panel_9.add(lblUpdateEmployeeWorking);
 		
-		comboBox_10 = new JComboBox();
-		comboBox_10.setModel(new DefaultComboBoxModel(new String[] {
+		StarTimeComboBox1 = new JComboBox();
+		StarTimeComboBox1.setModel(new DefaultComboBoxModel(new String[] {
 				"Start Time", "00:00", "00:30", "01:00", "01:30", "02:00",
 				"02:30", "03:00", "03:30", "04:00", "04:30", "05:00", "05:30",
 				"06:00", "06:30", "07:00", "07:30", "08:00", "08:30", "09:00",
@@ -1003,11 +1003,11 @@ public class BusinessOwnerPanel extends JFrame {
 				"16:30", "17:00", "17:30", "18:00", "18:30", "19:00", "19:30",
 				"20:00", "20:30", "21:00", "21:30", "22:00", "22:30", "23:00",
 				"23:30" }));
-		comboBox_10.setBounds(24, 358, 129, 20);
-		updateEmpWaorkingTime.add(comboBox_10);
+		StarTimeComboBox1.setBounds(24, 358, 129, 20);
+		updateEmpWaorkingTime.add(StarTimeComboBox1);
 		
-		comboBox_11 = new JComboBox();
-		comboBox_11.setModel(new DefaultComboBoxModel(new String[] {
+		EndTimeComboBox1 = new JComboBox();
+		EndTimeComboBox1.setModel(new DefaultComboBoxModel(new String[] {
 				"Start Time", "00:00", "00:30", "01:00", "01:30", "02:00",
 				"02:30", "03:00", "03:30", "04:00", "04:30", "05:00", "05:30",
 				"06:00", "06:30", "07:00", "07:30", "08:00", "08:30", "09:00",
@@ -1016,23 +1016,23 @@ public class BusinessOwnerPanel extends JFrame {
 				"16:30", "17:00", "17:30", "18:00", "18:30", "19:00", "19:30",
 				"20:00", "20:30", "21:00", "21:30", "22:00", "22:30", "23:00",
 				"23:30" }));
-		comboBox_11.setBounds(205, 358, 115, 20);
-		updateEmpWaorkingTime.add(comboBox_11);
+		EndTimeComboBox1.setBounds(205, 358, 115, 20);
+		updateEmpWaorkingTime.add(EndTimeComboBox1);
 		
-		comboBox_12 = new JComboBox();
-		comboBox_12.setModel(new DefaultComboBoxModel(new String[] {"Select duration", "30 min", "60 min"}));
-		comboBox_12.setBounds(205, 387, 115, 20);
-		updateEmpWaorkingTime.add(comboBox_12);
+		DurationComboBox1 = new JComboBox();
+		DurationComboBox1.setModel(new DefaultComboBoxModel(new String[] {"Select duration", "30 min", "60 min"}));
+		DurationComboBox1.setBounds(205, 387, 115, 20);
+		updateEmpWaorkingTime.add(DurationComboBox1);
 		
 		JLabel lblDuration_1 = new JLabel("Duration");
 		lblDuration_1.setBounds(24, 390, 115, 14);
 		updateEmpWaorkingTime.add(lblDuration_1);
 
-		empWaorkingTime = new JPanel();
-		empWaorkingTime.setVisible(false);
-		empWaorkingTime.setBounds(0, 0, 557, 396);
-		empWaorkingTime.setLayout(null);
-		panel_2.add(empWaorkingTime);
+		empWorkingTime = new JPanel();
+		empWorkingTime.setVisible(false);
+		empWorkingTime.setBounds(0, 0, 557, 396);
+		empWorkingTime.setLayout(null);
+		panel_2.add(empWorkingTime);
 
 		JButton btnSave_1 = new JButton("Save");
 		btnSave_1.addActionListener(new ActionListener() {
@@ -1048,24 +1048,24 @@ public class BusinessOwnerPanel extends JFrame {
 							"Please select activity");
 					return;
 				}
-				if (comboBox_16.getSelectedIndex() == 0) {
+				if (StartTimeComboBox.getSelectedIndex() == 0) {
 					JOptionPane.showMessageDialog(null,
 							"Please select starting time");
 					return;
 				}
-				if (comboBox_17.getSelectedIndex() == 0) {
+				if (EndTimeComboBox.getSelectedIndex() == 0) {
 					JOptionPane.showMessageDialog(null,
 							"Please select ending time");
 					return;
 				}
-				if (comboBox_9.getSelectedIndex() == 0) {
+				if (SelectDurationComboBox.getSelectedIndex() == 0) {
 					JOptionPane.showMessageDialog(null,
 							"Please select duration");
 					return;
 				}
 				
-				if (comboBox_3.getSelectedItem().toString().trim().equals("")
-						|| comboBox_3.getSelectedItem().toString().trim()
+				if (empWorkingTimeComboBox.getSelectedItem().toString().trim().equals("")
+						|| empWorkingTimeComboBox.getSelectedItem().toString().trim()
 								.equals("null")) {
 					JOptionPane.showMessageDialog(null,
 							"Enter Employee name to proceed");
@@ -1073,14 +1073,14 @@ public class BusinessOwnerPanel extends JFrame {
 				}
 				String service = comboBox.getSelectedItem().toString();
 				String activity = comboBox_13.getSelectedItem().toString();
-				String startTime = comboBox_16.getSelectedItem().toString();
-				String endTime = comboBox_17.getSelectedItem().toString();
-				String employee = comboBox_3.getSelectedItem().toString();
+				String startTime = StartTimeComboBox.getSelectedItem().toString();
+				String endTime = EndTimeComboBox.getSelectedItem().toString();
+				String employee = empWorkingTimeComboBox.getSelectedItem().toString();
 				
 				int duration = 0;
-				if(comboBox_9.getSelectedIndex() == 1){
+				if(SelectDurationComboBox.getSelectedIndex() == 1){
 					duration = 30;
-				}if(comboBox_9.getSelectedIndex() == 2){
+				}if(SelectDurationComboBox.getSelectedIndex() == 2){
 					duration = 60;
 				}
 
@@ -1135,21 +1135,21 @@ public class BusinessOwnerPanel extends JFrame {
 			}
 		});
 		btnSave_1.setBounds(250, 348, 102, 23);
-		empWaorkingTime.add(btnSave_1);
+		empWorkingTime.add(btnSave_1);
 
 		JLabel lblEmployeeName = new JLabel("Employee Name");
 		lblEmployeeName.setBounds(22, 303, 125, 14);
-		empWaorkingTime.add(lblEmployeeName);
+		empWorkingTime.add(lblEmployeeName);
 
-		comboBox_3 = new JComboBox();
-		comboBox_3.setEditable(true);
-		comboBox_3.setBounds(161, 300, 191, 20);
-		empWaorkingTime.add(comboBox_3);
+		empWorkingTimeComboBox = new JComboBox();
+		empWorkingTimeComboBox.setEditable(true);
+		empWorkingTimeComboBox.setBounds(161, 300, 191, 20);
+		empWorkingTime.add(empWorkingTimeComboBox);
 
 		JPanel panel_10 = new JPanel();
 		panel_10.setBackground(Color.LIGHT_GRAY);
 		panel_10.setBounds(0, 0, 557, 24);
-		empWaorkingTime.add(panel_10);
+		empWorkingTime.add(panel_10);
 
 		JLabel lblAssignEmployeeWorking = new JLabel(
 				"Assign Employee Working Time");
@@ -1169,28 +1169,28 @@ public class BusinessOwnerPanel extends JFrame {
 			}
 		});
 		comboBox.setBounds(161, 59, 191, 24);
-		empWaorkingTime.add(comboBox);
+		empWorkingTime.add(comboBox);
 
 		JLabel label = new JLabel("Select Service");
 		label.setBounds(22, 64, 116, 14);
-		empWaorkingTime.add(label);
+		empWorkingTime.add(label);
 
 		JLabel label_8 = new JLabel("Select Activity");
 		label_8.setBounds(22, 106, 116, 14);
-		empWaorkingTime.add(label_8);
+		empWorkingTime.add(label_8);
 
 		comboBox_13 = new JComboBox();
 		comboBox_13.setModel(new DefaultComboBoxModel(
 				new String[] { "Select activity" }));
 		comboBox_13.setBounds(161, 101, 191, 24);
-		empWaorkingTime.add(comboBox_13);
+		empWorkingTime.add(comboBox_13);
 
 		JLabel lblStartinftime = new JLabel("Starting Time");
 		lblStartinftime.setBounds(22, 158, 116, 14);
-		empWaorkingTime.add(lblStartinftime);
+		empWorkingTime.add(lblStartinftime);
 
-		comboBox_16 = new JComboBox();
-		comboBox_16.setModel(new DefaultComboBoxModel(new String[] {
+		StartTimeComboBox = new JComboBox();
+		StartTimeComboBox.setModel(new DefaultComboBoxModel(new String[] {
 				"Start Time", "00:00", "00:30", "01:00", "01:30", "02:00",
 				"02:30", "03:00", "03:30", "04:00", "04:30", "05:00", "05:30",
 				"06:00", "06:30", "07:00", "07:30", "08:00", "08:30", "09:00",
@@ -1199,11 +1199,11 @@ public class BusinessOwnerPanel extends JFrame {
 				"16:30", "17:00", "17:30", "18:00", "18:30", "19:00", "19:30",
 				"20:00", "20:30", "21:00", "21:30", "22:00", "22:30", "23:00",
 				"23:30" }));
-		comboBox_16.setBounds(161, 155, 191, 24);
-		empWaorkingTime.add(comboBox_16);
+		StartTimeComboBox.setBounds(161, 155, 191, 24);
+		empWorkingTime.add(StartTimeComboBox);
 
-		comboBox_17 = new JComboBox();
-		comboBox_17.setModel(new DefaultComboBoxModel(new String[] {
+		EndTimeComboBox = new JComboBox();
+		EndTimeComboBox.setModel(new DefaultComboBoxModel(new String[] {
 				"Start Time", "00:00", "00:30", "01:00", "01:30", "02:00",
 				"02:30", "03:00", "03:30", "04:00", "04:30", "05:00", "05:30",
 				"06:00", "06:30", "07:00", "07:30", "08:00", "08:30", "09:00",
@@ -1212,21 +1212,21 @@ public class BusinessOwnerPanel extends JFrame {
 				"16:30", "17:00", "17:30", "18:00", "18:30", "19:00", "19:30",
 				"20:00", "20:30", "21:00", "21:30", "22:00", "22:30", "23:00",
 				"23:30" }));
-		comboBox_17.setBounds(161, 209, 191, 24);
-		empWaorkingTime.add(comboBox_17);
+		EndTimeComboBox.setBounds(161, 209, 191, 24);
+		empWorkingTime.add(EndTimeComboBox);
 
 		JLabel lblEndingTime = new JLabel("Ending time");
 		lblEndingTime.setBounds(22, 214, 132, 14);
-		empWaorkingTime.add(lblEndingTime);
+		empWorkingTime.add(lblEndingTime);
 		
 		JLabel lblDuration = new JLabel("Duration");
 		lblDuration.setBounds(22, 258, 132, 14);
-		empWaorkingTime.add(lblDuration);
+		empWorkingTime.add(lblDuration);
 		
-		comboBox_9 = new JComboBox();
-		comboBox_9.setModel(new DefaultComboBoxModel(new String[] {"Select duration", "30 min", "60 min"}));
-		comboBox_9.setBounds(161, 253, 191, 24);
-		empWaorkingTime.add(comboBox_9);
+		SelectDurationComboBox = new JComboBox();
+		SelectDurationComboBox.setModel(new DefaultComboBoxModel(new String[] {"Select duration", "30 min", "60 min"}));
+		SelectDurationComboBox.setBounds(161, 253, 191, 24);
+		empWorkingTime.add(SelectDurationComboBox);
 
 		bookForCustomer = new JPanel();
 		bookForCustomer.setVisible(false);
@@ -1340,26 +1340,26 @@ public class BusinessOwnerPanel extends JFrame {
 				String service = selectService.getSelectedItem().toString();
 				String fileName = service + ".txt";
 				int row = 0;
-				int rows = table_4.getRowCount();
+				int rows = EmployeeWorkingTimeTable.getRowCount();
 				String selected = "";
 				for (row = 0; row < rows; row++) {
 					try {
-						boolean status = (boolean) table_4.getModel()
+						boolean status = (boolean) EmployeeWorkingTimeTable.getModel()
 								.getValueAt(row, 5);
 						if (status == true) {
-							selected = table_4.getModel().getValueAt(row, 0)
+							selected = EmployeeWorkingTimeTable.getModel().getValueAt(row, 0)
 									.toString()
 									+ ","
-									+ table_4.getModel().getValueAt(row, 1)
+									+ EmployeeWorkingTimeTable.getModel().getValueAt(row, 1)
 											.toString()
 									+ ","
-									+ table_4.getModel().getValueAt(row, 2)
+									+ EmployeeWorkingTimeTable.getModel().getValueAt(row, 2)
 											.toString()
 									+ ","
-									+ table_4.getModel().getValueAt(row, 3)
+									+ EmployeeWorkingTimeTable.getModel().getValueAt(row, 3)
 											.toString()
 									+ ","
-									+ table_4.getModel().getValueAt(row, 4)
+									+ EmployeeWorkingTimeTable.getModel().getValueAt(row, 4)
 											.toString();
 							String recs[];
 							while (true) {
@@ -1439,8 +1439,8 @@ public class BusinessOwnerPanel extends JFrame {
 		scrollPane_7.setBounds(10, 148, 537, 223);
 		bookForCustomer.add(scrollPane_7);
 
-		table_4 = new JTable();
-		table_4.setModel(new DefaultTableModel(new Object[][] {}, new String[] {
+		EmployeeWorkingTimeTable = new JTable();
+		EmployeeWorkingTimeTable.setModel(new DefaultTableModel(new Object[][] {}, new String[] {
 				"Employee", "Day", "Service", "Time", "Availability", "Book" }) {
 			Class[] columnTypes = new Class[] { Object.class, Object.class,
 					Object.class, Object.class, Object.class, Boolean.class };
@@ -1457,15 +1457,15 @@ public class BusinessOwnerPanel extends JFrame {
 			}
 		});
 
-		table_4.getColumnModel().getColumn(0).setPreferredWidth(150);
-		table_4.getColumnModel().getColumn(1).setPreferredWidth(100);
-		table_4.getColumnModel().getColumn(2).setPreferredWidth(100);
-		table_4.getColumnModel().getColumn(3).setPreferredWidth(80);
-		table_4.getColumnModel().getColumn(4).setPreferredWidth(70);
-		table_4.getColumnModel().getColumn(5).setPreferredWidth(50);
-		table_4.setRowHeight(25);
+		EmployeeWorkingTimeTable.getColumnModel().getColumn(0).setPreferredWidth(150);
+		EmployeeWorkingTimeTable.getColumnModel().getColumn(1).setPreferredWidth(100);
+		EmployeeWorkingTimeTable.getColumnModel().getColumn(2).setPreferredWidth(100);
+		EmployeeWorkingTimeTable.getColumnModel().getColumn(3).setPreferredWidth(80);
+		EmployeeWorkingTimeTable.getColumnModel().getColumn(4).setPreferredWidth(70);
+		EmployeeWorkingTimeTable.getColumnModel().getColumn(5).setPreferredWidth(50);
+		EmployeeWorkingTimeTable.setRowHeight(25);
 
-		scrollPane_7.setViewportView(table_4);
+		scrollPane_7.setViewportView(EmployeeWorkingTimeTable);
 
 		JPanel panel_11 = new JPanel();
 		panel_11.setBackground(Color.LIGHT_GRAY);
@@ -1490,9 +1490,9 @@ public class BusinessOwnerPanel extends JFrame {
 				"Add Service Activities Here");
 		panel_13.add(lblAddServiceActivitieshere);
 
-		comboBox_8 = new JComboBox();
-		comboBox_8.setBounds(173, 75, 185, 24);
-		addActivity.add(comboBox_8);
+		AddActivityComboBox = new JComboBox();
+		AddActivityComboBox.setBounds(173, 75, 185, 24);
+		addActivity.add(AddActivityComboBox);
 
 		JLabel lblSelectService_3 = new JLabel("Select Service");
 		lblSelectService_3.setBounds(27, 80, 136, 14);
@@ -1506,10 +1506,10 @@ public class BusinessOwnerPanel extends JFrame {
 		lblActivityName.setBounds(27, 163, 136, 14);
 		addActivity.add(lblActivityName);
 
-		textField_6 = new JTextField();
-		textField_6.setBounds(173, 127, 185, 20);
-		addActivity.add(textField_6);
-		textField_6.setColumns(10);
+		AddActivityNameTextField = new JTextField();
+		AddActivityNameTextField.setBounds(173, 127, 185, 20);
+		addActivity.add(AddActivityNameTextField);
+		AddActivityNameTextField.setColumns(10);
 
 		JScrollPane scrollPane_8 = new JScrollPane();
 		scrollPane_8.setBounds(173, 158, 185, 144);
@@ -1521,15 +1521,15 @@ public class BusinessOwnerPanel extends JFrame {
 		JButton btnSaveActivities = new JButton("Save Activities");
 		btnSaveActivities.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (comboBox_8.getSelectedIndex() == 0) {
+				if (AddActivityComboBox.getSelectedIndex() == 0) {
 					JOptionPane.showMessageDialog(null,
 							"Select Service Name to proceed");
 					return;
 				}
 
-				String service = comboBox_8.getSelectedItem().toString();
+				String service = AddActivityComboBox.getSelectedItem().toString();
 				String fileName = service + ".txt";
-				String num = textField_6.getText().trim();
+				String num = AddActivityNameTextField.getText().trim();
 				String activities = textArea.getText().trim();
 
 				if (num.equals("") || activities.equals("")) {
@@ -1616,7 +1616,7 @@ public class BusinessOwnerPanel extends JFrame {
 			br.close();
 			int i;
 
-			DefaultTableModel model = (DefaultTableModel) table_1.getModel();
+			DefaultTableModel model = (DefaultTableModel) empTable.getModel();
 			model.setRowCount(0);
 			Object[] rowData = new Object[5];
 			for (i = 0; i < list.size(); i++) {
@@ -1670,25 +1670,25 @@ public class BusinessOwnerPanel extends JFrame {
 				services.add(line);
 			}
 			servicedeleteCombo.removeAllItems();
-			comboBox_1.removeAllItems();
-			comboBox_4.removeAllItems();
+			EmpAvailableComboBox.removeAllItems();
+			comboBoxService.removeAllItems();
 			selectService.removeAllItems();
-			comboBox_6.removeAllItems();
-			comboBox_8.removeAllItems();
+			ComboBoxServiceName.removeAllItems();
+			AddActivityComboBox.removeAllItems();
 			comboBox.removeAllItems();
 			servicedeleteCombo.addItem("Select Service");
-			comboBox_4.addItem("Select Services");
+			comboBoxService.addItem("Select Services");
 			selectService.addItem("Select Services");
-			comboBox_6.addItem("Select Services");
-			comboBox_8.addItem("Select Services");
+			ComboBoxServiceName.addItem("Select Services");
+			AddActivityComboBox.addItem("Select Services");
 			comboBox.addItem("Select Services");
 			for (int a = 0; a < services.size(); a++) {
 				servicedeleteCombo.addItem(services.get(a));
-				comboBox_1.addItem(services.get(a));
-				comboBox_4.addItem(services.get(a));
+				EmpAvailableComboBox.addItem(services.get(a));
+				comboBoxService.addItem(services.get(a));
 				selectService.addItem(services.get(a));
-				comboBox_6.addItem(services.get(a));
-				comboBox_8.addItem(services.get(a));
+				ComboBoxServiceName.addItem(services.get(a));
+				AddActivityComboBox.addItem(services.get(a));
 				comboBox.addItem(services.get(a));
 			}
 
@@ -1712,11 +1712,11 @@ public class BusinessOwnerPanel extends JFrame {
 					employeees.add(recs[0]);
 				}
 			}
-			comboBox_5.removeAllItems();
-			comboBox_3.removeAllItems();
+			EmployeeComboBox.removeAllItems();
+			empWorkingTimeComboBox.removeAllItems();
 			for (int a = 0; a < employeees.size(); a++) {
-				comboBox_3.addItem(employeees.get(a));
-				comboBox_5.addItem(employeees.get(a));
+				empWorkingTimeComboBox.addItem(employeees.get(a));
+				EmployeeComboBox.addItem(employeees.get(a));
 			}
 
 		} catch (IOException e) {
@@ -1743,7 +1743,7 @@ public class BusinessOwnerPanel extends JFrame {
 			br.close();
 			int i;
 
-			DefaultTableModel model = (DefaultTableModel) table_1.getModel();
+			DefaultTableModel model = (DefaultTableModel) empTable.getModel();
 			model.setRowCount(0);
 			Object[] rowData = new Object[5];
 			for (i = 0; i < list.size(); i++) {
@@ -1779,7 +1779,7 @@ public class BusinessOwnerPanel extends JFrame {
 			br.close();
 			int i;
 
-			DefaultTableModel model = (DefaultTableModel) table_3.getModel();
+			DefaultTableModel model = (DefaultTableModel) DurationTable.getModel();
 			model.setRowCount(0);
 			Object[] rowData = new Object[5];
 			for (i = 0; i < list.size(); i++) {
@@ -1803,7 +1803,7 @@ public class BusinessOwnerPanel extends JFrame {
 		newservice.setVisible(false);
 		deleteservice.setVisible(false);
 		empAvailable.setVisible(false);
-		empWaorkingTime.setVisible(false);
+		empWorkingTime.setVisible(false);
 		updateEmpWaorkingTime.setVisible(false);
 		bookForCustomer.setVisible(false);
 		addActivity.setVisible(false);
@@ -1879,7 +1879,7 @@ public class BusinessOwnerPanel extends JFrame {
 			br.close();
 			int i;
 
-			DefaultTableModel model = (DefaultTableModel) table_4.getModel();
+			DefaultTableModel model = (DefaultTableModel) EmployeeWorkingTimeTable.getModel();
 			model.setRowCount(0);
 			Object[] rowData = new Object[6];
 			String recs[] = null;

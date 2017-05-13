@@ -24,9 +24,9 @@ import java.util.ArrayList;
 public class BusinessName extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
-	private JTextField textField;
-	private JTextField textField_1;
-	private JTextField textField_2;
+	private JTextField BusinessNameTextField;
+	private JTextField BusLocationTextField;
+	private JTextField BusinessTelTextFied;
 	String[] userData;
 	
 	public BusinessName(JFrame frame, String[] userData) {
@@ -53,20 +53,20 @@ public class BusinessName extends JDialog {
 		lblBusinessTelephone.setBounds(46, 141, 151, 25);
 		contentPanel.add(lblBusinessTelephone);
 		
-		textField = new JTextField();
-		textField.setBounds(164, 67, 217, 20);
-		contentPanel.add(textField);
-		textField.setColumns(10);
+		BusinessNameTextField = new JTextField();
+		BusinessNameTextField.setBounds(164, 67, 217, 20);
+		contentPanel.add(BusinessNameTextField);
+		BusinessNameTextField.setColumns(10);
 		
-		textField_1 = new JTextField();
-		textField_1.setColumns(10);
-		textField_1.setBounds(164, 107, 217, 20);
-		contentPanel.add(textField_1);
+		BusLocationTextField = new JTextField();
+		BusLocationTextField.setColumns(10);
+		BusLocationTextField.setBounds(164, 107, 217, 20);
+		contentPanel.add(BusLocationTextField);
 		
-		textField_2 = new JTextField();
-		textField_2.setColumns(10);
-		textField_2.setBounds(164, 143, 217, 20);
-		contentPanel.add(textField_2);
+		BusinessTelTextFied = new JTextField();
+		BusinessTelTextFied.setColumns(10);
+		BusinessTelTextFied.setBounds(164, 143, 217, 20);
+		contentPanel.add(BusinessTelTextFied);
 		{
 			JPanel buttonPane = new JPanel();
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
@@ -76,9 +76,9 @@ public class BusinessName extends JDialog {
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 
-						String businessName = textField.getText().trim();
-						String businessLocation = textField_1.getText().trim();
-						String businessTelephone = textField_2.getText().trim();
+						String businessName = BusinessNameTextField.getText().trim();
+						String businessLocation = BusLocationTextField.getText().trim();
+						String businessTelephone = BusinessTelTextFied.getText().trim();
 						String businessOwner = userData[4];
 						String details = businessName+","+businessLocation+","+businessTelephone+","+businessOwner;
 						if(businessName.equals("") || businessLocation.equals("") || businessTelephone.equals("")){
@@ -145,9 +145,9 @@ public class BusinessName extends JDialog {
 	private void fillBusinessData(){
 		String[] businessData = getBusinessDetails(userData);
 		if(businessData != null){
-			textField.setText(businessData[0]);
-			textField_1.setText(businessData[1]);
-			textField_2.setText(businessData[2]);
+			BusinessNameTextField.setText(businessData[0]);
+			BusLocationTextField.setText(businessData[1]);
+			BusinessTelTextFied.setText(businessData[2]);
 		}
 	}
 	public String[] getBusinessDetails(String[] userData){
