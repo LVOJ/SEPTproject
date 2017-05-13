@@ -1,10 +1,73 @@
-package CommandLine;
+package utility;
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.swing.JOptionPane;
+
+import customer.CustomerPanelGUI;
 
 public class Utils {
+	private static Logger logger = Logger.getLogger(CustomerPanelGUI.class.getName());
+	public static boolean validateInput(String textEntered, String regex, String message){
+    	boolean validInput = false;
+    	if (textEntered.matches(regex)){
+    		validInput = true;
+    	}else {
+    		JOptionPane.showMessageDialog(null, message, "Invalid Input!",
+    			    JOptionPane.WARNING_MESSAGE);
+    	}
+		
+		return validInput;
+	}
+
+	public static boolean validateDay(String selectDay, String message){
+		boolean validDay = false;
+        switch(selectDay.toLowerCase()){
+            case "monday":
+            case "tuesday":
+            case "wednesday":
+            case "thursday":
+            case "friday":
+            	validDay = true;
+            	break;
+        	default:
+        		JOptionPane.showMessageDialog(null, message, "Invalid Input!",
+        			    JOptionPane.WARNING_MESSAGE);
+        		break;
+        }
+		return validDay;
+	}
+	public static boolean validateUsername(String username){
+		String fileName = "customerinfo.txt";
+		boolean uniqueUsername = false;
+		String registeredUsername = "";
+		BufferedReader br;
+		try {
+			br = new BufferedReader(new FileReader(fileName));
+			String line = "";
+			String[] recs = null;
+			while ((line = br.readLine()) != null) {
+				recs = line.split(",");
+				registeredUsername = recs[4];
+				registeredUsername.toLowerCase();
+				if (registeredUsername.equals(username.toLowerCase())){
+					return uniqueUsername;
+				}
+			}
+			uniqueUsername = true;
+			
+		} catch (IOException e) {
+			logger.log(Level.SEVERE, e.getMessage());
+		}
+		
+		return uniqueUsername;
+
+	}
 	private static Scanner in=new Scanner(System.in);           //scanner object to input from user in console
 	public static String validateInput(String message, String regex){
 	    	boolean validInput = false;

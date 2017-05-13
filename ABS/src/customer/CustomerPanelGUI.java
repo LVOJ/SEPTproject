@@ -1,4 +1,4 @@
-package BookingSystemGUI;
+package customer;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
@@ -31,11 +31,14 @@ import java.util.HashMap;
 import javax.swing.JTable;
 import javax.swing.JScrollPane;
 import javax.swing.table.DefaultTableModel;
+
+import account.Login;
+import utility.Utils;
+
 import javax.swing.JComboBox;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import CommandLine.Utils;
 
 import javax.swing.JButton;
 import javax.swing.DefaultComboBoxModel;

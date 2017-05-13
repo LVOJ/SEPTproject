@@ -1,4 +1,4 @@
-package BookingSystemGUI;
+package account;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
@@ -6,6 +6,11 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import bookingSystemGUI.Main;
+import business.BusinessOwnerPanel;
+import customer.CustomerPanelGUI;
+
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
@@ -36,24 +41,7 @@ public class Login extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public static void main(String[] args) {
-		try {
-			logger.addHandler(new FileHandler("Login.log"));
-		} catch (IOException e3) {
-			System.out.println("Unable to create logger to write output to file");
-		}
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					Main frame = new Main();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					logger.log(Level.SEVERE, e.getMessage());
-					//
-				}
-			}
-		});
-	}
+
 	public Login() {
 		setResizable(false);
 		setTitle("Login");

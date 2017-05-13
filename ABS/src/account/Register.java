@@ -1,4 +1,4 @@
-package BookingSystemGUI;
+package account;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
@@ -6,13 +6,16 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import bookingSystemGUI.Main;
+import customer.CustomerPanelGUI;
+import utility.Utils;
+
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.JPasswordField;
 import javax.swing.JButton;
-
-import CommandLine.Utils;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -35,25 +38,6 @@ public class Register extends JFrame {
 	private JTextField textField_4;
 	private JPasswordField passwordField;
 	private JPasswordField verifyPasswordField;
-
-	public static void main(String[] args) {
-		try {
-			logger.addHandler(new FileHandler("Register.log"));
-		} catch (IOException e3) {
-			System.out.println("Unable to create logger to write output to file");
-		}
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					Main frame = new Main();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					logger.log(Level.SEVERE, e.getMessage());
-					
-				}
-			}
-		});
-	}
 	/**
 	 * Create the frame.
 	 */
@@ -144,32 +128,32 @@ public class Register extends JFrame {
 		        	String passwordInput = String.valueOf(password);
 		        	char[] verifyPassword = verifyPasswordField.getPassword();
 		        	
-		        	if (!Utility.validateInput(firstName, "^[A-Za-z]+$", "Please enter a valid name i.e. Tom")){
+		        	if (!Utils.validateInput(firstName, "^[A-Za-z]+$", "Please enter a valid name i.e. Tom")){
 		        		textField.grabFocus();
 		        		return;
 		        	}
-		        	if(!Utility.validateInput(lastName, "^[A-Za-z]+$", "Please enter a valid name i.e. Smith")){
+		        	if(!Utils.validateInput(lastName, "^[A-Za-z]+$", "Please enter a valid name i.e. Smith")){
 		        		textField_1.grabFocus();
 		        		return;
 		        	}
-		        	if(!Utility.validateInput(phone, "^[0-9]{10}$", "Please enter a 10-digit Phone Number i.e 0412345678")){
+		        	if(!Utils.validateInput(phone, "^[0-9]{10}$", "Please enter a 10-digit Phone Number i.e 0412345678")){
 		        		textField_2.grabFocus();
 		        		return;
 		        	}
-		        	if(!Utility.validateInput(address, "^[\\d]+([.]|[-]|\\s)[A-Za-z]*([.]|[-]|\\s)[A-Za-z]*$", "Please enter a valid address i.e. 1 Sesame St")){
+		        	if(!Utils.validateInput(address, "^[\\d]+([.]|[-]|\\s)[A-Za-z]*([.]|[-]|\\s)[A-Za-z]*$", "Please enter a valid address i.e. 1 Sesame St")){
 		        		textField_3.grabFocus();
 		        		return;
 		        	}
-		        	if(!Utility.validateInput(username, "^[\\w]{1,15}$", "Please enter a valid username (Max length: 15)")){
+		        	if(!Utils.validateInput(username, "^[\\w]{1,15}$", "Please enter a valid username (Max length: 15)")){
 		        		textField_4.grabFocus();
 		        		return;
 		        	}
-		        	if(!Utility.validateUsername(username)){
+		        	if(!Utils.validateUsername(username)){
 		        		JOptionPane.showMessageDialog(null, "Please enter a unique Username.", "Username already exists.", JOptionPane.WARNING_MESSAGE);
 		        		textField_4.grabFocus();
 		        		return;
 		        	}
-		        	if(!Utility.validateInput(passwordInput, "^[\\w]{1,15}$", "Please enter a valid username (Max length: 15)")){
+		        	if(!Utils.validateInput(passwordInput, "^[\\w]{1,15}$", "Please enter a valid username (Max length: 15)")){
 		        		passwordField.grabFocus();
 		        		return;
 		        	}

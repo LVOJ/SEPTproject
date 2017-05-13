@@ -1,4 +1,4 @@
-package BookingSystemGUI;
+package business;
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
@@ -44,7 +44,8 @@ import javax.swing.JTable;
 import javax.swing.JScrollPane;
 import javax.swing.table.DefaultTableModel;
 
-import CommandLine.Utils;
+import account.Login;
+import utility.Utils;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -336,12 +337,12 @@ public class BusinessOwnerPanel extends JFrame {
 				try {
 					
 					for (int i = 0; i < activitiesArr.length; i++) {
-						if (!Utility.validateInput(activitiesArr[i], "([\\w][,]*)+", "Please enter an activity.")) {
+						if (!Utils.validateInput(activitiesArr[i], "([\\w][,]*)+", "Please enter an activity.")) {
 							textField_3.grabFocus();
 							return;
 						}
 					}
-					if (!Utility.validateInput(num, "[\\d]+", "Please enter number of activities")) {
+					if (!Utils.validateInput(num, "[\\d]+", "Please enter number of activities")) {
 						textField_1.grabFocus();
 						return;
 					}
@@ -503,7 +504,7 @@ public class BusinessOwnerPanel extends JFrame {
 				}
 				String[] workingtimesArr = {ss+","+ee};
 				
-					//if (!Utility.validateInput(workingtimes, "^([\\d]{2}[:][\\d]{2}[,][\\d]{2}[:][\\d]{2}[,]*[;])+$",
+					//if (!Utils.validateInput(workingtimes, "^([\\d]{2}[:][\\d]{2}[,][\\d]{2}[:][\\d]{2}[,]*[;])+$",
 						//	"Please enter a time i.e. 06:00,09:00; Start Time:End Time;")) {
 						//textField_4.grabFocus();
 						//return;
@@ -698,7 +699,7 @@ public class BusinessOwnerPanel extends JFrame {
 					JOptionPane.showMessageDialog(null, "Enter Service Name");
 					return;
 				}
-				if (!Utility.validateInput(serviceName, "^[A-Za-z]+$",
+				if (!Utils.validateInput(serviceName, "^[A-Za-z]+$",
 						"Please enter valid service name e.g. hairdressing")) {
 					textField_5.grabFocus();
 					return;
@@ -1114,7 +1115,7 @@ public class BusinessOwnerPanel extends JFrame {
 					return;
 				}
 				String employeeName = comboBox_3.getSelectedItem().toString().trim();
-				if (!Utility.validateInput(employeeName, "[A-Za-z]+", "Please enter a valid name")) {
+				if (!Utils.validateInput(employeeName, "[A-Za-z]+", "Please enter a valid name")) {
 					comboBox.grabFocus();
 					return;
 				}
@@ -1305,7 +1306,7 @@ public class BusinessOwnerPanel extends JFrame {
 					return;
 				}
 				String customerName = selectCustomer.getText().trim();
-				if (!Utility.validateInput(customerName, "^[A-Za-z]+$", "Please enter a valid name i.e. Jim")) {
+				if (!Utils.validateInput(customerName, "^[A-Za-z]+$", "Please enter a valid name i.e. Jim")) {
 					selectCustomer.grabFocus();
 					return;
 				}
