@@ -31,11 +31,11 @@ public class Register extends JFrame {
 	private static Logger logger = Logger.getLogger(CustomerPanelGUI.class.getName());
 
 	private JPanel contentPane;
-	private JTextField textField;
-	private JTextField textField_1;
-	private JTextField textField_2;
-	private JTextField textField_3;
-	private JTextField textField_4;
+	private JTextField firstNameTextField;
+	private JTextField lastNameTextField;
+	private JTextField phoneTextField;
+	private JTextField addressTextField;
+	private JTextField usernameTextField;
 	private JPasswordField passwordField;
 	private JPasswordField verifyPasswordField;
 	/**
@@ -80,30 +80,30 @@ public class Register extends JFrame {
 		lblConfirmPassword.setBounds(63, 235, 120, 14);
 		contentPane.add(lblConfirmPassword);
 		
-		textField = new JTextField();
-		textField.setBounds(183, 20, 138, 20);
-		contentPane.add(textField);
-		textField.setColumns(10);
+		firstNameTextField = new JTextField();
+		firstNameTextField.setBounds(183, 20, 138, 20);
+		contentPane.add(firstNameTextField);
+		firstNameTextField.setColumns(10);
 		
-		textField_1 = new JTextField();
-		textField_1.setColumns(10);
-		textField_1.setBounds(183, 62, 138, 20);
-		contentPane.add(textField_1);
+		lastNameTextField = new JTextField();
+		lastNameTextField.setColumns(10);
+		lastNameTextField.setBounds(183, 62, 138, 20);
+		contentPane.add(lastNameTextField);
 		
-		textField_2 = new JTextField();
-		textField_2.setColumns(10);
-		textField_2.setBounds(183, 99, 138, 20);
-		contentPane.add(textField_2);
+		phoneTextField = new JTextField();
+		phoneTextField.setColumns(10);
+		phoneTextField.setBounds(183, 99, 138, 20);
+		contentPane.add(phoneTextField);
 		
-		textField_3 = new JTextField();
-		textField_3.setColumns(10);
-		textField_3.setBounds(183, 134, 138, 20);
-		contentPane.add(textField_3);
+		addressTextField = new JTextField();
+		addressTextField.setColumns(10);
+		addressTextField.setBounds(183, 134, 138, 20);
+		contentPane.add(addressTextField);
 		
-		textField_4 = new JTextField();
-		textField_4.setColumns(10);
-		textField_4.setBounds(183, 167, 138, 20);
-		contentPane.add(textField_4);
+		usernameTextField = new JTextField();
+		usernameTextField.setColumns(10);
+		usernameTextField.setBounds(183, 167, 138, 20);
+		contentPane.add(usernameTextField);
 		
 		passwordField = new JPasswordField();
 		passwordField.setBounds(183, 202, 138, 20);
@@ -119,38 +119,38 @@ public class Register extends JFrame {
 
 		        try
 		        {
-		        	String firstName = textField.getText().trim();
-		        	String lastName = textField_1.getText().trim();
-		        	String phone = textField_2.getText().trim();
-		        	String address = textField_3.getText().trim();
-		        	String username = textField_4.getText().trim();
+		        	String firstName = firstNameTextField.getText().trim();
+		        	String lastName = lastNameTextField.getText().trim();
+		        	String phone = phoneTextField.getText().trim();
+		        	String address = addressTextField.getText().trim();
+		        	String username = usernameTextField.getText().trim();
 		        	char[] password = passwordField.getPassword();
 		        	String passwordInput = String.valueOf(password);
 		        	char[] verifyPassword = verifyPasswordField.getPassword();
 		        	
 		        	if (!Utils.validateInput(firstName, "^[A-Za-z]+$", "Please enter a valid name i.e. Tom")){
-		        		textField.grabFocus();
+		        		firstNameTextField.grabFocus();
 		        		return;
 		        	}
 		        	if(!Utils.validateInput(lastName, "^[A-Za-z]+$", "Please enter a valid name i.e. Smith")){
-		        		textField_1.grabFocus();
+		        		lastNameTextField.grabFocus();
 		        		return;
 		        	}
 		        	if(!Utils.validateInput(phone, "^[0-9]{10}$", "Please enter a 10-digit Phone Number i.e 0412345678")){
-		        		textField_2.grabFocus();
+		        		phoneTextField.grabFocus();
 		        		return;
 		        	}
 		        	if(!Utils.validateInput(address, "^[\\d]+([.]|[-]|\\s)[A-Za-z]*([.]|[-]|\\s)[A-Za-z]*$", "Please enter a valid address i.e. 1 Sesame St")){
-		        		textField_3.grabFocus();
+		        		addressTextField.grabFocus();
 		        		return;
 		        	}
 		        	if(!Utils.validateInput(username, "^[\\w]{1,15}$", "Please enter a valid username (Max length: 15)")){
-		        		textField_4.grabFocus();
+		        		usernameTextField.grabFocus();
 		        		return;
 		        	}
 		        	if(!Utils.validateUsername(username)){
 		        		JOptionPane.showMessageDialog(null, "Please enter a unique Username.", "Username already exists.", JOptionPane.WARNING_MESSAGE);
-		        		textField_4.grabFocus();
+		        		usernameTextField.grabFocus();
 		        		return;
 		        	}
 		        	if(!Utils.validateInput(passwordInput, "^[\\w]{1,15}$", "Please enter a valid username (Max length: 15)")){
