@@ -1,7 +1,8 @@
 package BookingSystemGUI;
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
 
+import java.awt.BorderLayout;
+
+import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -9,33 +10,29 @@ import javax.swing.JLabel;
 import javax.swing.JButton;
 
 import java.awt.Dimension;
-import java.awt.CardLayout;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.nio.channels.FileChannel;
+import java.nio.channels.FileLock;
+import java.nio.channels.OverlappingFileLockException;
 import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-import javax.swing.AbstractButton;
+import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
-import javax.swing.LayoutStyle.ComponentPlacement;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -49,24 +46,24 @@ import CommandLine.Utils;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import javax.swing.JMenuBar;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Color;
+import java.awt.Image;
+import java.awt.SystemColor;
+import java.awt.Toolkit;
+
+import javax.swing.JPasswordField;
+
 public class BusinessOwnerPanel extends JFrame {
-	private String select=null;
-	private static Logger logger = Logger.getLogger(BusinessOwnerPanel.class.getName());
+
 	private JPanel contentPane;
-	private JPanel contentsPane;
-	private JTextField textField_1;
-	private JTextArea textField_2;
-	private JTextArea textField_3;
-	private JTextArea textField_4;
-	private JComboBox comboBox;
-	private JComboBox comboBox1;
-	private JComboBox comboBoxactive;
-	private JComboBox days;
 	private JTable table;
-	private JButton Addactivity;
-	private JPanel addsactivity;
 	private JPanel bookingsummaries;
-	private JPanel addActivity;
 	private JTextField textField_5;
 	private JPanel newservice;
 	private JPanel deleteservice;
@@ -75,33 +72,83 @@ public class BusinessOwnerPanel extends JFrame {
 	private JComboBox comboBox_1;
 	private JPanel empAvailable;
 	private JPanel updateEmpWaorkingTime;
-	private JTable table_2;
-	private JComboBox comboBox_2;
 	private JComboBox comboBox_3;
-	private JComboBox durationCombo;
 	private JPanel empWaorkingTime;
 	private JTable table_3;
 	private JComboBox comboBox_4;
 	private JComboBox comboBox_5;
-	private JTextField textField;
 	private JComboBox selectService;
 	private JComboBox selectActivity;
 	private JComboBox selectDay;
 	private JComboBox selectEmp;
-	private JComboBox shours;
-	private JComboBox ehours;
 	private JTable table_4;
 	private JTextField selectCustomer;
 	private JPanel bookForCustomer;
 	private ArrayList<String> list = new ArrayList<>();
 	private ArrayList<String> temp = new ArrayList<>();
+	String[] userData;
+	private Image img;
+	private JLabel businessTitle;
+	private JComboBox comboBox_6;
+	private JComboBox comboBox_7;
+	private JPanel addActivity;
+	private JTextField textField_6;
+	private JComboBox comboBox_8;
+	private FileChannel chanel;
+	private FileLock lock;
+	private JComboBox comboBox_16;
+	private JComboBox comboBox_17;
+	private JComboBox comboBox;
+	private JComboBox comboBox_13;
+	private ArrayList<String> daysList = new ArrayList<>();
+	private JComboBox comboBox_2;
+	private JComboBox comboBox_9;
+	private JComboBox comboBox_10;
+	private JComboBox comboBox_11;
+	private JComboBox comboBox_12;
 
 	public BusinessOwnerPanel(String[] userData) {
 		setResizable(false);
+		this.userData = userData;
+
+		daysList.add("monday");
+		daysList.add("tuesday");
+		daysList.add("wednesday");
+		daysList.add("thursday");
+		daysList.add("friday");
+
 		setTitle("Appointment Booking System");
+		setIconImage(Toolkit.getDefaultToolkit().getImage(
+				BusinessOwnerPanel.class.getResource("/icon.png")));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 773, 446);
+		setBounds(100, 100, 773, 517);
 		setLocationRelativeTo(null);
+
+		JMenuBar menuBar = new JMenuBar();
+		menuBar.setBackground(new Color(102, 204, 102));
+		setJMenuBar(menuBar);
+
+		JMenu mnBusiness = new JMenu("Business");
+		menuBar.add(mnBusiness);
+
+		JMenuItem mntmDetails = new JMenuItem("Details");
+		mntmDetails.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				new BusinessName(BusinessOwnerPanel.this, userData)
+						.setVisible(true);
+				businessTitle.setText(fillBusinessData());
+			}
+		});
+		mnBusiness.add(mntmDetails);
+
+		JMenuItem mntmWorkingHours = new JMenuItem("Working Hours");
+		mntmWorkingHours.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				new BusinessHours(BusinessOwnerPanel.this, userData)
+						.setVisible(true);
+			}
+		});
+		mnBusiness.add(mntmWorkingHours);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -109,19 +156,24 @@ public class BusinessOwnerPanel extends JFrame {
 
 		JPanel panel_1 = new JPanel();
 		panel_1.setPreferredSize(new Dimension(200, 10));
+		panel_1.setBackground(new Color(192, 192, 192));
 		contentPane.add(panel_1, BorderLayout.WEST);
 		panel_1.setLayout(null);
 
-		JButton btnNewEmployeeWorking = new JButton("Schedule Employee");
+		JButton btnNewEmployeeWorking = new JButton("Employee Working Time");
+		btnNewEmployeeWorking.setForeground(Color.BLACK);
+		btnNewEmployeeWorking.setBackground(SystemColor.activeCaption);
 		btnNewEmployeeWorking.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				panelToSee(empWaorkingTime);
 			}
 		});
-		btnNewEmployeeWorking.setBounds(10, 102, 190, 23);
+		btnNewEmployeeWorking.setBounds(10, 102, 180, 23);
 		panel_1.add(btnNewEmployeeWorking);
 
 		JButton btnViewBookingSummaries = new JButton("View Booking Summaries");
+		btnViewBookingSummaries.setForeground(Color.BLACK);
+		btnViewBookingSummaries.setBackground(SystemColor.activeCaption);
 		btnViewBookingSummaries.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				panelToSee(bookingsummaries);
@@ -133,7 +185,8 @@ public class BusinessOwnerPanel extends JFrame {
 					while ((line = br.readLine()) != null) {
 						bookings.add(line);
 					}
-					DefaultTableModel model = (DefaultTableModel) table.getModel();
+					DefaultTableModel model = (DefaultTableModel) table
+							.getModel();
 					Object[] rowData = new Object[6];
 					model.setRowCount(0);
 
@@ -150,21 +203,23 @@ public class BusinessOwnerPanel extends JFrame {
 					}
 					br.close();
 				} catch (Exception e) {
-					logger.log(Level.SEVERE, e.getMessage());
+					e.printStackTrace();
 				}
 
 			}
 		});
-		btnViewBookingSummaries.setBounds(10, 222, 190, 23);
+		btnViewBookingSummaries.setBounds(10, 222, 180, 23);
 		panel_1.add(btnViewBookingSummaries);
 
 		JButton btnNewService = new JButton("New Service");
+		btnNewService.setForeground(Color.BLACK);
+		btnNewService.setBackground(SystemColor.activeCaption);
 		btnNewService.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				panelToSee(newservice);
 			}
 		});
-		btnNewService.setBounds(10, 11, 190, 23);
+		btnNewService.setBounds(10, 11, 180, 23);
 		panel_1.add(btnNewService);
 
 		JButton btnDeleteService = new JButton("Delete Service");
@@ -177,494 +232,95 @@ public class BusinessOwnerPanel extends JFrame {
 		panel_1.add(btnDeleteService);
 
 		JButton btnLogout = new JButton("Logout");
+		btnLogout.setForeground(Color.BLACK);
+		btnLogout.setBackground(SystemColor.activeCaption);
 		btnLogout.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				new Login().setVisible(true);
 				dispose();
 			}
 		});
-		btnLogout.setBounds(10, 373, 190, 23);
+		btnLogout.setBounds(10, 373, 180, 23);
 		panel_1.add(btnLogout);
 
 		JButton btnNewButton = new JButton("Delete Service");
+		btnNewButton.setForeground(Color.BLACK);
+		btnNewButton.setBackground(SystemColor.activeCaption);
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				panelToSee(deleteservice);
 			}
 		});
-		btnNewButton.setBounds(10, 306, 190, 23);
+		btnNewButton.setBounds(10, 306, 180, 23);
 		panel_1.add(btnNewButton);
 
 		JButton btnEmployeesAvailable = new JButton("Employees Available");
+		btnEmployeesAvailable.setForeground(Color.BLACK);
+		btnEmployeesAvailable.setBackground(SystemColor.activeCaption);
 		btnEmployeesAvailable.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				panelToSee(empAvailable);
 			}
 		});
-		btnEmployeesAvailable.setBounds(10, 177, 190, 23);
+		btnEmployeesAvailable.setBounds(10, 177, 180, 23);
 		panel_1.add(btnEmployeesAvailable);
 
-		JButton btnAddActivityTime = new JButton("Add Activity");
+		JButton btnAddActivityTime = new JButton("Add Service Activity");
+		btnAddActivityTime.setForeground(Color.BLACK);
+		btnAddActivityTime.setBackground(SystemColor.activeCaption);
 		btnAddActivityTime.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				panelToSee(addActivity);
+				panelToSee(addActivity);// addActivity
 			}
 		});
-		btnAddActivityTime.setBounds(10, 70, 190, 23);
+		btnAddActivityTime.setBounds(10, 60, 180, 23);
 		panel_1.add(btnAddActivityTime);
-		JButton btnAddActivity = new JButton("Add Activity Time");
-		btnAddActivity.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				panelToSee(addsactivity);
-			}
-		});
-		btnAddActivity.setBounds(10, 40, 190, 23);
-		panel_1.add(btnAddActivity);
 
 		JButton btnUpdateWorkingTime = new JButton("Update Working Time");
+		btnUpdateWorkingTime.setForeground(Color.BLACK);
+		btnUpdateWorkingTime.setBackground(SystemColor.activeCaption);
 		btnUpdateWorkingTime.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				panelToSee(updateEmpWaorkingTime);
 			}
 		});
-		btnUpdateWorkingTime.setBounds(10, 136, 190, 23);
+		btnUpdateWorkingTime.setBounds(10, 136, 180, 23);
 		panel_1.add(btnUpdateWorkingTime);
 
 		JButton btnBookForCustomer = new JButton("Book For Customer");
+		btnBookForCustomer.setForeground(Color.BLACK);
+		btnBookForCustomer.setBackground(SystemColor.activeCaption);
 		btnBookForCustomer.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				panelToSee(bookForCustomer);
 
 			}
 		});
-		btnBookForCustomer.setBounds(10, 258, 190, 23);
+		btnBookForCustomer.setBounds(10, 258, 180, 23);
 		panel_1.add(btnBookForCustomer);
 
-		// Main panel for add activity simple
 		JPanel panel_2 = new JPanel();
 		contentPane.add(panel_2, BorderLayout.CENTER);
 		panel_2.setLayout(null);
+
 		bookingsummaries = new JPanel();
 		bookingsummaries.setVisible(false);
-
-		addActivity = new JPanel();
-		addActivity.setBounds(0, 0, 547, 373);
-		panel_2.add(addActivity);
-		addActivity.setLayout(new BorderLayout(0, 0));
-		shours=new JComboBox();
-		shours.setBounds(182, 254, 120, 21);
-		shours.addItem("Select start time");
-		for(int i=0;i<24;i++){
-			if(i<=9){
-				String h="0"+i+":00";
-				shours.addItem(h);
-				h="0"+i+":30";
-				shours.addItem(h);
-			}
-			else{
-				String h=i+":00";
-				shours.addItem(h);
-				h=i+":30";
-				shours.addItem(h);
-			}
-		}
-		ehours=new JComboBox();
-		ehours.setBounds(350, 254, 120, 21);
-		ehours.addItem("Select End time");
-		for(int i=0;i<24;i++){
-			if(i<=9){
-				String h="0"+i+":00";
-				ehours.addItem(h);
-				h="0"+i+":30";
-				ehours.addItem(h);
-			}
-			else{
-				String h=i+":00";
-				ehours.addItem(h);
-				h=i+":30";
-				ehours.addItem(h);
-			}
-		}
-		JPanel panel_3 = new JPanel();
-		addActivity.add(panel_3, BorderLayout.NORTH);
-
-		JLabel lblAddNewEmployee = new JLabel("Add Activity");
-		panel_3.add(lblAddNewEmployee);
-
-		JPanel panel_4 = new JPanel();
-		addActivity.add(panel_4, BorderLayout.CENTER);
-
-		comboBox = new JComboBox();
-		comboBox.setBounds(112, 45, 153, 20);
-		JLabel lblNumberOfActivities = new JLabel("Number Of Activities ");
-		lblNumberOfActivities.setBounds(297, 48, 137, 14);
-		comboBoxactive = new JComboBox();
-		comboBoxactive.setBounds(390, 45, 153, 20);
-		comboBox1 = new JComboBox();
-		comboBox1.setBounds(112, 45, 153, 20);
-		textField_1 = new JTextField();
-		textField_1.setBounds(446, 45, 72, 20);
-		textField_1.setColumns(10);
-
-		JLabel lblWorkingDays = new JLabel("Working Days");
-		lblWorkingDays.setBounds(82, 89, 102, 14);
-
-		JLabel lblNewLabel = new JLabel("Enter Activities");
-		lblNewLabel.setBounds(82, 177, 90, 14);
-
-		JLabel lblWorkingTimes = new JLabel("Working Times");
-		lblWorkingTimes.setBounds(82, 273, 121, 14);
-
-		// ADD activity button
-		JButton btnRegister = new JButton("Add Activity");
-		btnRegister.setBounds(425, 323, 120, 23);
-		btnRegister.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				int duration = 0;
-				if (comboBox.getSelectedIndex() == 0) {
-					JOptionPane.showMessageDialog(null, "Please select service name");
-					return;
-				}
-				String num = textField_1.getText().trim();
-				String activities = textField_3.getText().trim();
-				String[] activitiesArr = activities.split(",");
-				
-
-				String fileName = "serviceactivity.txt";
-				String name = "NULL";
-
-				try {
-					
-					for (int i = 0; i < activitiesArr.length; i++) {
-						if (!Utility.validateInput(activitiesArr[i], "([\\w][,]*)+", "Please enter an activity.")) {
-							textField_3.grabFocus();
-							return;
-						}
-					}
-					if (!Utility.validateInput(num, "[\\d]+", "Please enter number of activities")) {
-						textField_1.grabFocus();
-						return;
-					}
-
-					
-					int number = Integer.parseInt(num);
-					if (activitiesArr.length != number || activitiesArr.length == 0) {
-						JOptionPane.showMessageDialog(null, "Enter correct number of activities, separate by [,]");
-						return;
-					}
-					else {
-						FileWriter fw = new FileWriter(fileName, true); // open
-																		// text
-																		// file
-																		// in
-																		// writer
-																		// append
-																		// mode
-						BufferedWriter bw = new BufferedWriter(fw); // gave
-																	// access of
-																	// file to
-																	// buffer
-																	// writer
-						for (int a = 0; a < number; a++) {
-							//String workingTimes[] = workingtimesArr[a].split(",");
-
-							//int numOfSlots = 0;
-							// System.out.println(name+","+dayArr[a]+","+activitiesArr[a]+","+workingTimes[1]+"-"+workingTimes[2]+",available");
-							//SimpleDateFormat format = new SimpleDateFormat("HH:mm");
-							//Date date1 = format.parse(workingTimes[0]);
-							//Date date2 = format.parse(workingTimes[1]);
-							//long diff = date2.getTime() - date1.getTime();
-							//long diffMinutes = diff / (60 * 1000);
-							//if (diffMinutes % duration != 0) {
-								//JOptionPane.showMessageDialog(null,
-									//	"The difference should not have remainders for this to work");
-								//return;
-							//}
-							//else {
-								//numOfSlots = (int) (diffMinutes / duration);
-								//for (int d = 0; d < number; d++) {
-
-									//Calendar cal = Calendar.getInstance();
-									//cal.setTime(date1);
-									//Time timeStart = new Time(cal.getTime().getTime());
-
-									//cal.add(Calendar.MINUTE, duration);
-									//Time timeEnd = new Time(cal.getTime().getTime());
-
-									// System.out.println(name.toLowerCase()
-									// +","+ dayArr[a].toLowerCase() +","+
-									// activitiesArr[a].toLowerCase()
-									// +","+timeStart+"-"+timeEnd+",available");
-									bw.write(activitiesArr[a].toLowerCase()+comboBox.getSelectedItem().toString()+"aoa");
-									bw.newLine();
-									//date1 = new Date(timeEnd.getTime());
-								//}
-							}
-						//}
-						bw.close();
-					}
-
-					JOptionPane.showMessageDialog(null, "Service Entered successfully");
-				} catch (Exception e) {
-					logger.log(Level.SEVERE, e.getMessage());
-				}
-			}
-		});
-
-		panel_4.setLayout(null);
-		panel_4.add(lblNewLabel);
-		panel_4.add(lblNumberOfActivities);
-		panel_4.add(btnRegister);
-		panel_4.add(textField_1);
-		// JScrollPane scrollPane_2 = new JScrollPane();
-		// scrollPane_2.setBounds(182, 83, 208, 54);
-		// panel_4.add(scrollPane_2);
-		// Enter Workdays
-		// Enter timing
-		// Enter Activities
-		JScrollPane scrollPane_3 = new JScrollPane();
-		scrollPane_3.setBounds(182, 171, 208, 63);
-		panel_4.add(scrollPane_3);
-
-		textField_3 = new JTextArea();
-		scrollPane_3.setViewportView(textField_3);
-		textField_3.setColumns(10);
-
-		JLabel lblSelectServiced = new JLabel("Select Service");
-		lblSelectServiced.setBounds(22, 48, 124, 14);
-		panel_4.add(lblSelectServiced);
-
-		addsactivity = new JPanel();
-		addsactivity.setBounds(0, 0, 547, 400);
-		panel_2.add(addsactivity);
-		addsactivity.setLayout(new BorderLayout(0, 0));
-		// bookingsummaries.setBounds(0, 0, 547, 373);
-
-		JPanel panel_10 = new JPanel();
-		addsactivity.add(panel_10, BorderLayout.NORTH);
-
-		JLabel lblAddac = new JLabel("Add Activity");
-		panel_10.add(lblAddac);
-
-		JPanel panel_11 = new JPanel();
-		addsactivity.add(panel_11, BorderLayout.CENTER);
-		JLabel lblactivity = new JLabel("Select Activity:");
-		lblactivity.setBounds(297, 48, 120, 14);
-
-		JButton btnRegister2 = new JButton("Add Activity details");
-		btnRegister2.setBounds(425, 323, 120, 23);
-		btnRegister2.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				int duration = 0;
-				if(comboBoxactive.getSelectedIndex()==0){
-					JOptionPane.showMessageDialog(null, "Please select activity");
-					return;
-				}
-				if (durationCombo.getSelectedIndex() == 0) {
-					duration = 30;
-				}
-				if (durationCombo.getSelectedIndex() == 1) {
-					duration = 60;
-				}
-				if(shours.getSelectedIndex()==0){
-					JOptionPane.showMessageDialog(null, "Please select start time");
-					return;
-				}
-				if(ehours.getSelectedIndex()==0){
-					JOptionPane.showMessageDialog(null, "Please select end time");
-					return;
-				}
-				String ss=shours.getSelectedItem().toString();
-				String ee=ehours.getSelectedItem().toString();
-				int aa=Integer.parseInt(ss.substring(0, 2));
-				int bb=Integer.parseInt(ee.substring(0, 2));
-				if(aa>bb){
-					JOptionPane.showMessageDialog(null, "Please select valid start time i.e start time should be smaller then end");
-					return;
-				}
-				else if(aa==bb){
-					int smin=Integer.parseInt(ss.substring(3, ss.length()));
-					int emin=Integer.parseInt(ss.substring(3, ee.length()));
-					if(emin==smin){
-						JOptionPane.showMessageDialog(null, "Please select valid start time i.e start time should be smaller then end");
-						return;
-					}
-				}
-				//System.out.println(aa);
-				String fileName=comboBox1.getSelectedItem().toString()+".txt";
-				//String days = textField_2.getText().trim();
-				//String workingtimes = textField_4.getText().trim();
-				String name = "NULL";
-				if(days.getSelectedIndex()==0){
-					JOptionPane.showMessageDialog(null, "Please select DAY");
-				}
-				else{
-				String dayArr = days.getSelectedItem().toString();
-				}
-				String[] workingtimesArr = {ss+","+ee};
-				
-					//if (!Utility.validateInput(workingtimes, "^([\\d]{2}[:][\\d]{2}[,][\\d]{2}[:][\\d]{2}[,]*[;])+$",
-						//	"Please enter a time i.e. 06:00,09:00; Start Time:End Time;")) {
-						//textField_4.grabFocus();
-						//return;
-					//}
-				//if (workingtimesArr.length != 1 || workingtimesArr.length == 0) {
-					//JOptionPane.showMessageDialog(null, "Enter correct number of working time, separate by [,]");
-					//return;
-				//}
-
-				if (workingtimesArr.length != 1) {
-					JOptionPane.showMessageDialog(null, "Enter correct number of working times, separated by [,]");
-					return;
-				}
-				else {
-					FileWriter fw=null;
-					try {
-						fw = new FileWriter(fileName, true);
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} // open
-																	// text
-																	// file
-																	// in
-																	// writer
-																	// append
-																	// mode
-					BufferedWriter bw = new BufferedWriter(fw); // gave
-																// access of
-																// file to
-																// buffer
-																// writer
-					for (int a = 0; a < 1; a++) {
-						String workingTimes[] = {ss,ee};
-
-						int numOfSlots = 0;
-						// System.out.println(name+","+dayArr[a]+","+activitiesArr[a]+","+workingTimes[1]+"-"+workingTimes[2]+",available");
-						SimpleDateFormat format = new SimpleDateFormat("HH:mm");
-						Date date1 = null;
-						try {
-							date1 = format.parse(workingTimes[0]);
-						} catch (ParseException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						Date date2 = null;
-						try {
-							date2 = format.parse(workingTimes[1]);
-						} catch (ParseException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						long diff = date2.getTime() - date1.getTime();
-						long diffMinutes = diff / (60 * 1000);
-						if (diffMinutes % duration != 0) {
-							JOptionPane.showMessageDialog(null,
-									"The difference should not have remainders for this to work");
-							return;
-						} else {
-							numOfSlots = (int) (diffMinutes / duration);
-							for (int d = 0; d < numOfSlots; d++) {
-
-								Calendar cal = Calendar.getInstance();
-								cal.setTime(date1);
-								Time timeStart = new Time(cal.getTime().getTime());
-
-								cal.add(Calendar.MINUTE, duration);
-								Time timeEnd = new Time(cal.getTime().getTime());
-
-								// System.out.println(name.toLowerCase()
-								// +","+ dayArr[a].toLowerCase() +","+
-								// activitiesArr[a].toLowerCase()
-								// +","+timeStart+"-"+timeEnd+",available");
-								try {
-									bw.write(name.toLowerCase() + "," + days.getSelectedItem().toString().toLowerCase() + ","
-											+ comboBoxactive.getSelectedItem().toString() + "," + timeStart + "-" + timeEnd
-											+ ",available");
-								} catch (IOException e) {
-									// TODO Auto-generated catch block
-									e.printStackTrace();
-								}
-								try {
-									bw.newLine();
-								} catch (IOException e) {
-									// TODO Auto-generated catch block
-									e.printStackTrace();
-								}
-								date1 = new Date(timeEnd.getTime());
-							}
-						}
-					}
-					try {
-						bw.close();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				
-
-				JOptionPane.showMessageDialog(null, "Activity Entered successfully");
-			} 
-			}
-		});
-		days=new JComboBox();
-		days.setBounds(182, 83, 208, 54);
-		days.addItem("Select day");
-		days.addItem("Monday");
-		days.addItem("Tuesday");
-		days.addItem("Wednesday");
-		days.addItem("Thursday");
-		days.addItem("Friday");
-		JLabel lblSelectServi = new JLabel("Select Service");
-		lblSelectServi.setBounds(22, 48, 124, 14);
-		panel_11.add(lblSelectServi);
-		panel_11.setLayout(null);
-		panel_11.add(comboBox1);
-		panel_4.add(comboBox);
-		panel_11.add(days);
-		panel_11.add(lblWorkingDays);
-		panel_11.add(lblWorkingTimes);
-		panel_11.add(btnRegister2);
-		panel_11.add(lblactivity);
-		panel_11.add(comboBoxactive);
-
-		//JScrollPane scrollPane_22 = new JScrollPane();
-		//scrollPane_22.setBounds(182, 83, 208, 54);
-		//panel_11.add(scrollPane_22);
-		//textField_2 = new JTextArea();
-		//scrollPane_22.setViewportView(textField_2);
-		//textField_2.setColumns(10);
-
-		//JScrollPane scrollPane_4 = new JScrollPane();
-		//scrollPane_4.setBounds(182, 254, 211, 61);
-		//panel_11.add(scrollPane_4);
-		panel_11.add(shours);
-		panel_11.add(ehours);
-		//textField_4 = new JTextArea();
-		//scrollPane_4.setViewportView(textField_4);
-		//textField_4.setColumns(10);
-
-		JLabel label = new JLabel("Activity Duration (minutes)");
-		label.setBounds(22, 325, 150, 14);
-		panel_11.add(label);
-
-		durationCombo = new JComboBox();
-		durationCombo.setModel(new DefaultComboBoxModel(new String[] { "30 min", "60 min" }));
-		durationCombo.setBounds(182, 325, 208, 20);
-		panel_11.add(durationCombo);
+		bookingsummaries.setBounds(0, 500, 557, 373);
 		panel_2.add(bookingsummaries);
 		bookingsummaries.setLayout(null);
 
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 11, 527, 328);
+		scrollPane.setBounds(10, 24, 537, 315);
 		bookingsummaries.add(scrollPane);
 
 		table = new JTable();
 		// table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		table.setRowHeight(25);
-		table.setModel(new DefaultTableModel(new Object[][] {},
-				new String[] { "Customer", "Employee", "Day", "Service", "Activity", "Time Slot" }) {
-			boolean[] columnEditables = new boolean[] { false, false, false, false, false, false };
+		table.setModel(new DefaultTableModel(new Object[][] {}, new String[] {
+				"Customer", "Employee", "Day", "Service", "Activity",
+				"Time Slot" }) {
+			boolean[] columnEditables = new boolean[] { false, false, false,
+					false, false, false };
 
 			public boolean isCellEditable(int row, int column) {
 				return columnEditables[column];
@@ -673,9 +329,17 @@ public class BusinessOwnerPanel extends JFrame {
 		table.getColumnModel().getColumn(0).setPreferredWidth(85);
 		scrollPane.setViewportView(table);
 
+		JPanel panel_5 = new JPanel();
+		panel_5.setBackground(Color.LIGHT_GRAY);
+		panel_5.setBounds(0, 0, 557, 24);
+		bookingsummaries.add(panel_5);
+
+		JLabel lblBookingSummary = new JLabel("Booking Summary");
+		panel_5.add(lblBookingSummary);
+
 		newservice = new JPanel();
 		newservice.setVisible(false);
-		newservice.setBounds(0, 0, 547, 350);
+		newservice.setBounds(0, 500, 557, 350);
 		panel_2.add(newservice);
 		newservice.setLayout(null);
 
@@ -693,14 +357,9 @@ public class BusinessOwnerPanel extends JFrame {
 		btnSave.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
-				String serviceName = textField_5.getText().trim();
+				String serviceName = textField_5.getText().trim().toLowerCase();
 				if (serviceName.equals("")) {
 					JOptionPane.showMessageDialog(null, "Enter Service Name");
-					return;
-				}
-				if (!Utility.validateInput(serviceName, "^[A-Za-z]+$",
-						"Please enter valid service name e.g. hairdressing")) {
-					textField_5.grabFocus();
 					return;
 				}
 				// serviceName +=".txt";
@@ -710,7 +369,8 @@ public class BusinessOwnerPanel extends JFrame {
 					FileWriter fw = new FileWriter("services.txt", true);
 					BufferedWriter bw = new BufferedWriter(fw);
 
-					BufferedReader br = new BufferedReader(new FileReader("services.txt"));
+					BufferedReader br = new BufferedReader(new FileReader(
+							"services.txt"));
 					String line = "";
 					while ((line = br.readLine()) != null) {
 						services.add(line);
@@ -727,7 +387,7 @@ public class BusinessOwnerPanel extends JFrame {
 					// services();
 
 				} catch (Exception e2) {
-					logger.log(Level.SEVERE, e2.getMessage());
+					e2.printStackTrace();
 				}
 				dispose();
 				new BusinessOwnerPanel(userData).setVisible(true);
@@ -736,27 +396,39 @@ public class BusinessOwnerPanel extends JFrame {
 		btnSave.setBounds(159, 169, 147, 23);
 		newservice.add(btnSave);
 
+		JPanel panel_6 = new JPanel();
+		panel_6.setBackground(Color.LIGHT_GRAY);
+		panel_6.setBounds(0, 0, 557, 24);
+		newservice.add(panel_6);
+
+		JLabel lblNewServiceRegistration = new JLabel(
+				"New Service Registration");
+		panel_6.add(lblNewServiceRegistration);
+
 		deleteservice = new JPanel();
 		deleteservice.setVisible(false);
-		deleteservice.setBounds(0, 0, 547, 350);
+		deleteservice.setBounds(0, 500, 557, 350);
 		panel_2.add(deleteservice);
 		deleteservice.setLayout(null);
 
-		JButton btnDelete = new JButton("Delete");
-		btnDelete.setBounds(81, 155, 183, 23);
+		JButton btnDelete = new JButton("Delete Service");
+		btnDelete.setBounds(182, 131, 183, 23);
 		btnDelete.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
 
 				if (servicedeleteCombo.getSelectedIndex() == 0) {
-					JOptionPane.showMessageDialog(null, "Please Select Service To Delete");
+					JOptionPane.showMessageDialog(null,
+							"Please Select Service To Delete");
 					return;
 				}
 				try {
-					String serviceName = servicedeleteCombo.getSelectedItem().toString();
+					String serviceName = servicedeleteCombo.getSelectedItem()
+							.toString();
 
 					// Delete service from services list
-					BufferedReader reader = new BufferedReader(new FileReader("services.txt"));
+					BufferedReader reader = new BufferedReader(new FileReader(
+							"services.txt"));
 
 					String lineToRemove = serviceName;
 					String currentLine;
@@ -769,8 +441,8 @@ public class BusinessOwnerPanel extends JFrame {
 							System.out.println("Serice " + currentLine);
 						}
 					}
-					System.out.println("Services " + list);
-					BufferedWriter writer = new BufferedWriter(new FileWriter("services.txt"));
+					BufferedWriter writer = new BufferedWriter(new FileWriter(
+							"services.txt"));
 					for (int a = 0; a < list.size(); a++) {
 						writer.write(list.get(a));
 						writer.newLine();
@@ -779,7 +451,8 @@ public class BusinessOwnerPanel extends JFrame {
 					writer.close();
 					reader.close();
 					// Delete service from services list
-					reader = new BufferedReader(new FileReader("BookingSummaries.txt"));
+					reader = new BufferedReader(new FileReader(
+							"BookingSummaries.txt"));
 
 					lineToRemove = serviceName;
 					list.clear();
@@ -793,7 +466,8 @@ public class BusinessOwnerPanel extends JFrame {
 						}
 					}
 
-					writer = new BufferedWriter(new FileWriter("BookingSummaries.txt"));
+					writer = new BufferedWriter(new FileWriter(
+							"BookingSummaries.txt"));
 
 					for (int a = 0; a < list.size(); a++) {
 						writer.write(list.get(a));
@@ -803,11 +477,21 @@ public class BusinessOwnerPanel extends JFrame {
 					reader.close();
 					String fileName = serviceName + ".txt";
 					File file = new File(fileName);
-					file.delete();
+					chanel = new RandomAccessFile(file, "rw").getChannel();
+
+					try {
+						lock = chanel.tryLock();
+
+					} catch (OverlappingFileLockException es) {
+						closeLock();
+					}
+					closeLock();
+					deleteFile(file);
 					// services();
-					JOptionPane.showMessageDialog(null, "Deleted Successfully");
+					JOptionPane.showMessageDialog(null,
+							"Service Deleted Successfully");
 				} catch (IOException e1) {
-					logger.log(Level.SEVERE, e1.getMessage());
+					e1.printStackTrace();
 				}
 				dispose();
 				new BusinessOwnerPanel(userData).setVisible(true);
@@ -816,25 +500,151 @@ public class BusinessOwnerPanel extends JFrame {
 		deleteservice.add(btnDelete);
 
 		servicedeleteCombo = new JComboBox();
-		servicedeleteCombo.setModel(new DefaultComboBoxModel(new String[] { "--Select Service--" }));
-		servicedeleteCombo.setBounds(81, 59, 183, 20);
+		servicedeleteCombo.setModel(new DefaultComboBoxModel(
+				new String[] { "--Select Service--" }));
+		servicedeleteCombo.setBounds(182, 35, 183, 20);
 		deleteservice.add(servicedeleteCombo);
+
+		JPanel panel_7 = new JPanel();
+		panel_7.setBackground(Color.LIGHT_GRAY);
+		panel_7.setBounds(0, 0, 557, 24);
+		deleteservice.add(panel_7);
+
+		JLabel lblDeleteServicesHere = new JLabel("Delete Services Here");
+		panel_7.add(lblDeleteServicesHere);
+
+		JPanel panel_12 = new JPanel();
+		panel_12.setBackground(Color.LIGHT_GRAY);
+		panel_12.setBounds(0, 185, 557, 24);
+		deleteservice.add(panel_12);
+
+		JLabel lblDeleteActivityHere = new JLabel("Delete Activity Here Here");
+		panel_12.add(lblDeleteActivityHere);
+
+		comboBox_6 = new JComboBox();
+		comboBox_6.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (comboBox_6.getSelectedIndex() != 0) {
+					ArrayList<String> serviceNames = Utils
+							.getActivities(comboBox_6.getSelectedItem()
+									.toString());
+					comboBox_7.removeAllItems();
+					comboBox_7.addItem("Select Activity");
+					for (int a = 0; a < serviceNames.size(); a++) {
+						comboBox_7.addItem(serviceNames.get(a));
+					}
+				}
+			}
+		});
+		comboBox_6.setBounds(182, 220, 183, 20);
+		deleteservice.add(comboBox_6);
+
+		JButton btnDeleteActivity = new JButton("Delete Activity");
+		btnDeleteActivity.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (comboBox_6.getSelectedIndex() == 0) {
+					JOptionPane.showMessageDialog(null,
+							"Select Service Where to delete Activity");
+					return;
+				}
+				if (comboBox_7.getSelectedIndex() == 0) {
+					JOptionPane.showMessageDialog(null,
+							"Select Activity to delete Activity");
+					return;
+				}
+				String service = comboBox_6.getSelectedItem().toString();
+				String activity = comboBox_7.getSelectedItem().toString();
+
+				String fileName = service + ".txt";
+				try {
+					ArrayList<String> list = new ArrayList<>();
+					BufferedReader br = new BufferedReader(new FileReader(
+							fileName));
+					String currentLine = "";
+					while ((currentLine = br.readLine()) != null) {
+						String[] recs = currentLine.split(",");
+						if (!recs[2].equals(activity)) {
+							list.add(currentLine);
+						}
+					}
+					br.close();
+					BufferedWriter bw = new BufferedWriter(new FileWriter(
+							fileName));
+					for (int a = 0; a < list.size(); a++) {
+						bw.write(list.get(a)
+								+ System.getProperty("line.separator"));
+					}
+					bw.close();
+
+					list.clear();
+					br = new BufferedReader(new FileReader(
+							"BookingSummaries.txt"));
+					currentLine = "";
+					while ((currentLine = br.readLine()) != null) {
+						String[] recs = currentLine.split(",");
+						if (!recs[6].equals(service)
+								|| !recs[7].equals(activity)) {
+							list.add(currentLine);
+						}
+					}
+					br.close();
+					bw = new BufferedWriter(new FileWriter(
+							"BookingSummaries.txt"));
+					for (int a = 0; a < list.size(); a++) {
+						bw.write(list.get(a)
+								+ System.getProperty("line.separator"));
+					}
+					bw.close();
+					JOptionPane.showMessageDialog(null,
+							"Activity Deleted Successfully");
+					if (comboBox_6.getSelectedIndex() != 0) {
+						ArrayList<String> serviceNames = Utils
+								.getActivities(comboBox_6.getSelectedItem()
+										.toString());
+						comboBox_7.removeAllItems();
+						comboBox_7.addItem("Select Activity");
+						for (int a = 0; a < serviceNames.size(); a++) {
+							comboBox_7.addItem(serviceNames.get(a));
+						}
+					}
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+
+			}
+		});
+		btnDeleteActivity.setBounds(182, 316, 183, 23);
+		deleteservice.add(btnDeleteActivity);
+
+		comboBox_7 = new JComboBox();
+		comboBox_7.setBounds(182, 270, 183, 20);
+		deleteservice.add(comboBox_7);
+
+		JLabel lblSelectService_2 = new JLabel("Select Service");
+		lblSelectService_2.setBounds(21, 223, 151, 14);
+		deleteservice.add(lblSelectService_2);
+
+		JLabel lblSelectActivity = new JLabel("Select Activity");
+		lblSelectActivity.setBounds(21, 273, 151, 14);
+		deleteservice.add(lblSelectActivity);
 
 		empAvailable = new JPanel();
 		empAvailable.setVisible(false);
-		empAvailable.setBounds(10, 0, 537, 362);
+		empAvailable.setBounds(0, 500, 557, 362);
 		panel_2.add(empAvailable);
 		empAvailable.setLayout(null);
 
 		JScrollPane scrollPane_1 = new JScrollPane();
-		scrollPane_1.setBounds(10, 46, 517, 305);
+		scrollPane_1.setBounds(10, 71, 517, 280);
 		empAvailable.add(scrollPane_1);
 
 		table_1 = new JTable();
 		table_1.setRowHeight(25);
 		table_1.setModel(new DefaultTableModel(new Object[][] {},
-				new String[] { "Employee Name", "Day", "Activity", "Time Available", "Status" }) {
-			boolean[] columnEditables = new boolean[] { false, false, false, false, false };
+				new String[] { "Employee Name", "Day", "Activity",
+						"Time Available", "Status" }) {
+			boolean[] columnEditables = new boolean[] { false, false, false,
+					false, false };
 
 			public boolean isCellEditable(int row, int column) {
 				return columnEditables[column];
@@ -848,16 +658,50 @@ public class BusinessOwnerPanel extends JFrame {
 				empAvailable(comboBox_1.getSelectedItem().toString());
 			}
 		});
-		comboBox_1.setBounds(202, 11, 194, 25);
+		comboBox_1.setBounds(106, 35, 152, 25);
 		empAvailable.add(comboBox_1);
 
 		JLabel lblSelectService = new JLabel("Select Service");
-		lblSelectService.setBounds(74, 11, 118, 25);
+		lblSelectService.setBounds(10, 35, 91, 25);
 		empAvailable.add(lblSelectService);
+
+		JPanel panel_8 = new JPanel();
+		panel_8.setBackground(Color.LIGHT_GRAY);
+		panel_8.setBounds(0, 0, 557, 24);
+		empAvailable.add(panel_8);
+
+		JLabel lblEmployeesAvailableNext = new JLabel(
+				"Employees Available Next Week");
+		panel_8.add(lblEmployeesAvailableNext);
+
+		JLabel label_11 = new JLabel("Select Service");
+		label_11.setBounds(286, 35, 114, 25);
+		empAvailable.add(label_11);
+
+		comboBox_2 = new JComboBox();
+		comboBox_2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (comboBox_2.getSelectedIndex() != 0) {
+					try {
+						empAvailableParticularDay(comboBox_1.getSelectedItem()
+								.toString(), comboBox_2.getSelectedItem()
+								.toString());
+					} catch (Exception e3) {
+						e3.printStackTrace();
+					}
+				}
+			}
+		});
+		comboBox_2.addItem("Select Day");
+		for (int a = 0; a < daysList.size(); a++) {
+			comboBox_2.addItem(daysList.get(a));
+		}
+		comboBox_2.setBounds(413, 35, 114, 25);
+		empAvailable.add(comboBox_2);
 
 		updateEmpWaorkingTime = new JPanel();
 		updateEmpWaorkingTime.setVisible(false);
-		updateEmpWaorkingTime.setBounds(0, 0, 547, 407);
+		updateEmpWaorkingTime.setBounds(0, 0, 557, 421);
 		panel_2.add(updateEmpWaorkingTime);
 		updateEmpWaorkingTime.setLayout(null);
 
@@ -865,93 +709,161 @@ public class BusinessOwnerPanel extends JFrame {
 		comboBox_4.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (comboBox_4.getSelectedIndex() != 0) {
-					empWorkingTimeNotNull(comboBox_4.getSelectedItem().toString());
+					empWorkingTimeNotNull(comboBox_4.getSelectedItem()
+							.toString());
 					employees(comboBox_4.getSelectedItem().toString());
 				}
 			}
 		});
-		comboBox_4.setBounds(153, 24, 202, 20);
+		comboBox_4.setBounds(158, 42, 202, 20);
 		updateEmpWaorkingTime.add(comboBox_4);
 
 		JLabel label_1 = new JLabel("Select Service");
-		label_1.setBounds(46, 25, 102, 14);
+		label_1.setBounds(51, 43, 102, 14);
 		updateEmpWaorkingTime.add(label_1);
 
 		JLabel label_2 = new JLabel("Employee Name");
-		label_2.setBounds(24, 339, 136, 14);
+		label_2.setBounds(24, 331, 136, 14);
 		updateEmpWaorkingTime.add(label_2);
 
 		comboBox_5 = new JComboBox();
 		comboBox_5.setEditable(true);
-		comboBox_5.setBounds(138, 335, 182, 20);
+		comboBox_5.setBounds(138, 327, 182, 20);
 		updateEmpWaorkingTime.add(comboBox_5);
 
 		JButton button_2 = new JButton("Update");
 		button_2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (comboBox_4.getSelectedIndex() == 0) {
-					JOptionPane.showMessageDialog(null, "Please Select Service To Proceed");
+					JOptionPane.showMessageDialog(null,
+							"Please Select Service To Proceed");
 					return;
 				}
 				if (comboBox_5.getSelectedItem().toString().trim().equals("")
-						|| comboBox_3.getSelectedItem().toString().trim().equals("")) {
-					JOptionPane.showMessageDialog(null, "Enter Employee name to proceed");
+						|| comboBox_3.getSelectedItem().toString().trim()
+								.equals("")) {
+					JOptionPane.showMessageDialog(null,
+							"Enter Employee name to proceed");
 					return;
 				}
-				if (textField.getText().trim().equals("")) {
-					JOptionPane.showMessageDialog(null, "Enter new Working time to proceed");
+				if (comboBox_10.getSelectedIndex() == 0) {
+					JOptionPane.showMessageDialog(null,
+							"Please Select Start Time To Proceed");
 					return;
 				}
-
-				String newtimeAvailable = textField.getText().replace(",", "-");
+				if (comboBox_11.getSelectedIndex() == 0) {
+					JOptionPane.showMessageDialog(null,
+							"Please Select End Time To Proceed");
+					return;
+				}
+				if (comboBox_12.getSelectedIndex() == 0) {
+					JOptionPane.showMessageDialog(null,
+							"Please Select Duration To Proceed");
+					return;
+				}
+				
+				String newtimeAvailable = comboBox_10.getSelectedItem().toString()+"-"+comboBox_11.getSelectedItem().toString();
+				int duration = 0;
+				if(comboBox_12.getSelectedIndex() == 1){
+					duration = 30;
+				}if(comboBox_12.getSelectedIndex() == 2){
+					duration = 60;
+				}
 
 				String service = comboBox_4.getSelectedItem().toString();
 				String fileName = service + ".txt";
 				int row = -1;
 				row = table_3.getSelectedRow();
 				if (row < 0) {
-					JOptionPane.showMessageDialog(null, "Please Select row to update to proceed");
+					JOptionPane.showMessageDialog(null,
+							"Please Select row to update to proceed");
 					return;
 				}
-				String selected = "";
-				String modify = "";
+				String emp,   activity, startTime;
+				emp = table_3.getModel().getValueAt(row, 0).toString();
+				activity = table_3.getModel().getValueAt(row, 1).toString();
+				startTime = table_3.getModel().getValueAt(row, 2).toString();
 
-				selected = table_3.getModel().getValueAt(row, 0).toString() + ","
-						+ table_3.getModel().getValueAt(row, 1).toString() + ","
-						+ table_3.getModel().getValueAt(row, 2).toString() + ","
-						+ table_3.getModel().getValueAt(row, 3).toString() + ","
-						+ table_3.getModel().getValueAt(row, 4).toString();
-
-				modify = comboBox_5.getSelectedItem().toString() + ","
-						+ table_3.getModel().getValueAt(row, 1).toString() + ","
-						+ table_3.getModel().getValueAt(row, 2).toString() + "," + newtimeAvailable + ","
-						+ table_3.getModel().getValueAt(row, 4).toString();
-
+				String newstartTime = comboBox_10.getSelectedItem().toString();
+				String newendTime = comboBox_11.getSelectedItem().toString();
+				
 				try {
+					SimpleDateFormat format = new SimpleDateFormat("HH:mm");
+					Date date1 = format.parse(newstartTime);
+					Date date2 = format.parse(newendTime);
+					long diff = date2.getTime() - date1.getTime();
+					long diffMinutes = diff / (60 * 1000);
+					
+					int numOfSlots;
+					if(diffMinutes % duration != 0){
+						JOptionPane.showMessageDialog(null, "The time difference should not have remainders for this to work");
+						return;
+					}
+					
 					ArrayList<String> list = new ArrayList<>();
 					BufferedReader br = new BufferedReader(new FileReader(fileName));
 					String currentLine = "";
 					while ((currentLine = br.readLine()) != null) {
-						list.add(currentLine);
+						String recs[] = currentLine.split(",");
+						if (recs[0].equals(emp) && recs[2].equals(activity)) {
+							//Do Not add this line
+						}else{
+							list.add(currentLine);
+						}
 					}
 					br.close();
+					
 					BufferedWriter bw = new BufferedWriter(new FileWriter(fileName));
 					for (int a = 0; a < list.size(); a++) {
-						if (list.get(a).equals(selected)) {
-							bw.write(modify + System.getProperty("line.separator"));
-						} else {
-							bw.write(list.get(a) + System.getProperty("line.separator"));
+						bw.write(list.get(a)+ System.getProperty("line.separator"));
+					}
+					bw.close();
+					
+					BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true));
+					for (int a = 0; a < daysList.size(); a++) {
+						numOfSlots = (int) (diffMinutes / duration);
+						date1 = format.parse(startTime);
+						for(int d = 0; d < numOfSlots; d++ ){
+							Calendar cal = Calendar.getInstance();
+					        cal.setTime(date1);
+					        Time timeStart = new Time (cal.getTime().getTime());
+					        
+					        cal.add(Calendar.MINUTE, duration);
+					        Time timeEnd = new Time (cal.getTime().getTime());
+					        writer.write(emp + "," + daysList.get(a) + ","
+									+ activity + "," + timeStart.toString().substring(0, 5) + "-" + timeEnd.toString().substring(0, 5)
+									+ ",available");
+							writer.newLine();
+					       date1 = new Date(timeEnd.getTime());
 						}
+						
+					}
+					writer.close();
+					
+					list = new ArrayList<>();
+					br = new BufferedReader(new FileReader("employeeworkingtime.txt"));
+					while ((currentLine = br.readLine()) != null) {
+						String recs[] = currentLine.split(",");
+						if (recs[0].equals(emp) && recs[1].equals(service) && recs[2].equals(activity)) {
+							list.add(emp+","+service+","+activity+","+newstartTime+","+newendTime+","+duration);
+						}else{
+							list.add(currentLine);
+						}
+					}
+					br.close();
+					bw = new BufferedWriter(new FileWriter("employeeworkingtime.txt"));
+					for (int a = 0; a < list.size(); a++) {
+						bw.write(list.get(a)+ System.getProperty("line.separator"));
 					}
 					bw.close();
 
-				} catch (IOException e1) {
-					logger.log(Level.SEVERE, e1.getMessage());
+				
+				} catch (IOException | ParseException e1) {
+					e1.printStackTrace();
 				}
 				JOptionPane.showMessageDialog(null, "Employee working time updated successfully");
 				empWorkingTimeNotNull(comboBox_4.getSelectedItem().toString());
 				employees(comboBox_4.getSelectedItem().toString());
-				textField.setText("");
 			}
 		});
 		button_2.setBounds(354, 335, 102, 23);
@@ -961,54 +873,76 @@ public class BusinessOwnerPanel extends JFrame {
 		button_3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (comboBox_4.getSelectedIndex() == 0) {
-					JOptionPane.showMessageDialog(null, "Please Select Service To Proceed");
+					JOptionPane.showMessageDialog(null,	"Please Select Service To Proceed");
 					return;
 				}
+				
 				String service = comboBox_4.getSelectedItem().toString();
 				String fileName = service + ".txt";
 				int row = -1;
 				row = table_3.getSelectedRow();
 				if (row < 0) {
-					JOptionPane.showMessageDialog(null, "Please Select row to delete to proceed");
+					JOptionPane.showMessageDialog(null, "Please Select row to update to proceed");
 					return;
 				}
-				String selected = "";
-				selected = table_3.getModel().getValueAt(row, 0).toString() + ","
-						+ table_3.getModel().getValueAt(row, 1).toString() + ","
-						+ table_3.getModel().getValueAt(row, 2).toString() + ","
-						+ table_3.getModel().getValueAt(row, 3).toString() + ","
-						+ table_3.getModel().getValueAt(row, 4).toString();
-
-				try {
-					ArrayList<String> list = new ArrayList<>();
-					BufferedReader br = new BufferedReader(new FileReader(fileName));
-					String currentLine = "";
-					while ((currentLine = br.readLine()) != null) {
-						if (!currentLine.equals(selected)) {
-							list.add(currentLine);
+				int confirm = JOptionPane.showConfirmDialog(null, "You are deleting employee working time. Proceed", "Confirm", 2);
+				if(confirm == 0){
+					String emp,   activity;
+					emp = table_3.getModel().getValueAt(row, 0).toString();
+					activity = table_3.getModel().getValueAt(row, 1).toString();
+	
+					try {
+						ArrayList<String> list = new ArrayList<>();
+						BufferedReader br = new BufferedReader(new FileReader(fileName));
+						String currentLine = "";
+						while ((currentLine = br.readLine()) != null) {
+							String recs[] = currentLine.split(",");
+							if (recs[0].equals(emp) && recs[2].equals(activity)) {
+								//Do Not add this line
+							}else{
+								list.add(currentLine);
+							}
 						}
+						br.close();
+						
+						BufferedWriter bw = new BufferedWriter(new FileWriter(fileName));
+						for (int a = 0; a < list.size(); a++) {
+							bw.write(list.get(a)+ System.getProperty("line.separator"));
+						}
+						bw.close();
+						
+						list = new ArrayList<>();
+						br = new BufferedReader(new FileReader("employeeworkingtime.txt"));
+						while ((currentLine = br.readLine()) != null) {
+							String recs[] = currentLine.split(",");
+							if (recs[0].equals(emp) && recs[1].equals(service) && recs[2].equals(activity)) {
+							
+							}else{
+								list.add(currentLine);
+							}
+						}
+						br.close();
+						bw = new BufferedWriter(new FileWriter("employeeworkingtime.txt"));
+						for (int a = 0; a < list.size(); a++) {
+							bw.write(list.get(a)+ System.getProperty("line.separator"));
+						}
+						bw.close();
+	
+					
+					} catch (IOException  e1) {
+						e1.printStackTrace();
 					}
-					br.close();
-					BufferedWriter bw = new BufferedWriter(new FileWriter(fileName));
-					for (int a = 0; a < list.size(); a++) {
-						bw.write(list.get(a) + System.getProperty("line.separator"));
-					}
-					bw.close();
-
-				} catch (IOException e1) {
-					logger.log(Level.SEVERE, e1.getMessage());
+					JOptionPane.showMessageDialog(null, "Employee working time deleted successfully");
+					empWorkingTimeNotNull(comboBox_4.getSelectedItem().toString());
+					employees(comboBox_4.getSelectedItem().toString());
 				}
-				JOptionPane.showMessageDialog(null, "Employee working time deleted successfully");
-				empWorkingTimeNotNull(comboBox_4.getSelectedItem().toString());
-				employees(comboBox_4.getSelectedItem().toString());
-				textField.setText("");
 			}
 		});
 		button_3.setBounds(354, 373, 102, 23);
 		updateEmpWaorkingTime.add(button_3);
 
 		JScrollPane scrollPane_6 = new JScrollPane();
-		scrollPane_6.setBounds(10, 73, 527, 251);
+		scrollPane_6.setBounds(10, 73, 527, 232);
 		updateEmpWaorkingTime.add(scrollPane_6);
 
 		table_3 = new JTable();
@@ -1016,23 +950,31 @@ public class BusinessOwnerPanel extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				int row = table_3.getSelectedRow();
-				String employee = table_3.getModel().getValueAt(row, 0).toString();
-				String timeAvailable = table_3.getModel().getValueAt(row, 3).toString();
+				String employee = table_3.getModel().getValueAt(row, 0)
+						.toString();
+				String startTime = table_3.getModel().getValueAt(row, 2)
+						.toString();
+				String endTime = table_3.getModel().getValueAt(row, 3)
+						.toString();
+				String duration = table_3.getModel().getValueAt(row, 4)
+						.toString()+" min";
 				comboBox_5.setSelectedItem(employee);
-				String[] slitTime = timeAvailable.split("-");
-				textField.setText(slitTime[0] + "," + slitTime[1]);
+				comboBox_10.setSelectedItem(startTime);
+				comboBox_11.setSelectedItem(endTime);
+				comboBox_12.setSelectedItem(duration);
 			}
 		});
 		table_3.setRowHeight(25);
-		table_3.setModel(new DefaultTableModel(new Object[][] {},
-				new String[] { "Employee Name", "Day", "Activity", "Time Available", "Status" }) {
+		table_3.setModel(new DefaultTableModel(new Object[][] {}, new String[] {
+				"Employee Name", "Activity", "Start Time", "End Time" , "Duration" }) {
 			boolean[] columnEditables = new boolean[] { false, false, false, false, false };
 
 			public boolean isCellEditable(int row, int column) {
 				return columnEditables[column];
 			}
 
-			Class[] columnTypes = new Class[] { Object.class, Object.class, Object.class, Object.class, Object.class };
+			Class[] columnTypes = new Class[] { Object.class, Object.class,
+					Object.class, Object.class , Object.class };
 
 			public Class getColumnClass(int columnIndex) {
 				return columnTypes[columnIndex];
@@ -1040,180 +982,258 @@ public class BusinessOwnerPanel extends JFrame {
 		});
 		scrollPane_6.setViewportView(table_3);
 
-		JLabel lblTimeAvailable = new JLabel("Time Available");
-		lblTimeAvailable.setBounds(24, 377, 108, 14);
-		updateEmpWaorkingTime.add(lblTimeAvailable);
+		JPanel panel_9 = new JPanel();
+		panel_9.setBackground(Color.LIGHT_GRAY);
+		panel_9.setBounds(0, 0, 557, 24);
+		updateEmpWaorkingTime.add(panel_9);
 
-		textField = new JTextField();
-		textField.setSize(179, 20);
-		textField.setLocation(141, 377);
-		updateEmpWaorkingTime.add(textField);
+		JLabel lblUpdateEmployeeWorking = new JLabel(
+				"Update Employee Working Time");
+		panel_9.add(lblUpdateEmployeeWorking);
+		
+		comboBox_10 = new JComboBox();
+		comboBox_10.setModel(new DefaultComboBoxModel(new String[] {
+				"Start Time", "00:00", "00:30", "01:00", "01:30", "02:00",
+				"02:30", "03:00", "03:30", "04:00", "04:30", "05:00", "05:30",
+				"06:00", "06:30", "07:00", "07:30", "08:00", "08:30", "09:00",
+				"09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30",
+				"13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00",
+				"16:30", "17:00", "17:30", "18:00", "18:30", "19:00", "19:30",
+				"20:00", "20:30", "21:00", "21:30", "22:00", "22:30", "23:00",
+				"23:30" }));
+		comboBox_10.setBounds(24, 358, 129, 20);
+		updateEmpWaorkingTime.add(comboBox_10);
+		
+		comboBox_11 = new JComboBox();
+		comboBox_11.setModel(new DefaultComboBoxModel(new String[] {
+				"Start Time", "00:00", "00:30", "01:00", "01:30", "02:00",
+				"02:30", "03:00", "03:30", "04:00", "04:30", "05:00", "05:30",
+				"06:00", "06:30", "07:00", "07:30", "08:00", "08:30", "09:00",
+				"09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30",
+				"13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00",
+				"16:30", "17:00", "17:30", "18:00", "18:30", "19:00", "19:30",
+				"20:00", "20:30", "21:00", "21:30", "22:00", "22:30", "23:00",
+				"23:30" }));
+		comboBox_11.setBounds(205, 358, 115, 20);
+		updateEmpWaorkingTime.add(comboBox_11);
+		
+		comboBox_12 = new JComboBox();
+		comboBox_12.setModel(new DefaultComboBoxModel(new String[] {"Select duration", "30 min", "60 min"}));
+		comboBox_12.setBounds(205, 387, 115, 20);
+		updateEmpWaorkingTime.add(comboBox_12);
+		
+		JLabel lblDuration_1 = new JLabel("Duration");
+		lblDuration_1.setBounds(24, 390, 115, 14);
+		updateEmpWaorkingTime.add(lblDuration_1);
 
 		empWaorkingTime = new JPanel();
 		empWaorkingTime.setVisible(false);
-		empWaorkingTime.setBounds(0, 0, 547, 396);
+		empWaorkingTime.setBounds(0, 0, 557, 396);
 		empWaorkingTime.setLayout(null);
 		panel_2.add(empWaorkingTime);
 
-		comboBox_2 = new JComboBox();
-		comboBox_2.addActionListener(new ActionListener() {
+		JButton btnSave_1 = new JButton("Save");
+		btnSave_1.addActionListener(new ActionListener() {
+			
 			public void actionPerformed(ActionEvent arg0) {
-				if (comboBox_2.getSelectedIndex() != 0) {
-					empWorkingTime(comboBox_2.getSelectedItem().toString());
-					employees(comboBox_2.getSelectedItem().toString());
-				}
-			}
-		});
-		comboBox1.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				if (comboBox1.getSelectedIndex() != 0) {
-					comboBoxactive.removeAllItems();
-					comboBoxactive.addItem("Select Activity");
-					String filename = "serviceactivity.txt";
-					BufferedReader br;
-					select=comboBox1.getSelectedItem().toString();
-					try {
-						br = new BufferedReader(new FileReader(filename));
-					} catch (FileNotFoundException e) {
-						return;
-					}
-					ArrayList<String> services = new ArrayList<String>();
-					String line = "";
-					try {
-						while ((line = br.readLine()) != null) {
-							services.add(line);
-						}
-					} catch (IOException e) {
-						return;
-					}
-					for (int i = 0; i < services.size(); i++) {
-						if (services.get(i).endsWith(comboBox1.getSelectedItem().toString() + "aoa")) {
-							String a = services.get(i);
-							int as = services.get(i).length() - comboBox1.getSelectedItem().toString().length() - 3;
-							a = a.substring(0, as);
-							comboBoxactive.addItem(a);
-						}
-					}
-
-				}
-			}
-		});
-		comboBox_2.setBounds(156, 11, 202, 20);
-		empWaorkingTime.add(comboBox_2);
-
-		JButton button = new JButton("Register");
-		button.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				if (comboBox_2.getSelectedIndex() == 0) {
-					JOptionPane.showMessageDialog(null, "Please Select Service To Proceed");
+				if (comboBox.getSelectedIndex() == 0) {
+					JOptionPane.showMessageDialog(null,
+							"Please select servicde");
 					return;
 				}
+				if (comboBox_13.getSelectedIndex() == 0) {
+					JOptionPane.showMessageDialog(null,
+							"Please select activity");
+					return;
+				}
+				if (comboBox_16.getSelectedIndex() == 0) {
+					JOptionPane.showMessageDialog(null,
+							"Please select starting time");
+					return;
+				}
+				if (comboBox_17.getSelectedIndex() == 0) {
+					JOptionPane.showMessageDialog(null,
+							"Please select ending time");
+					return;
+				}
+				if (comboBox_9.getSelectedIndex() == 0) {
+					JOptionPane.showMessageDialog(null,
+							"Please select duration");
+					return;
+				}
+				
 				if (comboBox_3.getSelectedItem().toString().trim().equals("")
-						|| comboBox_3.getSelectedItem().toString().trim().equals("")) {
-					JOptionPane.showMessageDialog(null, "Enter Employee name to proceed");
+						|| comboBox_3.getSelectedItem().toString().trim()
+								.equals("null")) {
+					JOptionPane.showMessageDialog(null,
+							"Enter Employee name to proceed");
 					return;
 				}
-				String employeeName = comboBox_3.getSelectedItem().toString().trim();
-				if (!Utility.validateInput(employeeName, "[A-Za-z]+", "Please enter a valid name")) {
-					comboBox.grabFocus();
-					return;
+				String service = comboBox.getSelectedItem().toString();
+				String activity = comboBox_13.getSelectedItem().toString();
+				String startTime = comboBox_16.getSelectedItem().toString();
+				String endTime = comboBox_17.getSelectedItem().toString();
+				String employee = comboBox_3.getSelectedItem().toString();
+				
+				int duration = 0;
+				if(comboBox_9.getSelectedIndex() == 1){
+					duration = 30;
+				}if(comboBox_9.getSelectedIndex() == 2){
+					duration = 60;
 				}
-				String service = comboBox_2.getSelectedItem().toString();
-				String fileName = service + ".txt";
-				int rows = table_2.getRowCount();
-				int row = 0;
-				String selected = "";
-				String modify = "";
-				for (row = 0; row < rows; row++) {
-					boolean status = (boolean) table_2.getModel().getValueAt(row, 5);
-					if (status == true) {
-						selected = table_2.getModel().getValueAt(row, 0).toString() + ","
-								+ table_2.getModel().getValueAt(row, 1).toString() + ","
-								+ table_2.getModel().getValueAt(row, 2).toString() + ","
-								+ table_2.getModel().getValueAt(row, 3).toString() + ","
-								+ table_2.getModel().getValueAt(row, 4).toString();
-						modify = comboBox_3.getSelectedItem().toString() + ","
-								+ table_2.getModel().getValueAt(row, 1).toString() + ","
-								+ table_2.getModel().getValueAt(row, 2).toString() + ","
-								+ table_2.getModel().getValueAt(row, 3).toString() + ","
-								+ table_2.getModel().getValueAt(row, 4).toString();
 
-						try {
-							ArrayList<String> list = new ArrayList<>();
-							BufferedReader br = new BufferedReader(new FileReader(fileName));
-							String currentLine = "";
-							while ((currentLine = br.readLine()) != null) {
-								list.add(currentLine);
-							}
-							br.close();
-							BufferedWriter bw = new BufferedWriter(new FileWriter(fileName));
-							for (int a = 0; a < list.size(); a++) {
-								if (list.get(a).equals(selected)) {
-									bw.write(modify + System.getProperty("line.separator"));
-								} else {
-									bw.write(list.get(a) + System.getProperty("line.separator"));
-								}
-							}
-							bw.close();
-
-						} catch (IOException e) {
-							logger.log(Level.SEVERE, e.getMessage());
-						}
-
+				try {
+					SimpleDateFormat format = new SimpleDateFormat("HH:mm");
+					Date date1 = format.parse(startTime);
+					Date date2 = format.parse(endTime);
+					long diff = date2.getTime() - date1.getTime();
+					long diffMinutes = diff / (60 * 1000);
+					
+					int numOfSlots;
+					if(diffMinutes % duration != 0){
+						JOptionPane.showMessageDialog(null, "The difference should not have remainders for this to work");
+						return;
+					}else{
 					}
+
+					BufferedWriter writer = new BufferedWriter(new FileWriter("employeeworkingtime.txt", true));
+					writer.write(employee + "," + service + ","+ activity + "," + startTime + "," + endTime+","+duration);
+					writer.newLine();
+					writer.close();
+					
+					String fileName = service + ".txt";
+					
+					writer = new BufferedWriter(new FileWriter(fileName, true));
+					for (int a = 0; a < daysList.size(); a++) {
+						numOfSlots = (int) (diffMinutes / duration);
+						date1 = format.parse(startTime);
+						for(int d = 0; d < numOfSlots; d++ ){
+							Calendar cal = Calendar.getInstance();
+					        cal.setTime(date1);
+					        Time timeStart = new Time (cal.getTime().getTime());
+					        
+					        cal.add(Calendar.MINUTE, duration);
+					        Time timeEnd = new Time (cal.getTime().getTime());
+					        writer.write(employee + "," + daysList.get(a) + ","
+									+ activity + "," + timeStart.toString().substring(0, 5) + "-" + timeEnd.toString().substring(0, 5)
+									+ ",available");
+							writer.newLine();
+					       date1 = new Date(timeEnd.getTime());
+						}
+						
+					}
+
+					writer.close();
+					JOptionPane.showMessageDialog(null,"Employee time added successfully");
+				} catch (IOException | ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
-				JOptionPane.showMessageDialog(null, "Employee Assigned activity successfully");
-				empWorkingTime(comboBox_2.getSelectedItem().toString());
-				employees(comboBox_2.getSelectedItem().toString());
+
 			}
 		});
-		button.setBounds(348, 289, 102, 23);
-		empWaorkingTime.add(button);
-
-		JLabel lblSelectService_1 = new JLabel("Select Service");
-		lblSelectService_1.setBounds(22, 14, 102, 14);
-		empWaorkingTime.add(lblSelectService_1);
-
-		JScrollPane scrollPane_5 = new JScrollPane();
-		scrollPane_5.setBounds(10, 42, 527, 236);
-		empWaorkingTime.add(scrollPane_5);
-
-		table_2 = new JTable();
-		table_2.setRowHeight(25);
-		table_2.setModel(new DefaultTableModel(new Object[][] {},
-				new String[] { "Employee Name", "Day", "Activity", "Time Available", "Status", "Select" }) {
-			boolean[] columnEditables = new boolean[] { false, false, false, false, false, true };
-
-			public boolean isCellEditable(int row, int column) {
-				return columnEditables[column];
-			}
-
-			Class[] columnTypes = new Class[] { Object.class, Object.class, Object.class, Object.class, Object.class,
-					Boolean.class };
-
-			public Class getColumnClass(int columnIndex) {
-				return columnTypes[columnIndex];
-			}
-		});
-		scrollPane_5.setViewportView(table_2);
+		btnSave_1.setBounds(250, 348, 102, 23);
+		empWaorkingTime.add(btnSave_1);
 
 		JLabel lblEmployeeName = new JLabel("Employee Name");
-		lblEmployeeName.setBounds(36, 293, 136, 14);
+		lblEmployeeName.setBounds(22, 303, 125, 14);
 		empWaorkingTime.add(lblEmployeeName);
 
 		comboBox_3 = new JComboBox();
 		comboBox_3.setEditable(true);
-		comboBox_3.setBounds(156, 290, 182, 20);
+		comboBox_3.setBounds(161, 300, 191, 20);
 		empWaorkingTime.add(comboBox_3);
+
+		JPanel panel_10 = new JPanel();
+		panel_10.setBackground(Color.LIGHT_GRAY);
+		panel_10.setBounds(0, 0, 557, 24);
+		empWaorkingTime.add(panel_10);
+
+		JLabel lblAssignEmployeeWorking = new JLabel(
+				"Assign Employee Working Time");
+		panel_10.add(lblAssignEmployeeWorking);
+
+		comboBox = new JComboBox();
+		comboBox.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (comboBox.getSelectedIndex() != 0) {
+					try {
+						activity(comboBox.getSelectedItem().toString());
+						employees(comboBox.getSelectedItem().toString());
+					} catch (Exception e1) {
+						// e.printStackTrace();
+					}
+				}
+			}
+		});
+		comboBox.setBounds(161, 59, 191, 24);
+		empWaorkingTime.add(comboBox);
+
+		JLabel label = new JLabel("Select Service");
+		label.setBounds(22, 64, 116, 14);
+		empWaorkingTime.add(label);
+
+		JLabel label_8 = new JLabel("Select Activity");
+		label_8.setBounds(22, 106, 116, 14);
+		empWaorkingTime.add(label_8);
+
+		comboBox_13 = new JComboBox();
+		comboBox_13.setModel(new DefaultComboBoxModel(
+				new String[] { "Select activity" }));
+		comboBox_13.setBounds(161, 101, 191, 24);
+		empWaorkingTime.add(comboBox_13);
+
+		JLabel lblStartinftime = new JLabel("Starting Time");
+		lblStartinftime.setBounds(22, 158, 116, 14);
+		empWaorkingTime.add(lblStartinftime);
+
+		comboBox_16 = new JComboBox();
+		comboBox_16.setModel(new DefaultComboBoxModel(new String[] {
+				"Start Time", "00:00", "00:30", "01:00", "01:30", "02:00",
+				"02:30", "03:00", "03:30", "04:00", "04:30", "05:00", "05:30",
+				"06:00", "06:30", "07:00", "07:30", "08:00", "08:30", "09:00",
+				"09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30",
+				"13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00",
+				"16:30", "17:00", "17:30", "18:00", "18:30", "19:00", "19:30",
+				"20:00", "20:30", "21:00", "21:30", "22:00", "22:30", "23:00",
+				"23:30" }));
+		comboBox_16.setBounds(161, 155, 191, 24);
+		empWaorkingTime.add(comboBox_16);
+
+		comboBox_17 = new JComboBox();
+		comboBox_17.setModel(new DefaultComboBoxModel(new String[] {
+				"Start Time", "00:00", "00:30", "01:00", "01:30", "02:00",
+				"02:30", "03:00", "03:30", "04:00", "04:30", "05:00", "05:30",
+				"06:00", "06:30", "07:00", "07:30", "08:00", "08:30", "09:00",
+				"09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30",
+				"13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00",
+				"16:30", "17:00", "17:30", "18:00", "18:30", "19:00", "19:30",
+				"20:00", "20:30", "21:00", "21:30", "22:00", "22:30", "23:00",
+				"23:30" }));
+		comboBox_17.setBounds(161, 209, 191, 24);
+		empWaorkingTime.add(comboBox_17);
+
+		JLabel lblEndingTime = new JLabel("Ending time");
+		lblEndingTime.setBounds(22, 214, 132, 14);
+		empWaorkingTime.add(lblEndingTime);
+		
+		JLabel lblDuration = new JLabel("Duration");
+		lblDuration.setBounds(22, 258, 132, 14);
+		empWaorkingTime.add(lblDuration);
+		
+		comboBox_9 = new JComboBox();
+		comboBox_9.setModel(new DefaultComboBoxModel(new String[] {"Select duration", "30 min", "60 min"}));
+		comboBox_9.setBounds(161, 253, 191, 24);
+		empWaorkingTime.add(comboBox_9);
 
 		bookForCustomer = new JPanel();
 		bookForCustomer.setVisible(false);
-		bookForCustomer.setBounds(0, 0, 547, 407);
+		bookForCustomer.setBounds(0, 0, 557, 407);
 		panel_2.add(bookForCustomer);
 		bookForCustomer.setLayout(null);
 
 		JLabel label_3 = new JLabel("Select Service");
-		label_3.setBounds(10, 14, 127, 14);
+		label_3.setBounds(20, 47, 127, 14);
 		bookForCustomer.add(label_3);
 
 		selectService = new JComboBox();
@@ -1223,16 +1243,16 @@ public class BusinessOwnerPanel extends JFrame {
 					try {
 						activity(selectService.getSelectedItem().toString());
 					} catch (Exception e1) {
-						logger.log(Level.SEVERE, e1.getMessage());
+						// e.printStackTrace();
 					}
 				}
 			}
 		});
-		selectService.setBounds(103, 11, 143, 20);
+		selectService.setBounds(113, 44, 143, 20);
 		bookForCustomer.add(selectService);
 
 		JLabel label_4 = new JLabel("Select Activity");
-		label_4.setBounds(276, 14, 120, 14);
+		label_4.setBounds(286, 47, 120, 14);
 		bookForCustomer.add(label_4);
 
 		selectActivity = new JComboBox();
@@ -1243,16 +1263,16 @@ public class BusinessOwnerPanel extends JFrame {
 						dayOfApp(selectService.getSelectedItem().toString(),
 								selectActivity.getSelectedItem().toString());
 					} catch (Exception e1) {
-						logger.log(Level.SEVERE, e1.getMessage());
+						// e.printStackTrace();
 					}
 				}
 			}
 		});
-		selectActivity.setBounds(401, 11, 136, 20);
+		selectActivity.setBounds(411, 44, 136, 20);
 		bookForCustomer.add(selectActivity);
 
 		JLabel label_5 = new JLabel("Select Day of Appointment");
-		label_5.setBounds(10, 49, 158, 14);
+		label_5.setBounds(20, 82, 158, 14);
 		bookForCustomer.add(label_5);
 
 		selectDay = new JComboBox();
@@ -1261,18 +1281,19 @@ public class BusinessOwnerPanel extends JFrame {
 				if (selectDay.getSelectedIndex() != 0) {
 					try {
 						employee(selectService.getSelectedItem().toString(),
-								selectActivity.getSelectedItem().toString(), selectDay.getSelectedItem().toString());
-					} catch (Exception e1) {
-						logger.log(Level.SEVERE, e1.getMessage());
+								selectActivity.getSelectedItem().toString(),
+								selectDay.getSelectedItem().toString());
+					} catch (Exception e) {
+						// e.printStackTrace();
 					}
 				}
 			}
 		});
-		selectDay.setBounds(178, 47, 172, 20);
+		selectDay.setBounds(188, 80, 172, 20);
 		bookForCustomer.add(selectDay);
 
 		JLabel label_6 = new JLabel("Select Employee");
-		label_6.setBounds(10, 87, 158, 14);
+		label_6.setBounds(20, 120, 158, 14);
 		bookForCustomer.add(label_6);
 
 		selectEmp = new JComboBox();
@@ -1280,17 +1301,19 @@ public class BusinessOwnerPanel extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				if (selectEmp.getSelectedIndex() != 0) {
 					try {
-						availableSlots(selectService.getSelectedItem().toString(),
-								selectActivity.getSelectedItem().toString(), selectDay.getSelectedItem().toString(),
-								selectEmp.getSelectedItem().toString());
+						availableSlots(selectService.getSelectedItem()
+								.toString(), selectActivity.getSelectedItem()
+								.toString(), selectDay.getSelectedItem()
+								.toString(), selectEmp.getSelectedItem()
+								.toString());
 					} catch (Exception e1) {
-						logger.log(Level.SEVERE, e1.getMessage());
+						// e.printStackTrace();
 
 					}
 				}
 			}
 		});
-		selectEmp.setBounds(129, 83, 221, 20);
+		selectEmp.setBounds(113, 116, 143, 20);
 		bookForCustomer.add(selectEmp);
 
 		JLabel label_7 = new JLabel("Select Time Above and Save");
@@ -1301,12 +1324,15 @@ public class BusinessOwnerPanel extends JFrame {
 		button_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (selectCustomer.getText().trim().equals("")) {
-					JOptionPane.showMessageDialog(null, "Select Customer To Book For");
+					JOptionPane.showMessageDialog(null,
+							"Enter Customer To Book For");
 					return;
 				}
-				String customerName = selectCustomer.getText().trim();
-				if (!Utility.validateInput(customerName, "^[A-Za-z]+$", "Please enter a valid name i.e. Jim")) {
-					selectCustomer.grabFocus();
+				String customerInfo = selectCustomer.getText();
+				String[] customerData = customerInfo.split(",");
+				if (customerData.length != 2) {
+					JOptionPane.showMessageDialog(null,
+							"Enter Customer's 2 names separated by comma");
 					return;
 				}
 				String service = selectService.getSelectedItem().toString();
@@ -1316,13 +1342,23 @@ public class BusinessOwnerPanel extends JFrame {
 				String selected = "";
 				for (row = 0; row < rows; row++) {
 					try {
-						boolean status = (boolean) table_4.getModel().getValueAt(row, 5);
+						boolean status = (boolean) table_4.getModel()
+								.getValueAt(row, 5);
 						if (status == true) {
-							selected = table_4.getModel().getValueAt(row, 0).toString() + ","
-									+ table_4.getModel().getValueAt(row, 1).toString() + ","
-									+ table_4.getModel().getValueAt(row, 2).toString() + ","
-									+ table_4.getModel().getValueAt(row, 3).toString() + ","
-									+ table_4.getModel().getValueAt(row, 4).toString();
+							selected = table_4.getModel().getValueAt(row, 0)
+									.toString()
+									+ ","
+									+ table_4.getModel().getValueAt(row, 1)
+											.toString()
+									+ ","
+									+ table_4.getModel().getValueAt(row, 2)
+											.toString()
+									+ ","
+									+ table_4.getModel().getValueAt(row, 3)
+											.toString()
+									+ ","
+									+ table_4.getModel().getValueAt(row, 4)
+											.toString();
 							String recs[];
 							while (true) {
 								recs = selected.split(",");
@@ -1337,9 +1373,11 @@ public class BusinessOwnerPanel extends JFrame {
 
 							}
 
-							String modified = recs[0] + "," + recs[1] + "," + recs[2] + "," + recs[3] + "," + recs[4];
+							String modified = recs[0] + "," + recs[1] + ","
+									+ recs[2] + "," + recs[3] + "," + recs[4];
 
-							BufferedWriter bw = new BufferedWriter(new FileWriter(fileName));
+							BufferedWriter bw = new BufferedWriter(
+									new FileWriter(fileName));
 							for (int a = 0; a < list.size(); a++) {
 								if (list.get(a).equals(selected)) {
 									list.set(a, modified);
@@ -1351,12 +1389,13 @@ public class BusinessOwnerPanel extends JFrame {
 								}
 							}
 							bw.close();
-							BufferedWriter writer2 = new BufferedWriter(new FileWriter("BookingSummaries.txt", true));
-							String customerInfo = selectCustomer.getText();
-							String[] customerData = customerInfo.split(",");
-							writer2.write("Customer," + customerData[0] + "," + customerData[1]
-									+ ",booked Appointment on," + recs[0] + "," + recs[1] + ","
-									+ /* servicename */service + "," + recs[2] + "," + recs[3]);
+							BufferedWriter writer2 = new BufferedWriter(
+									new FileWriter("BookingSummaries.txt", true));
+							writer2.write("Customer," + customerData[0] + ","
+									+ customerData[1]
+									+ ",booked Appointment on," + recs[0] + ","
+									+ recs[1] + "," + /* servicename */service
+									+ "," + recs[2] + "," + recs[3]);
 							writer2.newLine();
 							writer2.close();
 						}
@@ -1368,11 +1407,13 @@ public class BusinessOwnerPanel extends JFrame {
 
 				if (selectEmp.getSelectedIndex() != 0) {
 					try {
-						availableSlots(selectService.getSelectedItem().toString(),
-								selectActivity.getSelectedItem().toString(), selectDay.getSelectedItem().toString(),
-								selectEmp.getSelectedItem().toString());
+						availableSlots(selectService.getSelectedItem()
+								.toString(), selectActivity.getSelectedItem()
+								.toString(), selectDay.getSelectedItem()
+								.toString(), selectEmp.getSelectedItem()
+								.toString());
 					} catch (Exception e1) {
-						logger.log(Level.SEVERE, e1.getMessage());
+						// e.printStackTrace();
 
 					}
 				}
@@ -1385,11 +1426,11 @@ public class BusinessOwnerPanel extends JFrame {
 		bookForCustomer.add(button_1);
 
 		JLabel lblSelectCustomer = new JLabel("Enter Customer");
-		lblSelectCustomer.setBounds(10, 123, 100, 14);
+		lblSelectCustomer.setBounds(260, 120, 100, 14);
 		bookForCustomer.add(lblSelectCustomer);
 
 		selectCustomer = new JTextField();
-		selectCustomer.setBounds(129, 120, 221, 20);
+		selectCustomer.setBounds(363, 117, 184, 20);
 		bookForCustomer.add(selectCustomer);
 
 		JScrollPane scrollPane_7 = new JScrollPane();
@@ -1397,16 +1438,17 @@ public class BusinessOwnerPanel extends JFrame {
 		bookForCustomer.add(scrollPane_7);
 
 		table_4 = new JTable();
-		table_4.setModel(new DefaultTableModel(new Object[][] {},
-				new String[] { "Employee", "Day", "Service", "Time", "Availability", "Book" }) {
-			Class[] columnTypes = new Class[] { Object.class, Object.class, Object.class, Object.class, Object.class,
-					Boolean.class };
+		table_4.setModel(new DefaultTableModel(new Object[][] {}, new String[] {
+				"Employee", "Day", "Service", "Time", "Availability", "Book" }) {
+			Class[] columnTypes = new Class[] { Object.class, Object.class,
+					Object.class, Object.class, Object.class, Boolean.class };
 
 			public Class getColumnClass(int columnIndex) {
 				return columnTypes[columnIndex];
 			}
 
-			boolean[] columnEditables = new boolean[] { false, false, false, false, false, true };
+			boolean[] columnEditables = new boolean[] { false, false, false,
+					false, false, true };
 
 			public boolean isCellEditable(int row, int column) {
 				return columnEditables[column];
@@ -1422,8 +1464,198 @@ public class BusinessOwnerPanel extends JFrame {
 		table_4.setRowHeight(25);
 
 		scrollPane_7.setViewportView(table_4);
+
+		JPanel panel_11 = new JPanel();
+		panel_11.setBackground(Color.LIGHT_GRAY);
+		panel_11.setBounds(0, 0, 557, 24);
+		bookForCustomer.add(panel_11);
+
+		JLabel lblMakeBookingFor = new JLabel("Make Booking For Customer");
+		panel_11.add(lblMakeBookingFor);
+
+		addActivity = new JPanel();
+		addActivity.setVisible(true);
+		addActivity.setBounds(0, 0, 557, 407);
+		panel_2.add(addActivity);
+		addActivity.setLayout(null);
+
+		JPanel panel_13 = new JPanel();
+		panel_13.setBackground(Color.LIGHT_GRAY);
+		panel_13.setBounds(0, 0, 557, 24);
+		addActivity.add(panel_13);
+
+		JLabel lblAddServiceActivitieshere = new JLabel(
+				"Add Service Activities Here");
+		panel_13.add(lblAddServiceActivitieshere);
+
+		comboBox_8 = new JComboBox();
+		comboBox_8.setBounds(173, 75, 185, 24);
+		addActivity.add(comboBox_8);
+
+		JLabel lblSelectService_3 = new JLabel("Select Service");
+		lblSelectService_3.setBounds(27, 80, 136, 14);
+		addActivity.add(lblSelectService_3);
+
+		JLabel lblNumberOfActivities_1 = new JLabel("Number of Activities");
+		lblNumberOfActivities_1.setBounds(27, 120, 136, 14);
+		addActivity.add(lblNumberOfActivities_1);
+
+		JLabel lblActivityName = new JLabel("Activity Name");
+		lblActivityName.setBounds(27, 163, 136, 14);
+		addActivity.add(lblActivityName);
+
+		textField_6 = new JTextField();
+		textField_6.setBounds(173, 127, 185, 20);
+		addActivity.add(textField_6);
+		textField_6.setColumns(10);
+
+		JScrollPane scrollPane_8 = new JScrollPane();
+		scrollPane_8.setBounds(173, 158, 185, 144);
+		addActivity.add(scrollPane_8);
+
+		JTextArea textArea = new JTextArea();
+		scrollPane_8.setViewportView(textArea);
+
+		JButton btnSaveActivities = new JButton("Save Activities");
+		btnSaveActivities.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (comboBox_8.getSelectedIndex() == 0) {
+					JOptionPane.showMessageDialog(null,
+							"Select Service Name to proceed");
+					return;
+				}
+
+				String service = comboBox_8.getSelectedItem().toString();
+				String fileName = service + ".txt";
+				String num = textField_6.getText().trim();
+				String activities = textArea.getText().trim();
+
+				if (num.equals("") || activities.equals("")) {
+					JOptionPane.showMessageDialog(null,
+							"Enter Number of activities To Register");
+					return;
+				}
+
+				try {
+					int number = Integer.parseInt(num);
+					String[] activitiesArr = activities.split(",");
+					if (activitiesArr.length != number) {
+						JOptionPane
+								.showMessageDialog(null,
+										"Enter correct number of activities, separate by [,]");
+						return;
+					}
+					FileWriter fw = new FileWriter(fileName, true);
+					BufferedWriter bw = new BufferedWriter(fw);
+
+					for (int a = 0; a < number; a++) {
+						bw.write("null,null," + activitiesArr[a].toLowerCase()
+								+ ",null,available");
+						bw.newLine();
+					}
+					bw.close();
+
+					JOptionPane.showMessageDialog(null,
+							"Service Entered successfully");
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+
+			}
+		});
+		btnSaveActivities.setForeground(Color.BLACK);
+		btnSaveActivities.setBackground(SystemColor.activeCaption);
+		btnSaveActivities.setBounds(178, 343, 180, 23);
+		addActivity.add(btnSaveActivities);
+
+		JPanel panel = new JPanel();
+		panel.setBackground(Color.ORANGE);
+		contentPane.add(panel, BorderLayout.NORTH);
+		panel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
+
+		JLabel lblNewLabel_1 = new JLabel();
+		img = new ImageIcon(this.getClass().getResource("/icon.png"))
+				.getImage();
+		lblNewLabel_1.setIcon(new ImageIcon(img));
+		Image bi;
+		try {
+			bi = null;
+			bi = ImageIO.read(this.getClass().getResource("/icon.png"));
+			lblNewLabel_1.setIcon(new ImageIcon(bi
+					.getScaledInstance(50, 36, 36)));
+		} catch (Exception e) {
+
+		}
+		panel.add(lblNewLabel_1);
+
+		businessTitle = new JLabel(fillBusinessData());
+		businessTitle.setFont(new Font("Tahoma", Font.BOLD, 13));
+		panel.add(businessTitle);
 		services();
 
+	}
+
+	protected void empAvailableParticularDay(String service, String day) {
+		try {
+			String fileName = service + ".txt";
+			BufferedReader br;
+			br = new BufferedReader(new FileReader(fileName));
+			String line = "";
+			ArrayList<String> list = new ArrayList<>();
+			String recs[] = null;
+			while ((line = br.readLine()) != null) {
+				recs = line.split(",");
+				if (!recs[0].equals("null") && recs[1].equals(day)
+						&& recs[4].equals("available")) {
+					list.add(line);
+				}
+			}
+
+			br.close();
+			int i;
+
+			DefaultTableModel model = (DefaultTableModel) table_1.getModel();
+			model.setRowCount(0);
+			Object[] rowData = new Object[5];
+			for (i = 0; i < list.size(); i++) {
+				recs = list.get(i).split(",");
+				rowData[0] = recs[0];
+				rowData[1] = recs[1];
+				rowData[2] = recs[2];
+				rowData[3] = recs[3];
+				rowData[4] = recs[4];
+				model.addRow(rowData);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	private String fillBusinessData() {
+		String businessDetails = "";
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(
+					"BusinessInfo.txt"));
+			String line = "";
+			while ((line = br.readLine()) != null) {
+				String recs[] = line.split(",");
+				if (recs[3].equals(userData[4])) {
+					businessDetails = "<html><font color='green'>Name:</font> "
+							+ "<font color='red'>" + recs[0] + "</font> "
+							+ "<font color='green'>Location:</font> "
+							+ "<font color='red'>" + recs[1] + "</font> "
+							+ "<font color='green'>Telephone:</font> "
+							+ "<font color='red'>" + recs[2]
+							+ "</font> </html>";
+				}
+			}
+			br.close();
+			return businessDetails;
+		} catch (Exception e2) {
+			e2.printStackTrace();
+			return businessDetails;
+		}
 	}
 
 	public void services() {
@@ -1435,32 +1667,31 @@ public class BusinessOwnerPanel extends JFrame {
 			while ((line = br.readLine()) != null) {
 				services.add(line);
 			}
-			comboBox.removeAllItems();
-			comboBox1.removeAllItems();
 			servicedeleteCombo.removeAllItems();
 			comboBox_1.removeAllItems();
-			comboBox_2.removeAllItems();
 			comboBox_4.removeAllItems();
 			selectService.removeAllItems();
+			comboBox_6.removeAllItems();
+			comboBox_8.removeAllItems();
+			comboBox.removeAllItems();
 			servicedeleteCombo.addItem("Select Service");
-			comboBox.addItem("Select Services");
-			comboBoxactive.addItem("Select Activity");
-			comboBox1.addItem("Select Sercvice");
-			comboBox_2.addItem("Select Services");
 			comboBox_4.addItem("Select Services");
 			selectService.addItem("Select Services");
+			comboBox_6.addItem("Select Services");
+			comboBox_8.addItem("Select Services");
+			comboBox.addItem("Select Services");
 			for (int a = 0; a < services.size(); a++) {
-				comboBox.addItem(services.get(a));
-				comboBox1.addItem(services.get(a));
 				servicedeleteCombo.addItem(services.get(a));
 				comboBox_1.addItem(services.get(a));
-				comboBox_2.addItem(services.get(a));
 				comboBox_4.addItem(services.get(a));
 				selectService.addItem(services.get(a));
+				comboBox_6.addItem(services.get(a));
+				comboBox_8.addItem(services.get(a));
+				comboBox.addItem(services.get(a));
 			}
 
 		} catch (IOException e) {
-			logger.log(Level.SEVERE, e.getMessage());
+			e.printStackTrace();
 		}
 
 	}
@@ -1487,7 +1718,7 @@ public class BusinessOwnerPanel extends JFrame {
 			}
 
 		} catch (IOException e) {
-			logger.log(Level.SEVERE, e.getMessage());
+			e.printStackTrace();
 		}
 
 	}
@@ -1502,7 +1733,7 @@ public class BusinessOwnerPanel extends JFrame {
 			String recs[] = null;
 			while ((line = br.readLine()) != null) {
 				recs = line.split(",");
-				if (recs[0].equals("null") || recs[4].equals("available")) {
+				if (!recs[0].equals("null") && recs[4].equals("available")) {
 					list.add(line);
 				}
 			}
@@ -1523,51 +1754,14 @@ public class BusinessOwnerPanel extends JFrame {
 				model.addRow(rowData);
 			}
 		} catch (IOException e) {
-			logger.log(Level.SEVERE, e.getMessage());
-		}
-
-	}
-
-	public void empWorkingTime(String service) {
-		try {
-			String fileName = service + ".txt";
-			BufferedReader br;
-			br = new BufferedReader(new FileReader(fileName));
-			String line = "";
-			ArrayList<String> list = new ArrayList<>();
-			String recs[] = null;
-			while ((line = br.readLine()) != null) {
-				recs = line.split(",");
-				if (recs[0].equals("null")) {
-					list.add(line);
-				}
-			}
-
-			br.close();
-			int i;
-
-			DefaultTableModel model = (DefaultTableModel) table_2.getModel();
-			model.setRowCount(0);
-			Object[] rowData = new Object[6];
-			for (i = 0; i < list.size(); i++) {
-				recs = list.get(i).split(",");
-				rowData[0] = recs[0];
-				rowData[1] = recs[1];
-				rowData[2] = recs[2];
-				rowData[3] = recs[3];
-				rowData[4] = recs[4];
-				rowData[5] = false;
-				model.addRow(rowData);
-			}
-		} catch (IOException e) {
-			logger.log(Level.SEVERE, e.getMessage());
+			e.printStackTrace();
 		}
 
 	}
 
 	public void empWorkingTimeNotNull(String service) {
 		try {
-			String fileName = service + ".txt";
+			String fileName = "employeeworkingtime.txt";
 			BufferedReader br;
 			br = new BufferedReader(new FileReader(fileName));
 			String line = "";
@@ -1575,7 +1769,7 @@ public class BusinessOwnerPanel extends JFrame {
 			String recs[] = null;
 			while ((line = br.readLine()) != null) {
 				recs = line.split(",");
-				if (!recs[0].equals("null")) {
+				if (recs[1].equals(service)) {
 					list.add(line);
 				}
 			}
@@ -1589,21 +1783,20 @@ public class BusinessOwnerPanel extends JFrame {
 			for (i = 0; i < list.size(); i++) {
 				recs = list.get(i).split(",");
 				rowData[0] = recs[0];
-				rowData[1] = recs[1];
-				rowData[2] = recs[2];
-				rowData[3] = recs[3];
-				rowData[4] = recs[4];
+				rowData[1] = recs[2];
+				rowData[2] = recs[3];
+				rowData[3] = recs[4];
+				rowData[4] = recs[5];
 				model.addRow(rowData);
 			}
 		} catch (IOException e) {
-			logger.log(Level.SEVERE, e.getMessage());
+			e.printStackTrace();
 		}
 
 	}
 
 	public void panelToSee(JPanel panel) {
 		addActivity.setVisible(false);
-		addsactivity.setVisible(false);
 		bookingsummaries.setVisible(false);
 		newservice.setVisible(false);
 		deleteservice.setVisible(false);
@@ -1611,24 +1804,27 @@ public class BusinessOwnerPanel extends JFrame {
 		empWaorkingTime.setVisible(false);
 		updateEmpWaorkingTime.setVisible(false);
 		bookForCustomer.setVisible(false);
-		System.out.println(panel + " hows");
+		addActivity.setVisible(false);
 		panel.setVisible(true);
-		panel.setBounds(0, 0, 547, 407);
-		System.out.println(panel + " hows");
+		panel.setBounds(0, 0, 557, 407);
 	}
 
 	public void activity(String service) {
 		ArrayList<String> serviceNames = Utils.getActivities(service);
 		selectActivity.removeAllItems();
+		comboBox_13.removeAllItems();
+		comboBox_13.addItem("Select Activity");
 		selectActivity.addItem("Select Activity");
 		for (int a = 0; a < serviceNames.size(); a++) {
 			selectActivity.addItem(serviceNames.get(a));
+			comboBox_13.addItem(serviceNames.get(a));
 		}
 
 	}
 
 	public void dayOfApp(String service, String activity) {
-		ArrayList<String> activityDays = Utils.getActivityAppointmentDays(service, activity);
+		ArrayList<String> activityDays = Utils.getActivityAppointmentDays(
+				service, activity);
 		selectDay.removeAllItems();
 		selectDay.addItem("Select Day");
 		for (int a = 0; a < activityDays.size(); a++) {
@@ -1639,17 +1835,21 @@ public class BusinessOwnerPanel extends JFrame {
 
 	public void employee(String service, String activity, String day) {
 		service += ".txt";
-		ArrayList<String> employeeNames = Utils.getEmployeeNames(service, activity, day);
+		ArrayList<String> employeeNames = Utils.getEmployeeNames(service,
+				activity, day);
 		selectEmp.removeAllItems();
 		;
 		selectEmp.addItem("Select Employee");
 		for (int a = 0; a < employeeNames.size(); a++) {
-			selectEmp.addItem(employeeNames.get(a));
+			if (!employeeNames.get(a).equals("null")) {
+				selectEmp.addItem(employeeNames.get(a));
+			}
 		}
 
 	}
 
-	public void availableSlots(String service, String activity, String day, String empName) {
+	public void availableSlots(String service, String activity, String day,
+			String empName) {
 		list.clear();
 		temp.clear();
 		try {
@@ -1664,10 +1864,12 @@ public class BusinessOwnerPanel extends JFrame {
 			int one = 0;
 			for (int a = 0; a < list.size(); a++) {
 				String recs[] = list.get(a).split(",");
-				if (!recs[0].equals("null") && recs[4].equals("available")
+				if (!recs[0].equals("null")
+						&& recs[4].equals("available")
 						&& (recs[1].toLowerCase().equals(day)
-								&& (recs[0].toLowerCase().equals(empName) || empName.equals("*"))
-								&& (recs[2].toLowerCase().equals(activity)))) {
+								&& (recs[0].toLowerCase().equals(empName) || empName
+										.equals("*")) && (recs[2].toLowerCase()
+								.equals(activity)))) {
 					temp.add(list.get(a));
 					one++;
 				}
@@ -1690,27 +1892,28 @@ public class BusinessOwnerPanel extends JFrame {
 				model.addRow(rowData);
 			}
 		} catch (IOException e) {
-			logger.log(Level.SEVERE, e.getMessage());
+			e.printStackTrace();
 		}
 
 	}
-	// public void customers(){
-	// String fileName = "customerinfo.txt";
-	// BufferedReader br;
-	// try {
-	// br = new BufferedReader(new FileReader(fileName));
-	// String line = "";
-	// String[] recs = null;
-	// selectCustomer.removeAllItems();
-	// selectCustomer.addItem("Select Customer");
-	// while ((line = br.readLine()) != null) {
-	// recs = line.split(",");
-	// selectCustomer.addItem(recs[0]+","+recs[1]);
-	// }
-	//
-	// } catch (IOException e) {
-	// e.printStackTrace();
-	// }
-	//
-	// }
+
+	private void closeLock() {
+		try {
+			lock.release();
+		} catch (Exception e) {
+		}
+		try {
+			lock.release();
+			chanel.close();
+		} catch (Exception e) {
+		}
+
+	}
+
+	private void deleteFile(File file) {
+		try {
+			file.delete();
+		} catch (Exception e) {
+		}
+	}
 }

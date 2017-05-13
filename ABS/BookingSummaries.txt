@@ -1,3 +1,0 @@
-Customer,abc,abc,booked Appointment on,john,monday,hairdressing,washing,06:00:00-06:30:00
-Customer,abc,abc,booked Appointment on,john,monday,hairdressing,washing,07:00:00-07:30:00
-Customer,KIMKK,T,booked Appointment on,john,monday,hairdressing,washing,08:30:00-09:00:00
