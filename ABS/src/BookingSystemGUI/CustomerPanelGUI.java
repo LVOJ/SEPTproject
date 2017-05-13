@@ -1,11 +1,9 @@
 package BookingSystemGUI;
 
 import java.awt.BorderLayout;
-import java.awt.Image;
-import java.awt.Toolkit;
+import java.awt.EventQueue;
 
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
+import javax.imageio.IIOException;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -13,6 +11,8 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.JToggleButton;
 
 import java.awt.Dimension;
+import java.awt.CardLayout;
+
 import javax.swing.JLabel;
 import javax.swing.JPasswordField;
 
@@ -21,6 +21,7 @@ import java.awt.event.ActionEvent;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -31,24 +32,16 @@ import javax.swing.JTable;
 import javax.swing.JScrollPane;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JComboBox;
-
+import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import CommandLine.Utils;
 
 import javax.swing.JButton;
 import javax.swing.DefaultComboBoxModel;
 
-import java.awt.Color;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import javax.swing.JMenuBar;
-import javax.swing.JMenu;
-
 public class CustomerPanelGUI extends JFrame {
-	private static Logger logger = Logger.getLogger(CustomerPanelGUI.class
-			.getName());
+	private static Logger logger = Logger.getLogger(CustomerPanelGUI.class.getName());
 	private JPanel contentPane;
 	private JPasswordField passwordField;
 	private JLabel lblKilimoKCornelius;
@@ -70,31 +63,22 @@ public class CustomerPanelGUI extends JFrame {
 	private JButton btnCancelBooking;
 	private JTable table_2;
 	private JPanel cancelBooking;
-	private Image img;
-
+	
 	public CustomerPanelGUI(String[] userData) {
 		setResizable(false);
 		setTitle("Appointment Booking System");
-		setIconImage(Toolkit.getDefaultToolkit().getImage(
-				BusinessOwnerPanel.class.getResource("/icon.png")));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 773, 517);
+		setBounds(100, 100, 773, 446);
 		setLocationRelativeTo(null);
-
-		JMenuBar menuBar = new JMenuBar();
-		menuBar.setBackground(new Color(102, 204, 102));
-		setJMenuBar(menuBar);
-
-		JMenu mnBusiness = new JMenu("Business");
-		menuBar.add(mnBusiness);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
-		contentPane.setLayout(new BorderLayout(0, 0));
+		contentPane.setLayout(null);
 
 		JPanel panel_2 = new JPanel();
+		panel_2.setBounds(0, 0, 175, 407);
 		panel_2.setPreferredSize(new Dimension(170, 10));
-		contentPane.add(panel_2, BorderLayout.WEST);
+		contentPane.add(panel_2);
 		panel_2.setLayout(null);
 
 		JToggleButton tglbtnWelcome = new JToggleButton("View My Booking");
@@ -149,7 +133,7 @@ public class CustomerPanelGUI extends JFrame {
 		});
 		tglbtnLogout.setBounds(10, 266, 160, 23);
 		panel_2.add(tglbtnLogout);
-
+		
 		JToggleButton tglbtnViewMyProfile = new JToggleButton("View My Profile");
 		tglbtnViewMyProfile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -163,6 +147,7 @@ public class CustomerPanelGUI extends JFrame {
 		panel_2.add(tglbtnViewMyProfile);
 
 		JPanel panel_3 = new JPanel();
+		panel_3.setBounds(175, 0, 582, 407);
 		contentPane.add(panel_3);
 		panel_3.setLayout(null);
 
@@ -242,11 +227,10 @@ public class CustomerPanelGUI extends JFrame {
 		viewbooking.add(scrollPane);
 
 		table = new JTable();
-		// table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		//table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		table.setRowHeight(25);
 		table.setModel(new DefaultTableModel(new Object[][] {}, new String[] {
-				"Employee Name", "Day Booked", "Service", "Activity ",
-				"Time Available" }) {
+				"Employee Name", "Day Booked", "Service", "Activity ",	"Time Available" }) {
 			boolean[] columnEditables = new boolean[] { false, false, false,
 					false, false };
 
@@ -254,7 +238,7 @@ public class CustomerPanelGUI extends JFrame {
 				return columnEditables[column];
 			}
 		});
-
+		
 		table.getColumnModel().getColumn(0).setPreferredWidth(85);
 		scrollPane.setViewportView(table);
 
@@ -287,7 +271,7 @@ public class CustomerPanelGUI extends JFrame {
 					try {
 						activity(comboBox.getSelectedItem().toString());
 					} catch (Exception e) {
-						// e.printStackTrace();
+						//e.printStackTrace();
 					}
 				}
 			}
@@ -297,8 +281,7 @@ public class CustomerPanelGUI extends JFrame {
 		services();
 
 		comboBox_1 = new JComboBox();
-		comboBox_1.setModel(new DefaultComboBoxModel(
-				new String[] { "Select Activity" }));
+		comboBox_1.setModel(new DefaultComboBoxModel(new String[] {"Select Activity"}));
 		comboBox_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if (comboBox_1.getSelectedIndex() != 0) {
@@ -315,8 +298,7 @@ public class CustomerPanelGUI extends JFrame {
 		custombooking.add(comboBox_1);
 
 		comboBox_2 = new JComboBox();
-		comboBox_2.setModel(new DefaultComboBoxModel(
-				new String[] { "Select Day" }));
+		comboBox_2.setModel(new DefaultComboBoxModel(new String[] {"Select Day"}));
 		comboBox_2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if (comboBox_2.getSelectedIndex() != 0) {
@@ -334,8 +316,7 @@ public class CustomerPanelGUI extends JFrame {
 		custombooking.add(comboBox_2);
 
 		comboBox_3 = new JComboBox();
-		comboBox_3.setModel(new DefaultComboBoxModel(
-				new String[] { "Select Employee" }));
+		comboBox_3.setModel(new DefaultComboBoxModel(new String[] {"Select Employee"}));
 		comboBox_3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if (comboBox_3.getSelectedIndex() != 0) {
@@ -346,7 +327,7 @@ public class CustomerPanelGUI extends JFrame {
 								comboBox_3.getSelectedItem().toString());
 					} catch (Exception e) {
 						logger.log(Level.SEVERE, e.getMessage());
-
+						
 					}
 				}
 			}
@@ -359,19 +340,16 @@ public class CustomerPanelGUI extends JFrame {
 		custombooking.add(scrollPane_1);
 
 		table_1 = new JTable();
-		// table_1.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		table_1.setModel(new DefaultTableModel(new Object[][] {}, new String[] {
-				"Employee", "Day", "Service", "Time", "Availability", "Book" }) {
-			Class[] columnTypes = new Class[] { Object.class, Object.class,
-					Object.class, Object.class, Object.class, Boolean.class };
-
+		//table_1.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		table_1.setModel(new DefaultTableModel(new Object[][] {},
+				new String[] { "Employee", "Day", "Service", "Time", "Availability", "Book" }) {
+			Class[] columnTypes = new Class[] {
+					Object.class, Object.class, Object.class, Object.class, Object.class, Boolean.class
+				};
 			public Class getColumnClass(int columnIndex) {
 				return columnTypes[columnIndex];
 			}
-
-			boolean[] columnEditables = new boolean[] { false, false, false,
-					false, false, true };
-
+			boolean[] columnEditables = new boolean[] { false,false,false,false,false,true };
 			public boolean isCellEditable(int row, int column) {
 				return columnEditables[column];
 			}
@@ -398,69 +376,58 @@ public class CustomerPanelGUI extends JFrame {
 				int row = 0;
 				int rows = table_1.getRowCount();
 				String selected = "";
-				for (row = 0; row < rows; row++) {
-					try {
-						boolean status = (boolean) table_1.getModel()
-								.getValueAt(row, 5);
-						if (status == true) {
-							selected = table_1.getModel().getValueAt(row, 0)
-									.toString()
-									+ ","
-									+ table_1.getModel().getValueAt(row, 1)
-											.toString()
-									+ ","
-									+ table_1.getModel().getValueAt(row, 2)
-											.toString()
-									+ ","
-									+ table_1.getModel().getValueAt(row, 3)
-											.toString()
-									+ ","
-									+ table_1.getModel().getValueAt(row, 4)
-											.toString();
-							String recs[];
-							while (true) {
-								recs = selected.split(",");
+				for(row = 0; row < rows; row ++){
+					try{
+					boolean status = (boolean) table_1.getModel().getValueAt(row, 5);
+					if(status == true){
+						selected = table_1.getModel().getValueAt(row, 0).toString() + ","+
+								table_1.getModel().getValueAt(row, 1).toString() + ","+
+								table_1.getModel().getValueAt(row, 2).toString() + ","+
+								table_1.getModel().getValueAt(row, 3).toString()+ ","+
+								table_1.getModel().getValueAt(row, 4).toString();
+						String recs[];
+						while (true) {
+							recs = selected.split(",");
 
-								if (recs[4].equals("Un-available")) {
-									System.out.println("Booking Un-Available");
-									System.out.println("Please select another");
-								} else {
-									recs[4] = "Un-available";
-									break;
-								}
-
+							if (recs[4].equals("Un-available")) {
+								System.out.println("Booking Un-Available");
+								System.out.println("Please select another");
+							} else {
+								recs[4] = "Un-available";
+								break;
 							}
 
-							String modified = recs[0] + "," + recs[1] + ","
-									+ recs[2] + "," + recs[3] + "," + recs[4];
-
-							BufferedWriter bw = new BufferedWriter(
-									new FileWriter(fileName));
-							for (int a = 0; a < list.size(); a++) {
-								if (list.get(a).equals(selected)) {
-									list.set(a, modified);
-									bw.write(list.get(a));
-									bw.newLine();
-								} else {
-									bw.write(list.get(a));
-									bw.newLine();
-								}
-							}
-							bw.close();
-							BufferedWriter writer2 = new BufferedWriter(
-									new FileWriter("BookingSummaries.txt", true));
-							writer2.write("Customer," + userData[0] + ","
-									+ userData[1] + ",booked Appointment on,"
-									+ recs[0] + "," + recs[1] + ","
-									+ /* servicename */service + "," + recs[2]
-									+ "," + recs[3]);
-							writer2.newLine();
-							writer2.close();
 						}
-					} catch (Exception e) {
+
+						String modified = recs[0] + "," + recs[1] + "," + recs[2]
+								+ "," + recs[3] + "," + recs[4];
+						
+						BufferedWriter bw = new BufferedWriter(new FileWriter(
+								fileName));
+						for (int a = 0; a < list.size(); a++) {
+							if (list.get(a).equals(selected)) {
+								list.set(a, modified);
+								bw.write(list.get(a));
+								bw.newLine();
+							} else {
+								bw.write(list.get(a));
+								bw.newLine();
+							}
+						}
+						bw.close();
+						BufferedWriter writer2 = new BufferedWriter(new FileWriter(
+								"BookingSummaries.txt", true));
+						writer2.write("Customer," + userData[0] + "," + userData[1]
+								+ ",booked Appointment on," + recs[0] + ","
+								+ recs[1] + "," + /* servicename */service + ","
+								+ recs[2] + "," + recs[3]);
+						writer2.newLine();
+						writer2.close();
+					}
+					}catch(Exception e){
 						logger.log(Level.SEVERE, e.getMessage());
 					}
-
+					
 				}
 				if (comboBox_3.getSelectedIndex() != 0) {
 					try {
@@ -470,7 +437,7 @@ public class CustomerPanelGUI extends JFrame {
 								comboBox_3.getSelectedItem().toString());
 					} catch (Exception e) {
 						logger.log(Level.SEVERE, e.getMessage());
-
+						
 					}
 				}
 				JOptionPane.showMessageDialog(null, "Successfully Booked");
@@ -479,105 +446,87 @@ public class CustomerPanelGUI extends JFrame {
 		});
 		btnSave.setBounds(485, 373, 89, 23);
 		custombooking.add(btnSave);
-
+		
 		cancelBooking = new JPanel();
 		cancelBooking.setBounds(10, 0, 572, 406);
 		panel_3.add(cancelBooking);
 		cancelBooking.setLayout(null);
-
+		
 		btnCancelBooking = new JButton("Cancel Booking");
 		btnCancelBooking.addActionListener(new ActionListener() {
 			@SuppressWarnings("null")
 			public void actionPerformed(ActionEvent arg0) {
-
+				
 				String service = "", activity = "", day = "", empName = "", time = "";
-
+				
 				int row = 0;
 				int rows = table_2.getRowCount();
-				for (row = 0; row < rows; row++) {
-					boolean status = (boolean) table_2.getModel().getValueAt(
-							row, 5);
-					if (status == true) {
+				for(row = 0; row < rows; row++){
+					boolean status = (boolean) table_2.getModel().getValueAt(row, 5);
+					if(status == true){
 						time = table_2.getModel().getValueAt(row, 4).toString();
-						activity = table_2.getModel().getValueAt(row, 3)
-								.toString();
-						service = table_2.getModel().getValueAt(row, 2)
-								.toString();
+						activity = table_2.getModel().getValueAt(row, 3).toString();
+						service = table_2.getModel().getValueAt(row, 2).toString();
 						day = table_2.getModel().getValueAt(row, 1).toString();
-						empName = table_2.getModel().getValueAt(row, 0)
-								.toString();
-
-						ArrayList<String> bookedSlotsList = new ArrayList<>();
-						try {
-
-							BufferedReader br = new BufferedReader(
-									new FileReader("BookingSummaries.txt"));
-							String line = "";
-							while ((line = br.readLine()) != null) {
-								bookedSlotsList.add(line);
-							}
-							br.close();
-
-							File bookingSummaries = new File(
-									"BookingSummaries.txt");
-							File tempBookingSummaries = new File(
-									"tempBookingSummaries.txt");
-							BufferedReader reader = new BufferedReader(
-									new FileReader(bookingSummaries));
-							BufferedWriter writer = new BufferedWriter(
-									new FileWriter(tempBookingSummaries));
-
-							String lineToRemove = "Customer," + userData[0]
-									+ "," + userData[1]
-									+ ",booked Appointment on," + empName + ","
-									+ day + "," + service + "," + activity
-									+ "," + time;
-							String currentLine;
-
-							while ((currentLine = reader.readLine()) != null) {
-								// trim newline when comparingwith lineToRemove
-								String trimmedLine = currentLine.trim();
-								if (trimmedLine.equals(lineToRemove))
-									continue;
-								writer.write(currentLine
-										+ System.getProperty("line.separator"));
-							}
-							writer.close();
-							reader.close();
-
-							bookingSummaries.delete();
-							tempBookingSummaries.renameTo(bookingSummaries);
-							tempBookingSummaries.delete();
-
-							String fileName = service + ".txt";
-							ArrayList<String> list = new ArrayList<String>();
-							br = new BufferedReader(new FileReader(fileName));
-							line = "";
-							String[] recs = null;
-							String lineToRename = empName + "," + day + ","
-									+ activity + "," + time;
-							String modify = "";
-							while ((line = br.readLine()) != null) {
-								recs = line.split(",");
-								modify = recs[0] + "," + recs[1] + ","
-										+ recs[2] + "," + recs[3];
-								if (modify.equals(lineToRename)) {
-									recs[4] = "available";
-									modify += "," + recs[4];
-								} else {
-									modify = line;
-								}
-								list.add(modify);
-							}
-
-							BufferedWriter bw = new BufferedWriter(
-									new FileWriter(fileName));
-							for (int a = 0; a < list.size(); a++) {
-								bw.write(list.get(a));
-								bw.newLine();
-							}
-							bw.close();
-						} catch (IOException e) {
+						empName = table_2.getModel().getValueAt(row, 0).toString();
+						
+				        ArrayList<String> bookedSlotsList = new ArrayList<>();
+						try{
+							
+							BufferedReader br = new BufferedReader(new FileReader("BookingSummaries.txt"));
+					        String line = "";
+					        while((line=br.readLine())!=null){
+					        	bookedSlotsList.add(line);
+					        }
+					        br.close();
+						
+					        File bookingSummaries = new File("BookingSummaries.txt");
+					        File tempBookingSummaries = new File("tempBookingSummaries.txt");
+					        BufferedReader reader = new BufferedReader(new FileReader(bookingSummaries));
+					        BufferedWriter writer = new BufferedWriter(new FileWriter(tempBookingSummaries));
+					        
+					        String lineToRemove = "Customer,"+userData[0]+","+userData[1]+",booked Appointment on,"+empName+","+day+","+service+","+activity+","+time;
+					        String currentLine;
+					        
+					        while((currentLine = reader.readLine()) != null){
+					        	//trim newline when comparingwith lineToRemove
+					        	String trimmedLine = currentLine.trim();
+					        	if(trimmedLine.equals(lineToRemove)) continue;
+					        	writer.write(currentLine + System.getProperty("line.separator"));
+					        }
+					        writer.close();
+					        reader.close();
+					        
+					        bookingSummaries.delete();
+					        tempBookingSummaries.renameTo(bookingSummaries);
+					        tempBookingSummaries.delete();
+					        
+					        String fileName = service+".txt"; 
+					        ArrayList<String> list = new ArrayList<String>();
+					        br = new BufferedReader(new FileReader(fileName));
+					        line = "";
+					        String [] recs = null;
+					        String lineToRename = empName+","+day+","+activity+","+time;
+					        String modify = "";
+					        while((line=br.readLine())!=null){
+					        	recs = line.split(",");
+					        	modify = recs[0]+","+recs[1]+","+recs[2]+","+ recs[3];
+					        	if(modify.equals(lineToRename)){
+					        		recs[4] = "available";
+					        		modify += ","+recs[4];
+					        	}else{
+					        		modify = line;
+					        	}
+					            list.add(modify);
+					        }
+					        
+					        BufferedWriter bw = new BufferedWriter(new FileWriter(fileName));
+					        for(int a=0;a<list.size();a++){
+				                bw.write(list.get(a));
+				                bw.newLine();
+					        }
+					        bw.close();
+						}catch(IOException e){
 							logger.log(Level.SEVERE, e.getMessage());
 						}
 					}
@@ -589,58 +538,32 @@ public class CustomerPanelGUI extends JFrame {
 		});
 		btnCancelBooking.setBounds(426, 362, 136, 23);
 		cancelBooking.add(btnCancelBooking);
-
+		
 		JScrollPane scrollPane_2 = new JScrollPane();
 		scrollPane_2.setBounds(0, 0, 562, 356);
 		cancelBooking.add(scrollPane_2);
-
+		
 		table_2 = new JTable();
 		table_2.setRowHeight(25);
 		table_2.setModel(new DefaultTableModel(new Object[][] {}, new String[] {
-				"Employee Name", "Day Booked", "Service", "Activity ",
-				"Time Available", "Cancel" }) {
-			Class[] columnTypes = new Class[] { Object.class, Object.class,
-					Object.class, Object.class, Object.class, Boolean.class };
-
+				"Employee Name", "Day Booked", "Service", "Activity ","Time Available", "Cancel" }) {
+			Class[] columnTypes = new Class[] {
+					Object.class, Object.class, Object.class, Object.class, Object.class, Boolean.class
+				};
 			public Class getColumnClass(int columnIndex) {
 				return columnTypes[columnIndex];
 			}
-
-			boolean[] columnEditables = new boolean[] { false, false, false,
-					false, false, true };
+			boolean[] columnEditables = new boolean[] { false, false, false, false, false, true };
 
 			public boolean isCellEditable(int row, int column) {
 				return columnEditables[column];
 			}
 		});
-
+		
 		scrollPane_2.setViewportView(table_2);
-
-		JPanel panel = new JPanel();
-		panel.setBackground(Color.ORANGE);
-		contentPane.add(panel, BorderLayout.NORTH);
-		panel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
-
-		JLabel label_4 = new JLabel();
-		img = new ImageIcon(this.getClass().getResource("/icon.png"))
-				.getImage();
-		label_4.setIcon(new ImageIcon(img));
-		Image bi;
-		try {
-			bi = null;
-			bi = ImageIO.read(this.getClass().getResource("/icon.png"));
-			label_4.setIcon(new ImageIcon(bi.getScaledInstance(50, 36, 36)));
-		} catch (Exception e) {
-
-		}
-		panel.add(label_4);
-
-		JLabel label_5 = new JLabel(fillBusinessData());
-		label_5.setFont(new Font("Tahoma", Font.BOLD, 13));
-		panel.add(label_5);
-
+		
 		userDetails(userData);
-
+		
 	}
 
 	protected void viewToCancelMyBooking(String[] userData) {
@@ -802,18 +725,20 @@ public class CustomerPanelGUI extends JFrame {
 		comboBox_3.removeAllItems();
 		comboBox_3.addItem("Select Employee");
 		for (int a = 0; a < employeeNames.size(); a++) {
-			if (!employeeNames.get(a).equals("null")) {
-				comboBox_3.addItem(employeeNames.get(a));
+			if(employeeNames.get(a)!=null&&!employeeNames.get(a).equalsIgnoreCase("null")){
+			comboBox_3.addItem(employeeNames.get(a));
+			System.out.println("in"+ employeeNames.get(a));
 			}
+			System.out.println("out"+ employeeNames.get(a));
 		}
 
 	}
 
 	public void availableSlots(String service, String activity, String day,
-			String empName) {
+		String empName) {
 		list.clear();
 		temp.clear();
-
+		
 		try {
 			String fileName = service + ".txt";
 			BufferedReader br;
@@ -826,8 +751,7 @@ public class CustomerPanelGUI extends JFrame {
 			int one = 0;
 			for (int a = 0; a < list.size(); a++) {
 				String recs[] = list.get(a).split(",");
-				if (!recs[0].equals("null")
-						&& recs[4].equals("available")
+				if (!recs[0].equals("null") && recs[4].equals("available")
 						&& (recs[1].toLowerCase().equals(day)
 								&& (recs[0].toLowerCase().equals(empName) || empName
 										.equals("*")) && (recs[2].toLowerCase()
@@ -857,28 +781,5 @@ public class CustomerPanelGUI extends JFrame {
 			logger.log(Level.SEVERE, e.getMessage());
 		}
 
-	}
-
-	private String fillBusinessData() {
-		String businessDetails = "";
-		try {
-			BufferedReader br = new BufferedReader(new FileReader(
-					"BusinessInfo.txt"));
-			String line = "";
-			while ((line = br.readLine()) != null) {
-				String recs[] = line.split(",");
-				businessDetails = "<html><font color='green'>Name:</font> "
-						+ "<font color='red'>" + recs[0] + "</font> "
-						+ "<font color='green'>Location:</font> "
-						+ "<font color='red'>" + recs[1] + "</font> "
-						+ "<font color='green'>Telephone:</font> "
-						+ "<font color='red'>" + recs[2] + "</font> </html>";
-			}
-			br.close();
-			return businessDetails;
-		} catch (Exception e2) {
-			e2.printStackTrace();
-			return businessDetails;
-		}
 	}
 }

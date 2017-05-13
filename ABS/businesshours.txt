@@ -1,0 +1,6 @@
+monday,09:00-11:00,smith
+tuesday,09:00-12:00,smith
+wednesday,09:00-13:00,smith
+thursday,09:00-14:00,smith
+friday,09:00-15:00,smith
+saturday,09:00-16:00,smith
