@@ -3,8 +3,17 @@
   <groupId>ABS</groupId>
   <artifactId>ABS</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  <name>ABS</name>
-  <description>Appointment Booking System</description>
+  <packaging>jar</packaging>
+  <properties>
+   <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+   <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+  </properties>
+  
+  <dependencies>
+  <!-- Junit dependeny here -->
+  
+  </dependencies>
+  
   <build>
     <sourceDirectory>src</sourceDirectory>
     <resources>
@@ -18,10 +27,24 @@
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.3</version>
+        <version>3.5.1</version>
         <configuration>
           <source>1.8</source>
           <target>1.8</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>3.0.2</version>
+         <configuration>
+         <source>1.5</source>
+          <target>1.5</target>
+          <archive>
+          <manifest>
+          <addClasspath>true</addClasspath>
+          <mainClass>bookingSystemGUI.Main</mainClass>
+          </manifest>
+          </archive>
         </configuration>
       </plugin>
     </plugins>
