@@ -11,20 +11,133 @@ import javax.swing.JOptionPane;
 
 import customer.CustomerPanelGUI;
 
+/**
+ * 
+ Class that contains most of utilities
+ *
+ */
 public class Utils {
 	private static Logger logger = Logger.getLogger(CustomerPanelGUI.class.getName());
+	
+	//Function to valid user input, the input should macth the regex
 	public static boolean validateInput(String textEntered, String regex, String message){
-    	boolean validInput = false;
-    	if (textEntered.matches(regex)){
-    		validInput = true;
+    	boolean validInput = false;//Boolean must be true if the input matches the regex
+    	if (textEntered.matches(regex)){//Check whether the input matches the regex
+    		validInput = true; //Set boolean is true
     	}else {
     		JOptionPane.showMessageDialog(null, message, "Invalid Input!",
-    			    JOptionPane.WARNING_MESSAGE);
+    			    JOptionPane.WARNING_MESSAGE);//Error message if input does not regex
     	}
 		
 		return validInput;
 	}
+	
+	//Function to validate username to make sure it is unique
+	public static boolean validateUsername(String username){
+		String fileName = "customerinfo.txt";//Initialize the file to read
+		boolean uniqueUsername = false; //Boolean to be true if the username does not exist
+		String registeredUsername = ""; //A username that already exists
+		BufferedReader br; //Declare BufferedReader
+		try {
+			br = new BufferedReader(new FileReader(fileName)); //Open the file in read mode and give access to BufferedReader
+			String line = "";
+			String[] recs = null;
+			while ((line = br.readLine()) != null) { //Loop through every line in the file that is not null
+				recs = line.split(",");//Separate the line with comma and add the records in a string array
+				registeredUsername = recs[4]; //Registrered username is set to array item 5
+				registeredUsername.toLowerCase();
+				if (registeredUsername.equals(username.toLowerCase())){ //Check if the username read is equal to username entered by user
+					return uniqueUsername; //end execution if the username exists and return
+				}
+			}
+			uniqueUsername = true; //Set boolean is equal to true
+			br.close();
+		} catch (IOException e) {
+			logger.log(Level.SEVERE, e.getMessage());
+		}
+		
+		return uniqueUsername;
 
+	}
+	
+	//Function to get available employees for certain activity
+	public static ArrayList<String> getEmployeeNames(String fileName, String activityName, String activityDayName){
+		String line="";
+		ArrayList<String> employeeNames = new ArrayList<String>(); //List to contain employees
+		try {
+			FileReader fr;
+			fr = new FileReader(fileName); //Open the file in read mode
+	        BufferedReader br = new BufferedReader(fr); //Give access to BufferedReader
+			while( (line = br.readLine())!= null ){ //Loop through every line in the file that is not null
+				String arr[] = line.split(",");//Separate the line with a comma
+				String employee = arr[0].toLowerCase(); //Set employee is equal to the 1st array item
+				String day = arr[1].toLowerCase();//Set day is equal to the 2nd array item
+				String activity = arr[2].toLowerCase();//Set activity is equal to the 3rd array item
+				if(activityName.equals(activity) && activityDayName.equals(day)){ //Check is activity read equals to activity selected and day read is equal to day selected
+					if (!employeeNames.contains(employee)) { //Check if employee list contains the employee read
+						employeeNames.add(employee);//Add employee if they do not exist in the list
+					}	
+				}
+
+			}
+			br.close();//Close the BufferedReader
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return employeeNames; 
+		
+    }
+
+	//Function to get activities from a certain service
+	public static ArrayList<String> getActivities(String serviceName){
+		ArrayList<String> serviceActivities = new ArrayList<>();//List to contain all activities in the service
+		try{
+			
+			BufferedReader br = new BufferedReader(new FileReader("serviceduration.txt"));//Open the file in read mode and give access to BufferedReader
+	        String line = "", recs[];
+	        while((line=br.readLine())!=null){//Loop through every line that is not null
+	        	recs = line.split(",");//Separate the line with comma and add to String array
+	        	if(recs[0].equals(serviceName)){ //Check whether the 1st array item is equal to servicename
+	        		serviceActivities.add(recs[1]); //Add the second array item in the list
+	            }
+	        }
+	        br.close();//Close the BufferedReader
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		
+		return serviceActivities;
+	}
+
+	//Function to available days for the activity to book, should supply service and activity
+	public static ArrayList<String> getActivityAppointmentDays(String serviceName, String activityName){
+		ArrayList<String> activityAppointmentDays = new ArrayList<>();//List to contain available days
+		serviceName += ".txt"; //Initialize a file name
+		try{
+			BufferedReader br = new BufferedReader(new FileReader(serviceName)); //Open the file in read mode and give access to BufferedReader
+	        String line = "";
+	        while((line=br.readLine())!=null){//Loop through every line that is not null
+	        	String[] activities = line.split(",");//Separate the line by comma and add the records in string array
+	        	String appointmentDay = activities[1];//Set appointmentDay equal to 2nd item array
+	        	String particularActivity = activities[2]; //Set particularActivity equal to 3rd item array
+	        	
+	        	if(particularActivity.equals(activityName)){//Check whether activity selected by user is equal to particularActivity
+		        	if(!activityAppointmentDays.contains(appointmentDay)){
+		        		activityAppointmentDays.add(appointmentDay); //Add appointmentDay in the list
+		        	}
+	        	}
+	        	
+	        }
+	       br.close();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		
+		return activityAppointmentDays;
+	}
+
+
+	/*
 	public static boolean validateDay(String selectDay, String message){
 		boolean validDay = false;
         switch(selectDay.toLowerCase()){
@@ -42,32 +155,9 @@ public class Utils {
         }
 		return validDay;
 	}
-	public static boolean validateUsername(String username){
-		String fileName = "customerinfo.txt";
-		boolean uniqueUsername = false;
-		String registeredUsername = "";
-		BufferedReader br;
-		try {
-			br = new BufferedReader(new FileReader(fileName));
-			String line = "";
-			String[] recs = null;
-			while ((line = br.readLine()) != null) {
-				recs = line.split(",");
-				registeredUsername = recs[4];
-				registeredUsername.toLowerCase();
-				if (registeredUsername.equals(username.toLowerCase())){
-					return uniqueUsername;
-				}
-			}
-			uniqueUsername = true;
-			
-		} catch (IOException e) {
-			logger.log(Level.SEVERE, e.getMessage());
-		}
-		
-		return uniqueUsername;
-
-	}
+	*/
+	
+	/*
 	private static Scanner in=new Scanner(System.in);           //scanner object to input from user in console
 	public static String validateInput(String message, String regex){
 	    	boolean validInput = false;
@@ -83,7 +173,8 @@ public class Utils {
 		
 		return input;
 	}
-	
+	*/
+	/*
 	public static String validateIntegerInput(String message, int min, int max){
     	boolean validInput = false;
     	String input = null;
@@ -99,36 +190,10 @@ public class Utils {
 	
 	return input;
 	}
+	*/
+	 
 	
-	public static ArrayList<String> getEmployeeNames(String fileName, String activityName, String activityDayName){
-		String line="";
-		int i = 0;
-		ArrayList<String> employeeNames = new ArrayList<String>();
-		try {
-			FileReader fr;
-			fr = new FileReader(fileName);
-	        BufferedReader br = new BufferedReader(fr);
-			while( (line = br.readLine())!= null ){
-				String arr[] = line.split(",");
-				String employee = arr[0].toLowerCase();
-				String day = arr[1].toLowerCase();
-				String activity = arr[2].toLowerCase();
-				if(activityName.equals(activity) && activityDayName.equals(day)){
-					if (!employeeNames.contains(employee)) {
-						employeeNames.add(i, employee);
-						i++;
-					}	
-				}
-
-			}
-			br.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return employeeNames; 
-		
-    }
-	
+	/*
 	public static String validateEmployees(ArrayList<String> employeeNames){
 		boolean validEmployee = false;
     	String selectedEmployee = null;
@@ -149,6 +214,9 @@ public class Utils {
 		return selectedEmployee;
 		
 	}
+	*/
+	
+	/*
 	public static String validateDay(String message){
 		boolean validDay = false;
 		String selectedDay = null;
@@ -174,6 +242,8 @@ public class Utils {
     	
     	return selectedDay;
 	}
+	*/
+	/*
 	public static String validateActivity(){
 		boolean validActivity = false;
 		String selectedActivity = null;
@@ -197,7 +267,8 @@ public class Utils {
     	
     	return selectedActivity;
 	}
-
+*/
+	/*
 	public static ArrayList<String> validateDayList(int listSize){
 		ArrayList<String> dayList = new ArrayList<>();
 		boolean validList = false;
@@ -218,7 +289,8 @@ public class Utils {
 	    	
 		return dayList;
 	}
-	
+	*/
+	/*
 
 	public static ArrayList<String> validateActivityList(int listSize){
 		ArrayList<String> activityList = new ArrayList<>();
@@ -240,7 +312,9 @@ public class Utils {
 	    	
 		return activityList;
 	}
+	*/
 	
+	/*
 	public static ArrayList<String> validateWorkingTimeList(int listSize){
 		ArrayList<String> workingTimeList = new ArrayList<>();
 		boolean validList = false;
@@ -263,54 +337,5 @@ public class Utils {
 	    	
 		return workingTimeList;
 	}
-
-	public static ArrayList<String> getActivities(String serviceName){
-		ArrayList<String> serviceActivities = new ArrayList<>();
-		serviceName += ".txt";
-		try{
-			
-			BufferedReader br = new BufferedReader(new FileReader(serviceName));
-	        String line = "";
-	        while((line=br.readLine())!=null){
-	        	String[] activities = line.split(",");
-	        	String particularActivity = activities[2];
-	        	if(!serviceActivities.contains(particularActivity)){
-	        		serviceActivities.add(particularActivity);
-	            }
-	        }
-	        
-	       // getActivityAppointmentDays()
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		
-		return serviceActivities;
-	}
-
-	public static ArrayList<String> getActivityAppointmentDays(String serviceName, String activityName){
-		ArrayList<String> activityAppointmentDays = new ArrayList<>();
-		serviceName += ".txt";
-		try{
-			BufferedReader br = new BufferedReader(new FileReader(serviceName));
-	        String line = "";
-	        while((line=br.readLine())!=null){
-	        	String[] activities = line.split(",");
-	        	String appointmentDay = activities[1];
-	        	String particularActivity = activities[2];
-	        	
-	        	if(particularActivity.equals(activityName)){
-		        	if(!activityAppointmentDays.contains(appointmentDay)){
-		        		activityAppointmentDays.add(appointmentDay);
-		        	}
-	        	}
-	        	
-	        }
-	       
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		
-		return activityAppointmentDays;
-	}
-	
+	*/	
 }

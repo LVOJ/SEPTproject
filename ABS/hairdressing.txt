@@ -1,2 +1,17 @@
 null,null,hair cut,null,available
 ericnew,friday,hair cut,00:30-01:00,available
+Kim,monday,hair cut,02:00-03:00,available
+Kim,tuesday,hair cut,02:00-03:00,available
+Kim,wednesday,hair cut,02:00-03:00,available
+Kim,thursday,hair cut,02:00-03:00,available
+Kim,friday,hair cut,02:00-03:00,available
+Kim,monday,hair washing,02:00-02:30,available
+Kim,monday,hair washing,02:30-03:00,available
+Kim,tuesday,hair washing,02:00-02:30,available
+Kim,tuesday,hair washing,02:30-03:00,available
+Kim,wednesday,hair washing,02:00-02:30,available
+Kim,wednesday,hair washing,02:30-03:00,available
+Kim,thursday,hair washing,02:00-02:30,available
+Kim,thursday,hair washing,02:30-03:00,available
+Kim,friday,hair washing,02:00-02:30,available
+Kim,friday,hair washing,02:30-03:00,available

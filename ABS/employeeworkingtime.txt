@@ -1,0 +1,2 @@
+Kim,hairdressing,hair cut,02:00,03:00,60
+Kim,hairdressing,hair washing,02:00,03:00,30

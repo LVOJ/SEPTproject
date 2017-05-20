@@ -1,15 +1,17 @@
 package business;
 
 import java.awt.BorderLayout;
-
-import javax.imageio.ImageIO;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import javax.swing.JLabel;
-import javax.swing.JButton;
-
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Image;
+import java.awt.SystemColor;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -26,43 +28,39 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 
-import javax.swing.ImageIcon;
-import javax.swing.JComboBox;
+import javax.imageio.ImageIO;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-
-import javax.swing.JTable;
-import javax.swing.JScrollPane;
+import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
+import utility.BookAppointmentFactory;
 import utility.Utils;
-
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-
-import javax.swing.JMenuBar;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.Color;
-import java.awt.Image;
-import java.awt.SystemColor;
-import java.awt.Toolkit;
-
-import javax.swing.JPasswordField;
-
 import account.Login;
 
+/**
+ * 
+ Class that provides Business Owner Dashboard
+ *
+ */
 public class BusinessOwnerPanel extends JFrame {
 
+	//Declare private variables that will be used in this class
 	private JPanel contentPane;
 	private JTable table;
 	private JPanel bookingsummaries;
@@ -71,10 +69,10 @@ public class BusinessOwnerPanel extends JFrame {
 	private JPanel deleteservice;
 	private JComboBox servicedeleteCombo;
 	private JTable empTable;
-	private JComboBox EmpAvailableComboBox;
+	private JComboBox EmpAvailableSelctService;
 	private JPanel empAvailable;
 	private JPanel updateEmpWaorkingTime;
-	private JComboBox empWorkingTimeComboBox;
+	private JComboBox empNamesWorkingTime;
 	private JPanel empWorkingTime;
 	private JTable DurationTable;
 	private JComboBox comboBoxService;
@@ -83,7 +81,7 @@ public class BusinessOwnerPanel extends JFrame {
 	private JComboBox selectActivity;
 	private JComboBox selectDay;
 	private JComboBox selectEmp;
-	private JTable EmployeeWorkingTimeTable;
+	private JTable bookingAvailableSlotsTable;
 	private JTextField selectCustomer;
 	private JPanel bookForCustomer;
 	private ArrayList<String> list = new ArrayList<>();
@@ -92,27 +90,31 @@ public class BusinessOwnerPanel extends JFrame {
 	private Image img;
 	private JLabel businessTitle;
 	private JComboBox ComboBoxServiceName;
-	private JComboBox deleteServiceComboBox;
+	private JComboBox deleteActivityComboBox;
 	private JPanel addActivity;
-	private JTextField AddActivityNameTextField;
-	private JComboBox AddActivityComboBox;
+	private JComboBox ServiceToAddActivity;
 	private FileChannel chanel;
 	private FileLock lock;
 	private JComboBox StartTimeComboBox;
 	private JComboBox EndTimeComboBox;
-	private JComboBox comboBox;
-	private JComboBox comboBox_13;
+	private JComboBox selectServiceToAddEmpTime;
 	private ArrayList<String> daysList = new ArrayList<>();
-	private JComboBox SelectDayComboBox;
+	private JComboBox empAvailSelectDay;
 	private JComboBox SelectDurationComboBox;
 	private JComboBox StarTimeComboBox1;
 	private JComboBox EndTimeComboBox1;
-	private JComboBox DurationComboBox1;
+	private JTextField activityNameField;
+	private JTable activitySelectTable;
 
+	/**
+	 * 
+	 create frame
+	 */
 	public BusinessOwnerPanel(String[] userData) {
 		setResizable(false);
 		this.userData = userData;
 
+		//Business working days in a list
 		daysList.add("monday");
 		daysList.add("tuesday");
 		daysList.add("wednesday");
@@ -120,12 +122,14 @@ public class BusinessOwnerPanel extends JFrame {
 		daysList.add("friday");
 
 		setTitle("Appointment Booking System");
+		//Display an icon image in the window.
 		setIconImage(Toolkit.getDefaultToolkit().getImage(
 				BusinessOwnerPanel.class.getResource("/icon.png")));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 773, 517);
-		setLocationRelativeTo(null);
+		setLocationRelativeTo(null); // Set window location centered in the  screen
 
+		//Menu bar for navigation to Business details registration or Business Working Hours
 		JMenuBar menuBar = new JMenuBar();
 		menuBar.setBackground(new Color(102, 204, 102));
 		setJMenuBar(menuBar);
@@ -133,6 +137,7 @@ public class BusinessOwnerPanel extends JFrame {
 		JMenu mnBusiness = new JMenu("Business");
 		menuBar.add(mnBusiness);
 
+		//This will navigate business owner to Business details registration
 		JMenuItem mntmDetails = new JMenuItem("Details");
 		mntmDetails.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -143,6 +148,7 @@ public class BusinessOwnerPanel extends JFrame {
 		});
 		mnBusiness.add(mntmDetails);
 
+		//This will navigate business owner to Business Working Hours setting
 		JMenuItem mntmWorkingHours = new JMenuItem("Working Hours");
 		mntmWorkingHours.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -156,247 +162,228 @@ public class BusinessOwnerPanel extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(new BorderLayout(0, 0));
 
-		JPanel panel_1 = new JPanel();
-		panel_1.setPreferredSize(new Dimension(200, 10));
-		panel_1.setBackground(new Color(192, 192, 192));
-		contentPane.add(panel_1, BorderLayout.WEST);
-		panel_1.setLayout(null);
+		//Panel to show business details
+		JPanel panel = new JPanel();
+		panel.setBackground(Color.ORANGE);
+		contentPane.add(panel, BorderLayout.NORTH);
+		panel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
 
+		JLabel lblNewLabel_1 = new JLabel();
+		img = new ImageIcon(this.getClass().getResource("/icon.png"))
+				.getImage();//Display the icon image 
+		lblNewLabel_1.setIcon(new ImageIcon(img));
+		Image bi;
+		try {
+			bi = null;
+			bi = ImageIO.read(this.getClass().getResource("/icon.png"));
+			lblNewLabel_1.setIcon(new ImageIcon(bi
+					.getScaledInstance(50, 36, 36)));//Set size for the image to fit on the JLabel
+		} catch (Exception e) {
+
+		}
+		panel.add(lblNewLabel_1);
+
+		businessTitle = new JLabel(fillBusinessData());//Label to show business details
+		businessTitle.setFont(new Font("Tahoma", Font.BOLD, 13));
+		panel.add(businessTitle);
+		
+		
+		//This panel will contain all the buttons that will display the appropriate panels according to the activity the business owner wants to perform
+		JPanel leftPanelForNav = new JPanel();
+		leftPanelForNav.setPreferredSize(new Dimension(200, 10));
+		leftPanelForNav.setBackground(new Color(192, 192, 192));
+		contentPane.add(leftPanelForNav, BorderLayout.WEST); //Float the panel to the left side of the window
+		leftPanelForNav.setLayout(null);
+
+		//This will display a panel to define Employee Working Time by entering all the required activity details
 		JButton btnNewEmployeeWorking = new JButton("Employee Working Time");
-		btnNewEmployeeWorking.setForeground(Color.BLACK);
-		btnNewEmployeeWorking.setBackground(SystemColor.activeCaption);
+		btnNewEmployeeWorking.setForeground(Color.BLACK); //Text color in this button
+		btnNewEmployeeWorking.setBackground(SystemColor.activeCaption); //Button color
 		btnNewEmployeeWorking.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				panelToSee(empWorkingTime);
+				panelToSee(empWorkingTime); //Display this panel and hide other panels
 			}
 		});
-		btnNewEmployeeWorking.setBounds(10, 102, 180, 23);
-		panel_1.add(btnNewEmployeeWorking);
-
-		JButton btnViewBookingSummaries = new JButton("View Booking Summaries");
+		btnNewEmployeeWorking.setBounds(10, 130, 180, 23);
+		leftPanelForNav.add(btnNewEmployeeWorking);
+		
+		//This will display a panel for Viewing Booking Summaries made by customers or business owner on behalf of the customers
+		JButton btnViewBookingSummaries = new JButton("Show Booking Summaries");
 		btnViewBookingSummaries.setForeground(Color.BLACK);
 		btnViewBookingSummaries.setBackground(SystemColor.activeCaption);
 		btnViewBookingSummaries.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				panelToSee(bookingsummaries);
+				panelToSee(bookingsummaries); //Display this panel and hide other panels
 				try {
-					FileReader fr = new FileReader("BookingSummaries.txt");
-					BufferedReader br = new BufferedReader(fr);
-					String line = "";
-					ArrayList<String> bookings = new ArrayList<>();
-					while ((line = br.readLine()) != null) {
-						bookings.add(line);
-					}
+					ArrayList<String> bookings = new OwnerUtils().ShowBookingSummaries(); //List with all booking records
+					
 					DefaultTableModel model = (DefaultTableModel) table
-							.getModel();
-					Object[] rowData = new Object[6];
+							.getModel(); //declare a model for the model
+					Object[] rowData = new Object[6]; //This table should have 6 colums
 					model.setRowCount(0);
 
 					String[] recs = null;
-					for (int i = 0; i < bookings.size(); i++) {
-						recs = bookings.get(i).split(",");
+					for (int i = 0; i < bookings.size(); i++) { //Loop through each list item in the bookings ArrayList
+						recs = bookings.get(i).split(",");  //Separate the current list item with comma and add the splits in a string array
+						/*
+						 * Set the string arrays to the appropriate columns in the table
+						 */
 						rowData[0] = recs[1] + " " + recs[2];
 						rowData[1] = recs[4];
 						rowData[2] = recs[5];
 						rowData[3] = recs[6];
 						rowData[4] = recs[7];
 						rowData[5] = recs[8];
-						model.addRow(rowData);
+						model.addRow(rowData); //Add the row to the table
 					}
-					br.close();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 
 			}
 		});
-		btnViewBookingSummaries.setBounds(10, 222, 180, 23);
-		panel_1.add(btnViewBookingSummaries);
+		btnViewBookingSummaries.setBounds(10, 290, 180, 23);
+		leftPanelForNav.add(btnViewBookingSummaries);
 
+		//This will display a panel to register a new service to the business by entering the service name
 		JButton btnNewService = new JButton("New Service");
 		btnNewService.setForeground(Color.BLACK);
 		btnNewService.setBackground(SystemColor.activeCaption);
 		btnNewService.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				panelToSee(newservice);
+				panelToSee(newservice);//Display this panel and hide other panels
 			}
 		});
 		btnNewService.setBounds(10, 11, 180, 23);
-		panel_1.add(btnNewService);
+		leftPanelForNav.add(btnNewService);
 
+		//This will display a panel to register a new service to the business by entering the service name
 		JButton btnDeleteService = new JButton("Delete Service");
+		btnDeleteService.setBackground(SystemColor.activeCaption);
 		btnDeleteService.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				panelToSee(deleteservice);
+				panelToSee(deleteservice);//Display this panel and hide other panels
 			}
 		});
-		btnDeleteService.setBounds(10, 500, 190, 23);
-		panel_1.add(btnDeleteService);
+		btnDeleteService.setBounds(10, 57, 180, 23);
+		leftPanelForNav.add(btnDeleteService);
 
+		//Declare and initialize a button that will enable the business owner to logout (Close business Owner dashboard)
 		JButton btnLogout = new JButton("Logout");
 		btnLogout.setForeground(Color.BLACK);
 		btnLogout.setBackground(SystemColor.activeCaption);
 		btnLogout.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				new Login().setVisible(true);
-				dispose();
+				new Login().setVisible(true); //Direct the user to login form after logout
+				dispose(); //Close the window after logout
 			}
 		});
 		btnLogout.setBounds(10, 373, 180, 23);
-		panel_1.add(btnLogout);
-
-		JButton btnNewButton = new JButton("Delete Service");
-		btnNewButton.setForeground(Color.BLACK);
-		btnNewButton.setBackground(SystemColor.activeCaption);
-		btnNewButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				panelToSee(deleteservice);
-			}
-		});
-		btnNewButton.setBounds(10, 306, 180, 23);
-		panel_1.add(btnNewButton);
-
+		leftPanelForNav.add(btnLogout);
+		
+		//This will display a panel to delete an existing service by selecting the service name
 		JButton btnEmployeesAvailable = new JButton("Employees Available");
 		btnEmployeesAvailable.setForeground(Color.BLACK);
 		btnEmployeesAvailable.setBackground(SystemColor.activeCaption);
 		btnEmployeesAvailable.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				panelToSee(empAvailable);
+				panelToSee(empAvailable);//Display this panel and hide other panels
 			}
 		});
-		btnEmployeesAvailable.setBounds(10, 177, 180, 23);
-		panel_1.add(btnEmployeesAvailable);
+		btnEmployeesAvailable.setBounds(10, 210, 180, 23);
+		leftPanelForNav.add(btnEmployeesAvailable);
 
+		//This will display a panel to add a activity to a service
 		JButton btnAddActivityTime = new JButton("Add Service Activity");
 		btnAddActivityTime.setForeground(Color.BLACK);
 		btnAddActivityTime.setBackground(SystemColor.activeCaption);
 		btnAddActivityTime.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				panelToSee(addActivity);// addActivity
+				panelToSee(addActivity);//Display this panel and hide other panels
 			}
 		});
-		btnAddActivityTime.setBounds(10, 60, 180, 23);
-		panel_1.add(btnAddActivityTime);
+		btnAddActivityTime.setBounds(10, 91, 180, 23);
+		leftPanelForNav.add(btnAddActivityTime);
 
+		//This will display a panel to update working time
 		JButton btnUpdateWorkingTime = new JButton("Update Working Time");
 		btnUpdateWorkingTime.setForeground(Color.BLACK);
 		btnUpdateWorkingTime.setBackground(SystemColor.activeCaption);
 		btnUpdateWorkingTime.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				panelToSee(updateEmpWaorkingTime);
+				panelToSee(updateEmpWaorkingTime);//Display this panel and hide other panels
 			}
 		});
-		btnUpdateWorkingTime.setBounds(10, 136, 180, 23);
-		panel_1.add(btnUpdateWorkingTime);
+		btnUpdateWorkingTime.setBounds(10, 170, 180, 23);
+		leftPanelForNav.add(btnUpdateWorkingTime);
 
+		//This will display a panel to book for a customer
 		JButton btnBookForCustomer = new JButton("Book For Customer");
 		btnBookForCustomer.setForeground(Color.BLACK);
 		btnBookForCustomer.setBackground(SystemColor.activeCaption);
 		btnBookForCustomer.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				panelToSee(bookForCustomer);
+				panelToSee(bookForCustomer);//Display this panel and hide other panels
 
 			}
 		});
-		btnBookForCustomer.setBounds(10, 258, 180, 23);
-		panel_1.add(btnBookForCustomer);
+		btnBookForCustomer.setBounds(10, 250, 180, 23);
+		leftPanelForNav.add(btnBookForCustomer);
 
 		JPanel panel_2 = new JPanel();
 		contentPane.add(panel_2, BorderLayout.CENTER);
 		panel_2.setLayout(null);
-
-		bookingsummaries = new JPanel();
-		bookingsummaries.setVisible(false);
-		bookingsummaries.setBounds(0, 500, 557, 373);
-		panel_2.add(bookingsummaries);
-		bookingsummaries.setLayout(null);
-
-		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 24, 537, 315);
-		bookingsummaries.add(scrollPane);
-
-		table = new JTable();
-		// table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		table.setRowHeight(25);
-		table.setModel(new DefaultTableModel(new Object[][] {}, new String[] {
-				"Customer", "Employee", "Day", "Service", "Activity",
-				"Time Slot" }) {
-			boolean[] columnEditables = new boolean[] { false, false, false,
-					false, false, false };
-
-			public boolean isCellEditable(int row, int column) {
-				return columnEditables[column];
-			}
-		});
-		table.getColumnModel().getColumn(0).setPreferredWidth(85);
-		scrollPane.setViewportView(table);
-
-		JPanel panel_5 = new JPanel();
-		panel_5.setBackground(Color.LIGHT_GRAY);
-		panel_5.setBounds(0, 0, 557, 24);
-		bookingsummaries.add(panel_5);
-
-		JLabel lblBookingSummary = new JLabel("Booking Summary");
-		panel_5.add(lblBookingSummary);
-
-		newservice = new JPanel();
-		newservice.setVisible(false);
-		newservice.setBounds(0, 500, 557, 350);
+		
+		newservice = new JPanel(); //Panel to register a new service
+		newservice.setBounds(0, 0, 557, 350);
 		panel_2.add(newservice);
 		newservice.setLayout(null);
 
-		newServiceTextField = new JTextField();
-		newServiceTextField.setText("");
-		newServiceTextField.setBounds(159, 138, 147, 20);
-		newservice.add(newServiceTextField);
-		newServiceTextField.setColumns(10);
+		deleteservice = new JPanel(); //Panel to delete a service
+		deleteservice.setVisible(false);
+		deleteservice.setBounds(0, 0, 557, 350);
+		panel_2.add(deleteservice);
+		deleteservice.setLayout(null);
 
-		JLabel lblServiceName = new JLabel("Service Name");
-		lblServiceName.setBounds(42, 140, 107, 17);
-		newservice.add(lblServiceName);
+		addActivity = new JPanel();//Panel to add Activities for a service
+		addActivity.setVisible(false);
+		addActivity.setBounds(0, 0, 557, 407);
+		panel_2.add(addActivity);
+		addActivity.setLayout(null);
 
-		JButton btnSave = new JButton("Register Service");
-		btnSave.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+		empWorkingTime = new JPanel(); //Panel to assign employees task and working time by selecting activities they will be responsible for
+		empWorkingTime.setVisible(false);
+		empWorkingTime.setBounds(0, 0, 557, 396);
+		empWorkingTime.setLayout(null);
+		panel_2.add(empWorkingTime);
 
-				String serviceName = newServiceTextField.getText().trim().toLowerCase();
-				if (serviceName.equals("")) {
-					JOptionPane.showMessageDialog(null, "Enter Service Name");
-					return;
-				}
-				// serviceName +=".txt";
+		updateEmpWaorkingTime = new JPanel();//Panel to update employees activities and working time
+		updateEmpWaorkingTime.setVisible(false);
+		updateEmpWaorkingTime.setBounds(0, 0, 557, 421);
+		panel_2.add(updateEmpWaorkingTime);
+		updateEmpWaorkingTime.setLayout(null);
 
-				ArrayList<String> services = new ArrayList<String>();
-				try {
-					FileWriter fw = new FileWriter("services.txt", true);
-					BufferedWriter bw = new BufferedWriter(fw);
+		empAvailable = new JPanel(); //Panel to show all the available employees
+		empAvailable.setVisible(false);
+		empAvailable.setBounds(0, 0, 557, 362);
+		panel_2.add(empAvailable);
+		empAvailable.setLayout(null);
 
-					BufferedReader br = new BufferedReader(new FileReader(
-							"services.txt"));
-					String line = "";
-					while ((line = br.readLine()) != null) {
-						services.add(line);
-					}
-					if (!services.contains(serviceName)) {
-						bw.write(serviceName);
-						bw.newLine();
-						JOptionPane.showMessageDialog(null, "Service created");
-					} else {
-						JOptionPane.showMessageDialog(null, "Service exists");
-					}
+		bookingsummaries = new JPanel();//Panel to show all employees who have been booked to perform an activity
+		bookingsummaries.setVisible(false);
+		bookingsummaries.setBounds(0, 0, 557, 373);
+		panel_2.add(bookingsummaries);
+		bookingsummaries.setLayout(null);
 
-					bw.close();
-					// services();
+		bookForCustomer = new JPanel();// Panel where the business will be able to book an appointment on behalf of a customer
+		bookForCustomer.setVisible(false);
+		bookForCustomer.setBounds(0, 0, 557, 407);
+		panel_2.add(bookForCustomer);
+		bookForCustomer.setLayout(null);
 
-				} catch (Exception e2) {
-					e2.printStackTrace();
-				}
-				dispose();
-				new BusinessOwnerPanel(userData).setVisible(true);
-			}
-		});
-		btnSave.setBounds(159, 169, 147, 23);
-		newservice.add(btnSave);
+		/**
+		 newservice panel components 
+		 */
 
 		JPanel panel_6 = new JPanel();
 		panel_6.setBackground(Color.LIGHT_GRAY);
@@ -407,206 +394,264 @@ public class BusinessOwnerPanel extends JFrame {
 				"New Service Registration");
 		panel_6.add(lblNewServiceRegistration);
 
-		deleteservice = new JPanel();
-		deleteservice.setVisible(false);
-		deleteservice.setBounds(0, 500, 557, 350);
-		panel_2.add(deleteservice);
-		deleteservice.setLayout(null);
+		newServiceTextField = new JTextField(); //Textfield to provide service name when adding a new service
+		newServiceTextField.setText("");
+		newServiceTextField.setBounds(159, 138, 147, 20);
+		newservice.add(newServiceTextField);
+		newServiceTextField.setColumns(10);
 
-		JButton btnDelete = new JButton("Delete Service");
-		btnDelete.setBounds(182, 131, 183, 23);
-		btnDelete.addActionListener(new ActionListener() {
+		JLabel lblServiceName = new JLabel("Service Name");
+		lblServiceName.setBounds(42, 140, 107, 17);
+		newservice.add(lblServiceName);
 
+		//Declare and initialize a button to register a new service into the appointment booking system
+		JButton btnSave = new JButton("Register Service");
+		btnSave.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
-				if (servicedeleteCombo.getSelectedIndex() == 0) {
-					JOptionPane.showMessageDialog(null,
-							"Please Select Service To Delete");
+				String serviceName = newServiceTextField.getText().trim().toLowerCase();
+				//Check whether the user has provided a service name and if not display a message that a name should be provided
+				if (serviceName.equals("")) {
+					JOptionPane.showMessageDialog(null, "Enter Service Name");
 					return;
 				}
-				try {
-					String serviceName = servicedeleteCombo.getSelectedItem()
-							.toString();
-
-					// Delete service from services list
-					BufferedReader reader = new BufferedReader(new FileReader(
-							"services.txt"));
-
-					String lineToRemove = serviceName;
-					String currentLine;
-					ArrayList<String> list = new ArrayList<>();
-					while ((currentLine = reader.readLine()) != null) {
-						if (!currentLine.equals(lineToRemove)) {
-							list.add(currentLine);
-
-						} else {
-							System.out.println("Serice " + currentLine);
-						}
-					}
-					BufferedWriter writer = new BufferedWriter(new FileWriter(
-							"services.txt"));
-					for (int a = 0; a < list.size(); a++) {
-						writer.write(list.get(a));
-						writer.newLine();
-
-					}
-					writer.close();
-					reader.close();
-					// Delete service from services list
-					reader = new BufferedReader(new FileReader(
-							"BookingSummaries.txt"));
-
-					lineToRemove = serviceName;
-					list.clear();
-					String[] recs;
-					while ((currentLine = reader.readLine()) != null) {
-						recs = currentLine.split(",");
-						if (!recs[6].equals(lineToRemove)) {
-							list.add(currentLine);
-						} else {
-							System.out.println("Serice " + currentLine);
-						}
-					}
-
-					writer = new BufferedWriter(new FileWriter(
-							"BookingSummaries.txt"));
-
-					for (int a = 0; a < list.size(); a++) {
-						writer.write(list.get(a));
-						writer.newLine();
-					}
-					writer.close();
-					reader.close();
-					String fileName = serviceName + ".txt";
-					File file = new File(fileName);
-					chanel = new RandomAccessFile(file, "rw").getChannel();
-
-					try {
-						lock = chanel.tryLock();
-
-					} catch (OverlappingFileLockException es) {
-						closeLock();
-					}
-					closeLock();
-					deleteFile(file);
-					// services();
-					JOptionPane.showMessageDialog(null,
-							"Service Deleted Successfully");
-				} catch (IOException e1) {
-					e1.printStackTrace();
+				boolean serviceRegistred = false; // A boolean to tell if the service has been registered successfully
+				//if the service is successfully rgisterd the serviceRegistredwill be true
+				serviceRegistred = new OwnerUtils().newService(serviceName);
+				
+				//If the service has been registered successfully display a success message to the user
+				if(serviceRegistred == true){
+					JOptionPane.showMessageDialog(null, "Service created");
+					dispose();
+					new BusinessOwnerPanel(userData).setVisible(true);
+				}else{
+					//Here the service was not registred so the user has to repeat the process.
+					JOptionPane.showMessageDialog(null, "There is an error in the process");
 				}
-				dispose();
-				new BusinessOwnerPanel(userData).setVisible(true);
 			}
 		});
-		deleteservice.add(btnDelete);
+		btnSave.setBounds(159, 169, 147, 23);
+		newservice.add(btnSave);
 
-		servicedeleteCombo = new JComboBox();
+		/**
+		 * Delete service panel components
+		 */
+		JPanel serviceDeletePanel = new JPanel();
+		serviceDeletePanel.setBackground(Color.LIGHT_GRAY);
+		serviceDeletePanel.setBounds(0, 0, 557, 24);
+		deleteservice.add(serviceDeletePanel);
+
+		servicedeleteCombo = new JComboBox();// Dropdown to select the service to delete
 		servicedeleteCombo.setModel(new DefaultComboBoxModel(
 				new String[] { "--Select Service--" }));
 		servicedeleteCombo.setBounds(182, 35, 183, 20);
 		deleteservice.add(servicedeleteCombo);
 
-		JPanel panel_7 = new JPanel();
-		panel_7.setBackground(Color.LIGHT_GRAY);
-		panel_7.setBounds(0, 0, 557, 24);
-		deleteservice.add(panel_7);
+		//Declare and initialize a button to delete a service
+		JButton btnDelete = new JButton("Delete Service");
+		btnDelete.setBounds(182, 131, 183, 23);
+		btnDelete.addActionListener(new ActionListener() {
 
-		JLabel lblDeleteServicesHere = new JLabel("Delete Services Here");
-		panel_7.add(lblDeleteServicesHere);
+			public void actionPerformed(ActionEvent e) {
+				//Check whether the service to be deleted has been selected by the user
+				if (servicedeleteCombo.getSelectedIndex() == 0) {
+					JOptionPane.showMessageDialog(null,
+							"Please Select Service To Delete"); //Tell the user to select the service t delete
+					return;
+				}
+				try {
+					//Set the selected service to a String variable
+					String serviceName = servicedeleteCombo.getSelectedItem()
+							.toString();
 
-		JPanel panel_12 = new JPanel();
-		panel_12.setBackground(Color.LIGHT_GRAY);
-		panel_12.setBounds(0, 185, 557, 24);
-		deleteservice.add(panel_12);
+					// Delete service from services list
+					BufferedReader reader = new BufferedReader(new FileReader(
+							"services.txt")); //Open the file in read mode and give access to BufferedReader
+
+					String lineToRemove = serviceName; //Set the linetoremove is equal to the selected service
+					String currentLine;
+					ArrayList<String> list = new ArrayList<>(); //List to contain all the read services
+					while ((currentLine = reader.readLine()) != null) { //Loop through all the lines of the file leaving the null ones
+						if (!currentLine.equals(lineToRemove)) { //Check whether the current line being read is equal to the selected service for deletion
+							list.add(currentLine); // If the line is not equal to the selected service add it to the list
+
+						}
+					}
+					BufferedWriter writer = new BufferedWriter(new FileWriter(
+							"services.txt"));//Open the file in write mode and give access to BufferedWriter
+					for (int a = 0; a < list.size(); a++) { // Loop through the list and writing the list items in the file
+						writer.write(list.get(a)); //Write the list item
+						writer.newLine();//Write a new line for the next item for ease of manipulation
+
+					}
+					writer.close(); //Close the BufferedWriter to release the file
+					reader.close(); //Close the BufferedReader to release the file
+					// Delete service from services list
+					
+					reader = new BufferedReader(new FileReader(
+							"BookingSummaries.txt"));//Open the file in read mode and give access to BufferedReader
+
+					lineToRemove = serviceName;
+					list.clear();
+					String[] recs;
+					while ((currentLine = reader.readLine()) != null) { //Loop through all the lines of the file leaving the null ones
+						recs = currentLine.split(",");// Separate the read line and add the in a String array
+						if (!recs[6].equals(lineToRemove)) { //Check whether the seventh array item being read is equal to the selected service for deletion
+							list.add(currentLine);// If the seventh array item is not equal to the selected service add it to the list
+						}
+					}
+
+					writer = new BufferedWriter(new FileWriter(
+							"BookingSummaries.txt"));//Open the file in write mode and give access to BufferedWriter
+
+					for (int a = 0; a < list.size(); a++) {// Loop through the list and writing the list items in the file
+						writer.write(list.get(a));//Write the list item
+						writer.newLine();//Write a new line for the next item for ease of manipulation
+					}
+					writer.close(); //Close the BufferedWriter to release the file
+					reader.close(); //Close the BufferedReader to release the file
+					
+					String fileName = serviceName + ".txt"; //Intialize the text file to be deleted
+					File file = new File(fileName); //Access the file path
+					chanel = new RandomAccessFile(file, "rw").getChannel(); //Assign the file to a file chanenel
+
+					try {
+						lock = chanel.tryLock(); //Try to lock the file so that it is not used by another program
+
+					} catch (OverlappingFileLockException es) {
+						closeLock();
+					}
+					closeLock(); //Call the method to release the file for deleting
+					deleteFile(file); //Call the delete function to delete the file after it has been released
+					// services();
+					JOptionPane.showMessageDialog(null,
+							"Service Deleted Successfully"); //Display a success message that the service has been deleted
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+				dispose(); //Close the window
+				new BusinessOwnerPanel(userData).setVisible(true); //Open the window again to force a refresh
+			}
+		});
+		deleteservice.add(btnDelete);
+		
+		JPanel activitydeletePanel = new JPanel();
+		activitydeletePanel.setBackground(Color.LIGHT_GRAY);
+		activitydeletePanel.setBounds(0, 185, 557, 24);
+		deleteservice.add(activitydeletePanel);
 
 		JLabel lblDeleteActivityHere = new JLabel("Delete Activity Here Here");
-		panel_12.add(lblDeleteActivityHere);
+		activitydeletePanel.add(lblDeleteActivityHere);
 
+		JLabel lblSelectService_2 = new JLabel("Select Service");
+		lblSelectService_2.setBounds(21, 223, 151, 14);
+		deleteservice.add(lblSelectService_2);
+
+		JLabel lblSelectActivity = new JLabel("Select Activity");
+		lblSelectActivity.setBounds(21, 273, 151, 14);
+		deleteservice.add(lblSelectActivity);
+		
+		//Initialize a dropdown to select service with the activity the user wants to delete
 		ComboBoxServiceName = new JComboBox();
 		ComboBoxServiceName.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				//If the selected item is not the first one call the method to display activities in this service
 				if (ComboBoxServiceName.getSelectedIndex() != 0) {
 					ArrayList<String> serviceNames = Utils
 							.getActivities(ComboBoxServiceName.getSelectedItem()
-									.toString());
-					deleteServiceComboBox.removeAllItems();
-					deleteServiceComboBox.addItem("Select Activity");
-					for (int a = 0; a < serviceNames.size(); a++) {
-						deleteServiceComboBox.addItem(serviceNames.get(a));
+									.toString()); //ArrayList with activity list from this service
+					deleteActivityComboBox.removeAllItems(); // Remove existing items in this dropdown to add the read list
+					deleteActivityComboBox.addItem("Select Activity");
+					for (int a = 0; a < serviceNames.size(); a++) {  //Loop through each list item (activity) and display them in a dropdowm
+						deleteActivityComboBox.addItem(serviceNames.get(a));
 					}
 				}
 			}
 		});
 		ComboBoxServiceName.setBounds(182, 220, 183, 20);
 		deleteservice.add(ComboBoxServiceName);
-
+		
+		//Initialize a dropdown to select the activity the user wants to delete
+		deleteActivityComboBox = new JComboBox();
+		deleteActivityComboBox.setBounds(182, 270, 183, 20);
+		deleteservice.add(deleteActivityComboBox);
+		
+		//Declare and initialize a buttom to delete the activuty
 		JButton btnDeleteActivity = new JButton("Delete Activity");
 		btnDeleteActivity.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+			//Check whether the user has selected the service containing the activity to delete
 				if (ComboBoxServiceName.getSelectedIndex() == 0) {
 					JOptionPane.showMessageDialog(null,
 							"Select Service Where to delete Activity");
 					return;
 				}
-				if (deleteServiceComboBox.getSelectedIndex() == 0) {
+				//Check whether the user has selected the activity the user wants to delete
+				if (deleteActivityComboBox.getSelectedIndex() == 0) {
 					JOptionPane.showMessageDialog(null,
 							"Select Activity to delete Activity");
 					return;
 				}
-				String service = ComboBoxServiceName.getSelectedItem().toString();
-				String activity = deleteServiceComboBox.getSelectedItem().toString();
+				String service = ComboBoxServiceName.getSelectedItem().toString(); // set service is equal to the service selected
+				String activity = deleteActivityComboBox.getSelectedItem().toString();//Set activity equal to the activity selected
 
-				String fileName = service + ".txt";
+				String fileName = service + ".txt"; //Initialize a file to delete the activity from
 				try {
-					ArrayList<String> list = new ArrayList<>();
-					BufferedReader br = new BufferedReader(new FileReader(
+					ArrayList<String> list = new ArrayList<>(); //List to contain the read lines from the fileName file
+					BufferedReader br = new BufferedReader(new FileReader( //Open the file in read mode and give access to the BufferReader
 							fileName));
 					String currentLine = "";
-					while ((currentLine = br.readLine()) != null) {
-						String[] recs = currentLine.split(",");
-						if (!recs[2].equals(activity)) {
-							list.add(currentLine);
+					while ((currentLine = br.readLine()) != null) { //Loop through every line in the file that is not null and add the read lines into the list
+						String[] recs = currentLine.split(","); //Separate the read line by comma and put the records in a String array
+						if (!recs[2].equals(activity)) { //Check if the third item does not match the activity to delete
+							list.add(currentLine); //Add the line into the list if the array item does not match the activity to delete
 						}
 					}
-					br.close();
-					BufferedWriter bw = new BufferedWriter(new FileWriter(
+					br.close();// Close the BufferedReader TO release the file
+					
+					BufferedWriter bw = new BufferedWriter(new FileWriter(//Open the file in write mode and give access to the BufferedWriter
 							fileName));
-					for (int a = 0; a < list.size(); a++) {
-						bw.write(list.get(a)
-								+ System.getProperty("line.separator"));
+					for (int a = 0; a < list.size(); a++) { //Loop through each item added in the list
+						bw.write(list.get(a) //Write the list item in the file
+								+ System.getProperty("line.separator")); // Add a newline to prepare for the next line to ease the manipulation of the file
 					}
-					bw.close();
-
-					list.clear();
+					bw.close();// Close the BufferedReader TO release the file
+					/*
+					 * now delete the activity from booked list too
+					 */
+					list.clear(); //Remove all the items added to the list to prapeare other items to be added
 					br = new BufferedReader(new FileReader(
-							"BookingSummaries.txt"));
+							"BookingSummaries.txt"));//Open the "BookingSummaries.txt" file in write mode and give access to the BufferedWriter
 					currentLine = "";
-					while ((currentLine = br.readLine()) != null) {
-						String[] recs = currentLine.split(",");
+					while ((currentLine = br.readLine()) != null) { //Loop through every line that is not null
+						String[] recs = currentLine.split(",");//Separate the read line by comma and put the records in a String array
 						if (!recs[6].equals(service)
-								|| !recs[7].equals(activity)) {
-							list.add(currentLine);
+								|| !recs[7].equals(activity)) { /*Check whether the seventh item in array matches the service selected by the user and the 8th
+								matches the activity selected*/ 
+							list.add(currentLine); //If service and activity do not match the records add the line in the list
 						}
 					}
-					br.close();
+					br.close();// Close the BufferedReader TO release the file
 					bw = new BufferedWriter(new FileWriter(
-							"BookingSummaries.txt"));
-					for (int a = 0; a < list.size(); a++) {
-						bw.write(list.get(a)
-								+ System.getProperty("line.separator"));
+							"BookingSummaries.txt"));//Open the "BookingSummaries.txt" file in write mode and give access to the BufferedWriter
+					for (int a = 0; a < list.size(); a++) {//Loop through each item added in the list
+						bw.write(list.get(a)//Write the list item in the file
+								+ System.getProperty("line.separator"));// Add a newline to prepare for the next line to ease the manipulation of the file
 					}
-					bw.close();
+					bw.close();// Close the BufferedReader TO release the file
+					
 					JOptionPane.showMessageDialog(null,
-							"Activity Deleted Successfully");
+							"Activity Deleted Successfully"); //Display a success message that the activity has been deleted 
+					
+					//Read the remaining activities from the service and display them in a dropdowm
 					if (ComboBoxServiceName.getSelectedIndex() != 0) {
-						ArrayList<String> serviceNames = Utils
+						ArrayList<String> activityNames = Utils
 								.getActivities(ComboBoxServiceName.getSelectedItem()
 										.toString());
-						deleteServiceComboBox.removeAllItems();
-						deleteServiceComboBox.addItem("Select Activity");
-						for (int a = 0; a < serviceNames.size(); a++) {
-							deleteServiceComboBox.addItem(serviceNames.get(a));
+						deleteActivityComboBox.removeAllItems();//Remove all items from the dropdown
+						deleteActivityComboBox.addItem("Select Activity");//Set the first item in the dropdowmn
+						
+						for (int a = 0; a < activityNames.size(); a++) {//Loop through every item in the list
+							deleteActivityComboBox.addItem(activityNames.get(a));//Add the list item to the dropdown
 						}
 					}
 				} catch (IOException e1) {
@@ -617,103 +662,319 @@ public class BusinessOwnerPanel extends JFrame {
 		});
 		btnDeleteActivity.setBounds(182, 316, 183, 23);
 		deleteservice.add(btnDeleteActivity);
+		
+		/**
+		 * Panel to add activity components
+		 */
+		JLabel lblDuration = new JLabel("Duration");
+		lblDuration.setBounds(28, 192, 132, 14);
+		addActivity.add(lblDuration);
+		
+		SelectDurationComboBox = new JComboBox();//Dropdown for the owner to select durtion for the activity
+		SelectDurationComboBox.setModel(new DefaultComboBoxModel(new String[] {"Select duration", "30 min", "60 min"}));
+		SelectDurationComboBox.setBounds(167, 187, 191, 24);
+		addActivity.add(SelectDurationComboBox);
+		
 
-		deleteServiceComboBox = new JComboBox();
-		deleteServiceComboBox.setBounds(182, 270, 183, 20);
-		deleteservice.add(deleteServiceComboBox);
+		JPanel panel_13 = new JPanel();
+		panel_13.setBackground(Color.LIGHT_GRAY);
+		panel_13.setBounds(0, 0, 557, 24);
+		addActivity.add(panel_13);
 
-		JLabel lblSelectService_2 = new JLabel("Select Service");
-		lblSelectService_2.setBounds(21, 223, 151, 14);
-		deleteservice.add(lblSelectService_2);
+		JLabel lblAddServiceActivitieshere = new JLabel(
+				"Add Service Activities Here");
+		panel_13.add(lblAddServiceActivitieshere);
 
-		JLabel lblSelectActivity = new JLabel("Select Activity");
-		lblSelectActivity.setBounds(21, 273, 151, 14);
-		deleteservice.add(lblSelectActivity);
+		ServiceToAddActivity = new JComboBox();//Dropdown for the owner to select service where to add activity
+		ServiceToAddActivity.setBounds(173, 75, 185, 24);
+		addActivity.add(ServiceToAddActivity);
 
-		empAvailable = new JPanel();
-		empAvailable.setVisible(false);
-		empAvailable.setBounds(0, 500, 557, 362);
-		panel_2.add(empAvailable);
-		empAvailable.setLayout(null);
+		JLabel lblSelectService_3 = new JLabel("Select Service");
+		lblSelectService_3.setBounds(27, 80, 136, 14);
+		addActivity.add(lblSelectService_3);
 
-		JScrollPane scrollPane_1 = new JScrollPane();
-		scrollPane_1.setBounds(10, 71, 517, 280);
-		empAvailable.add(scrollPane_1);
-
-		empTable = new JTable();
-		empTable.setRowHeight(25);
-		empTable.setModel(new DefaultTableModel(new Object[][] {},
-				new String[] { "Employee Name", "Day", "Activity",
-						"Time Available", "Status" }) {
-			boolean[] columnEditables = new boolean[] { false, false, false,
-					false, false };
-
-			public boolean isCellEditable(int row, int column) {
-				return columnEditables[column];
-			}
-		});
-		scrollPane_1.setViewportView(empTable);
-
-		EmpAvailableComboBox = new JComboBox();
-		EmpAvailableComboBox.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				empAvailable(EmpAvailableComboBox.getSelectedItem().toString());
-			}
-		});
-		EmpAvailableComboBox.setBounds(106, 35, 152, 25);
-		empAvailable.add(EmpAvailableComboBox);
-
-		JLabel lblSelectService = new JLabel("Select Service");
-		lblSelectService.setBounds(10, 35, 91, 25);
-		empAvailable.add(lblSelectService);
-
-		JPanel panel_8 = new JPanel();
-		panel_8.setBackground(Color.LIGHT_GRAY);
-		panel_8.setBounds(0, 0, 557, 24);
-		empAvailable.add(panel_8);
-
-		JLabel lblEmployeesAvailableNext = new JLabel(
-				"Employees Available Next Week");
-		panel_8.add(lblEmployeesAvailableNext);
-
-		JLabel label_11 = new JLabel("Select Service");
-		label_11.setBounds(286, 35, 114, 25);
-		empAvailable.add(label_11);
-
-		SelectDayComboBox = new JComboBox();
-		SelectDayComboBox.addActionListener(new ActionListener() {
+		JLabel lblActivityName = new JLabel("Activity Name");
+		lblActivityName.setBounds(27, 138, 136, 14);
+		addActivity.add(lblActivityName);
+		
+		activityNameField = new JTextField();//Field to enter activity name
+		activityNameField.setBounds(173, 135, 185, 20);
+		addActivity.add(activityNameField);
+		activityNameField.setColumns(10);
+		
+		//Button to save activity
+		JButton btnSaveActivities = new JButton("Save Activities");
+		btnSaveActivities.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (SelectDayComboBox.getSelectedIndex() != 0) {
+				if (ServiceToAddActivity.getSelectedIndex() == 0) {//Check whether the service where to add activity is selected
+					JOptionPane.showMessageDialog(null,
+							"Select Service Name to proceed");
+					return;
+				}
+				if (SelectDurationComboBox.getSelectedIndex() == 0) {//Check whether the activity duration is sselected
+					JOptionPane.showMessageDialog(null,
+							"Select duration to proceed");
+					return;
+				}
+
+				String service = ServiceToAddActivity.getSelectedItem().toString();//Initialize the service name with the selected service
+				String fileName = service + ".txt";//Initialize a file for the service
+				String activity = activityNameField.getText().trim();//Initialize the activity with the activity entered by the user
+				if(activity.equals("")){//Check whether activity was entered
+					JOptionPane.showMessageDialog(null,
+							"Fill activity name to proceed.");
+					return;
+				}
+				
+				int duration = 0;
+				/*
+				 Initialize duration according to the one selected by the user
+				 */
+				if (SelectDurationComboBox.getSelectedIndex() == 1) {
+					duration = 30;
+				}if (SelectDurationComboBox.getSelectedIndex() == 2) {
+					duration = 60;
+				}
+				try {
+					BufferedReader reader = new BufferedReader(new FileReader(fileName));//Open the file in read mode and give access to the BufferedReader
+					String line = "", recs[] = null;
+					while( (line = reader.readLine()) != null){//Loop through every line that is not null
+						recs = line.split(",");//Separate the line with a comma and add the records to a string array
+						if(recs[2].equals(activity)){//Check whether the activity entered exists
+							JOptionPane.showMessageDialog(null, "The activity name entered exists. Please enter again.");
+							return;
+						}
+					}
+					reader.close();//Close the BufferedReader
+					
+					FileWriter fw = new FileWriter("serviceduration.txt", true);//Open the file in read mode
+					BufferedWriter bw = new BufferedWriter(fw);//Give access to the BufferedWriter
+
+					bw.write(service+","+activity+","+duration);//write the activity and its details in the file "serviceduration.txt"
+					bw.newLine();//write a new line
+					
+					bw.close();//Close the BufferedWriter
+					JOptionPane.showMessageDialog(null,
+							"Service Entered successfully");//Display a success message to the user
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+
+			}
+		});
+		btnSaveActivities.setForeground(Color.BLACK);
+		btnSaveActivities.setBackground(SystemColor.activeCaption);
+		btnSaveActivities.setBounds(178, 258, 180, 23);
+		addActivity.add(btnSaveActivities);
+
+		/**
+		 * Employee working times panel components
+		 */
+		selectServiceToAddEmpTime = new JComboBox();//Drop down to select service  to add employee working time 
+		selectServiceToAddEmpTime.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (selectServiceToAddEmpTime.getSelectedIndex() != 0) {
 					try {
-						empAvailableParticularDay(EmpAvailableComboBox.getSelectedItem()
-								.toString(), SelectDayComboBox.getSelectedItem()
-								.toString());
-					} catch (Exception e3) {
-						e3.printStackTrace();
+						activityTable(selectServiceToAddEmpTime.getSelectedItem().toString());//Method to display activities in this service
+						employees(selectServiceToAddEmpTime.getSelectedItem().toString());//Methos to show employees 
+					} catch (Exception e1) {
+						// e.printStackTrace();
 					}
 				}
 			}
 		});
-		SelectDayComboBox.addItem("Select Day");
-		for (int a = 0; a < daysList.size(); a++) {
-			SelectDayComboBox.addItem(daysList.get(a));
-		}
-		SelectDayComboBox.setBounds(413, 35, 114, 25);
-		empAvailable.add(SelectDayComboBox);
+		selectServiceToAddEmpTime.setBounds(161, 59, 191, 24);
+		empWorkingTime.add(selectServiceToAddEmpTime);
 
-		updateEmpWaorkingTime = new JPanel();
-		updateEmpWaorkingTime.setVisible(false);
-		updateEmpWaorkingTime.setBounds(0, 0, 557, 421);
-		panel_2.add(updateEmpWaorkingTime);
-		updateEmpWaorkingTime.setLayout(null);
 
-		comboBoxService = new JComboBox();
+		JScrollPane scrollPane_2 = new JScrollPane();
+		scrollPane_2.setBounds(161, 106, 191, 92);
+		empWorkingTime.add(scrollPane_2);
+		
+		activitySelectTable = new JTable();//Table to select activities to add employee working time 
+		activitySelectTable.setModel(new DefaultTableModel(
+			new Object[][] {
+			},
+			new String[] {
+				"Select", "Activity"//Set column names
+			}
+		) {
+			Class[] columnTypes = new Class[] {
+				Boolean.class, Object.class//Set data types for the columns
+			};
+			public Class getColumnClass(int columnIndex) {
+				return columnTypes[columnIndex];
+			}
+			boolean[] columnEditables = new boolean[] {
+				true, false//Set if columns can be editted by the user
+			};
+			public boolean isCellEditable(int row, int column) {
+				return columnEditables[column];
+			}
+		});
+		activitySelectTable.getColumnModel().getColumn(0).setPreferredWidth(50);
+		activitySelectTable.getColumnModel().getColumn(0).setMaxWidth(50);
+		scrollPane_2.setViewportView(activitySelectTable);
+		
+		JLabel lblEmployeeName = new JLabel("Employee Name");
+		lblEmployeeName.setBounds(22, 323, 125, 14);
+		empWorkingTime.add(lblEmployeeName);
+
+		empNamesWorkingTime = new JComboBox();//dropdown to enter or select the employee name
+		empNamesWorkingTime.setEditable(true);
+		empNamesWorkingTime.setBounds(161, 320, 191, 20);
+		empWorkingTime.add(empNamesWorkingTime);
+
+		JPanel panel_10 = new JPanel();
+		panel_10.setBackground(Color.LIGHT_GRAY);
+		panel_10.setBounds(0, 0, 557, 24);
+		empWorkingTime.add(panel_10);
+
+		JLabel lblAssignEmployeeWorking = new JLabel(
+				"Assign Employee Working Time");
+		panel_10.add(lblAssignEmployeeWorking);
+
+		JLabel label = new JLabel("Select Service");
+		label.setBounds(22, 64, 116, 14);
+		empWorkingTime.add(label);
+
+		JLabel label_8 = new JLabel("Select Activity");
+		label_8.setBounds(22, 106, 116, 14);
+		empWorkingTime.add(label_8);
+
+		JLabel lblStartinftime = new JLabel("Starting Time");
+		lblStartinftime.setBounds(22, 213, 116, 14);
+		empWorkingTime.add(lblStartinftime);
+
+		StartTimeComboBox = new JComboBox();//Drop down to select starting time  for the employee working time
+		StartTimeComboBox.setModel(new DefaultComboBoxModel(new String[] {
+				"Start Time", "00:00", "00:30", "01:00", "01:30", "02:00",
+				"02:30", "03:00", "03:30", "04:00", "04:30", "05:00", "05:30",
+				"06:00", "06:30", "07:00", "07:30", "08:00", "08:30", "09:00",
+				"09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30",
+				"13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00",
+				"16:30", "17:00", "17:30", "18:00", "18:30", "19:00", "19:30",
+				"20:00", "20:30", "21:00", "21:30", "22:00", "22:30", "23:00",
+				"23:30" }));
+		StartTimeComboBox.setBounds(161, 210, 191, 24);
+		empWorkingTime.add(StartTimeComboBox);
+
+		EndTimeComboBox = new JComboBox();//Drop down to select ending time for the employee working time
+		EndTimeComboBox.setModel(new DefaultComboBoxModel(new String[] {
+				"Start Time", "00:00", "00:30", "01:00", "01:30", "02:00",
+				"02:30", "03:00", "03:30", "04:00", "04:30", "05:00", "05:30",
+				"06:00", "06:30", "07:00", "07:30", "08:00", "08:30", "09:00",
+				"09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30",
+				"13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00",
+				"16:30", "17:00", "17:30", "18:00", "18:30", "19:00", "19:30",
+				"20:00", "20:30", "21:00", "21:30", "22:00", "22:30", "23:00",
+				"23:30" }));
+		EndTimeComboBox.setBounds(161, 264, 191, 24);
+		empWorkingTime.add(EndTimeComboBox);
+
+		JLabel lblEndingTime = new JLabel("Ending time");
+		lblEndingTime.setBounds(22, 269, 132, 14);
+		empWorkingTime.add(lblEndingTime);
+		
+		//Declare and initialize the button to save the employee working times
+		JButton btnSave_1 = new JButton("Save");
+		btnSave_1.addActionListener(new ActionListener() {
+			
+			public void actionPerformed(ActionEvent arg0) {
+				if (selectServiceToAddEmpTime.getSelectedIndex() == 0) {//Check whether the user has selected 
+					JOptionPane.showMessageDialog(null,
+							"Please select servicde");
+					return;
+				}
+				if (StartTimeComboBox.getSelectedIndex() == 0) {//Check whether the user has selected starting time
+					JOptionPane.showMessageDialog(null,
+							"Please select starting time");
+					return;
+				}
+				if (EndTimeComboBox.getSelectedIndex() == 0) {//Check whether the user has selected ending tiome
+					JOptionPane.showMessageDialog(null,
+							"Please select ending time");
+					return;
+				}
+				if (empNamesWorkingTime.getSelectedItem().toString().trim().equals("")
+						|| empNamesWorkingTime.getSelectedItem().toString().trim()
+								.equals("null")) {//Check whether the user has selected or entered empoyee name and it is valid
+					JOptionPane.showMessageDialog(null,
+							"Enter Employee name to proceed");
+					return;
+				}
+				/*
+				 * Assign variables appropriate values
+				 */
+				String service = selectServiceToAddEmpTime.getSelectedItem().toString();
+				String startTime = StartTimeComboBox.getSelectedItem().toString();
+				String endTime = EndTimeComboBox.getSelectedItem().toString();
+				String employee = empNamesWorkingTime.getSelectedItem().toString();
+				
+				int rows = activitySelectTable.getRowCount();//Get the number of rows in the table
+				
+				Boolean selected = false;//Boolean will be true if the activity is selected
+				ArrayList<HashMap<String, String>> activityToAdd = new ArrayList<>();//List to contain activities to be added
+				for(int row = 0; row < rows; row++){//Loop through every row in the table
+					selected = (Boolean) activitySelectTable.getModel().getValueAt(row, 0);//set boolean is equal to the value of the of 1st column
+					String activity = activitySelectTable.getModel().getValueAt(row, 1).toString();////set activity is equal to the value of the of 2nd column
+					if(selected == true){//Check if the boolean is true, if true the activity will be added for the employee
+						int duration = 0;//Initialize the duration
+						try{
+							BufferedReader reader = new BufferedReader(new FileReader("serviceduration.txt"));//Open the file in read mode and give access to the BufferedReader 
+							String line = "", recs[] = null;
+							while( (line = reader.readLine()) != null ){//Loop through every line in the file that is not null
+								recs = line.split(",");//Separate the line with a comma and add the records in a string array
+								if(recs[0].equals(service) && recs[1].equals(activity)){//Check if the 1st array item equals to service selected and if the 2nd item equals to the activity
+									duration = Integer.parseInt(recs[2]);//Set duration is equal to the 3rd array item
+									break; //End loop since we have found the duration for the activity
+								}
+							}
+							reader.close();//Close the BufferedReader
+						}catch(Exception e){
+							e.printStackTrace();
+						}
+						
+						HashMap<String, String> recordMap = new HashMap<>();//Initialize a hashmap to put activity details
+						/*
+						 * Put the values and appropriate keys in the hashmap
+						 */
+						recordMap.put("service", service);
+						recordMap.put("activity", activity);
+						recordMap.put("startTime", startTime);
+						recordMap.put("endTime", endTime);
+						recordMap.put("employee", employee);
+						recordMap.put("duration", String.valueOf(duration));
+						
+						activityToAdd.add(recordMap); //Add the hashmap tho the list, the hashmap contains activity details
+					}
+				}
+				
+				
+				Boolean timeRegistered = false; //Boolean will be true if all items in the activityToAddare added, working time for the employee
+				OwnerUtils owner = new OwnerUtils();
+				timeRegistered = owner.empWorkingTime(activityToAdd, daysList);//Call the method to add employee working time which will return a boolean
+				if(timeRegistered == true){ //Check whether the boolean is true
+					JOptionPane.showMessageDialog(null,"Employee time added successfully");//Display a success message if the boolean is true
+				}else{
+					JOptionPane.showMessageDialog(null,"Error occurred in the process, time not added");//Display a error message if the boolean is false
+				}
+
+			}
+		});
+		btnSave_1.setBounds(250, 362, 102, 23);
+		empWorkingTime.add(btnSave_1);
+		
+		/**
+		 * updateEmpWaorkingTime panel components
+		 */
+		comboBoxService = new JComboBox();//Dropdown to select the service with the activity to update EmpWaorkingTime details
 		comboBoxService.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (comboBoxService.getSelectedIndex() != 0) {
+				if (comboBoxService.getSelectedIndex() != 0) {//Check that the selected item is nit the 1st one
 					empWorkingTimeNotNull(comboBoxService.getSelectedItem()
-							.toString());
-					employees(comboBoxService.getSelectedItem().toString());
+							.toString());//Call method to display employee working times
+					employees(comboBoxService.getSelectedItem().toString());//Call method to add employee names in a dropdown
 				}
 			}
 		});
@@ -728,49 +989,39 @@ public class BusinessOwnerPanel extends JFrame {
 		label_2.setBounds(24, 331, 136, 14);
 		updateEmpWaorkingTime.add(label_2);
 
-		EmployeeComboBox = new JComboBox();
+		EmployeeComboBox = new JComboBox();//Dropdown to select or enter the new employee name
 		EmployeeComboBox.setEditable(true);
 		EmployeeComboBox.setBounds(138, 327, 182, 20);
 		updateEmpWaorkingTime.add(EmployeeComboBox);
 
+		//Declare and initialize the button to update the employee working time
 		JButton button_2 = new JButton("Update");
 		button_2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (comboBoxService.getSelectedIndex() == 0) {
+				if (comboBoxService.getSelectedIndex() == 0) {//Check whether the selected service is not the first item
 					JOptionPane.showMessageDialog(null,
 							"Please Select Service To Proceed");
 					return;
 				}
 				if (EmployeeComboBox.getSelectedItem().toString().trim().equals("")
-						|| empWorkingTimeComboBox.getSelectedItem().toString().trim()
-								.equals("")) {
+						|| empNamesWorkingTime.getSelectedItem().toString().trim()
+								.equals("null")) {//Check whether the business owner has entered or selected a valid employee name
 					JOptionPane.showMessageDialog(null,
 							"Enter Employee name to proceed");
 					return;
 				}
-				if (StarTimeComboBox1.getSelectedIndex() == 0) {
+				if (StarTimeComboBox1.getSelectedIndex() == 0) {//Check whether the selected start time is not the first item
 					JOptionPane.showMessageDialog(null,
 							"Please Select Start Time To Proceed");
 					return;
 				}
-				if (EndTimeComboBox1.getSelectedIndex() == 0) {
+				if (EndTimeComboBox1.getSelectedIndex() == 0) {//Check whether the selected ending time is not the first item
 					JOptionPane.showMessageDialog(null,
 							"Please Select End Time To Proceed");
 					return;
 				}
-				if (DurationComboBox1.getSelectedIndex() == 0) {
-					JOptionPane.showMessageDialog(null,
-							"Please Select Duration To Proceed");
-					return;
-				}
-				
-				String newtimeAvailable = StarTimeComboBox1.getSelectedItem().toString()+"-"+EndTimeComboBox1.getSelectedItem().toString();
-				int duration = 0;
-				if(DurationComboBox1.getSelectedIndex() == 1){
-					duration = 30;
-				}if(DurationComboBox1.getSelectedIndex() == 2){
-					duration = 60;
-				}
+				//String newtimeAvailable = StarTimeComboBox1.getSelectedItem().toString()+"-"+EndTimeComboBox1.getSelectedItem().toString();
+				int duration = 0;//Initialize the duration
 
 				String service = comboBoxService.getSelectedItem().toString();
 				String fileName = service + ".txt";
@@ -790,153 +1041,175 @@ public class BusinessOwnerPanel extends JFrame {
 				String newendTime = EndTimeComboBox1.getSelectedItem().toString();
 				
 				try {
-					SimpleDateFormat format = new SimpleDateFormat("HH:mm");
+					BufferedReader reader = new BufferedReader(new FileReader("serviceduration.txt"));//Open the file in read mode and give access to the BufferedReader 
+					String line = "", recs[] = null;
+					while( (line = reader.readLine()) != null ){//Loop through every line in the file that is not null
+						recs = line.split(",");//Separate the line with a comma and add the records in a string array
+						if(recs[0].equals(service) && recs[1].equals(activity)){//Check if the 1st array item equals to service selected and if the 2nd item equals to the activity
+							duration = Integer.parseInt(recs[2]);//Set duration is equal to the 3rd array item
+							break; //End loop since we have found the duration for the activity
+						}
+					}
+					reader.close();//Close the BufferedReader
+					
+					SimpleDateFormat format = new SimpleDateFormat("HH:mm");//Date format in hours and minutes
 					Date date1 = format.parse(newstartTime);
 					Date date2 = format.parse(newendTime);
-					long diff = date2.getTime() - date1.getTime();
-					long diffMinutes = diff / (60 * 1000);
+					long diff = date2.getTime() - date1.getTime(); //Get the time difference in milliseconds
+					long diffMinutes = diff / (60 * 1000);//Convert the time difference in minutes
 					
 					int numOfSlots;
-					if(diffMinutes % duration != 0){
+					if(diffMinutes % duration != 0){//Make sure the number slots does not return decimal values
 						JOptionPane.showMessageDialog(null, "The time difference should not have remainders for this to work");
 						return;
 					}
 					
 					ArrayList<String> list = new ArrayList<>();
-					BufferedReader br = new BufferedReader(new FileReader(fileName));
+					BufferedReader br = new BufferedReader(new FileReader(fileName));//Open the file in read mode
 					String currentLine = "";
-					while ((currentLine = br.readLine()) != null) {
-						String recs[] = currentLine.split(",");
+					while ((currentLine = br.readLine()) != null) {//Read every line that is not null
+						recs = currentLine.split(",");//Separate the line with a comma and add the records in a string array
 						if (recs[0].equals(emp) && recs[2].equals(activity)) {
-							//Do Not add this line
+							//Do Not add this line, This line need to be removed from the file since employee working time will be update by code down here
 						}else{
-							list.add(currentLine);
+							list.add(currentLine); //Add the line into arraylist, This line does not need to be changed
 						}
 					}
-					br.close();
+					br.close();//Close BufferedReader
 					
-					BufferedWriter bw = new BufferedWriter(new FileWriter(fileName));
-					for (int a = 0; a < list.size(); a++) {
-						bw.write(list.get(a)+ System.getProperty("line.separator"));
+					BufferedWriter bw = new BufferedWriter(new FileWriter(fileName));//Open file in write mode
+					for (int a = 0; a < list.size(); a++) {//Loop through every list item in the list
+						bw.write(list.get(a)+ System.getProperty("line.separator"));//write the list item and write a new line
 					}
-					bw.close();
-					
-					BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true));
-					for (int a = 0; a < daysList.size(); a++) {
-						numOfSlots = (int) (diffMinutes / duration);
-						date1 = format.parse(startTime);
-						for(int d = 0; d < numOfSlots; d++ ){
-							Calendar cal = Calendar.getInstance();
+					bw.close();//Close BufferedWriter
+					/*
+					 * This code is the one that woill update employee working t
+					 */
+					BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true));//Open file in write mode
+					for (int a = 0; a < daysList.size(); a++) {//Loop through every day in the daylist
+						numOfSlots = (int) (diffMinutes / duration); //Get the number of slots to write
+						date1 = format.parse(startTime);//parse start time and set date1
+						for(int d = 0; d < numOfSlots; d++ ){//Loop to write every slot
+							Calendar cal = Calendar.getInstance();//Instantiate calendar instance
 					        cal.setTime(date1);
-					        Time timeStart = new Time (cal.getTime().getTime());
+					        Time timeStart = new Time (cal.getTime().getTime());//Get start time of the slot
 					        
-					        cal.add(Calendar.MINUTE, duration);
-					        Time timeEnd = new Time (cal.getTime().getTime());
+					        cal.add(Calendar.MINUTE, duration);//Add duration to get ending time of the slot
+					        Time timeEnd = new Time (cal.getTime().getTime());//Grt ending time of the slot in Time
 					        writer.write(emp + "," + daysList.get(a) + ","
 									+ activity + "," + timeStart.toString().substring(0, 5) + "-" + timeEnd.toString().substring(0, 5)
-									+ ",available");
-							writer.newLine();
-					       date1 = new Date(timeEnd.getTime());
+									+ ",available");//write the slot, Remember we are updating employee working time
+							writer.newLine();//write a new line
+					       date1 = new Date(timeEnd.getTime());//Set the ending time of this slotb be the starting time of the next slot
 						}
 						
 					}
-					writer.close();
+					writer.close(); //Close the BufferedWriter
 					
-					list = new ArrayList<>();
-					br = new BufferedReader(new FileReader("employeeworkingtime.txt"));
-					while ((currentLine = br.readLine()) != null) {
-						String recs[] = currentLine.split(",");
-						if (recs[0].equals(emp) && recs[1].equals(service) && recs[2].equals(activity)) {
-							list.add(emp+","+service+","+activity+","+newstartTime+","+newendTime+","+duration);
+					/*
+					 * Employee working time details are stored in the file employeeworkingtime.txt
+					 */
+					list = new ArrayList<>();//List to contain lines read from the employeeworkingtime file
+					br = new BufferedReader(new FileReader("employeeworkingtime.txt"));//Open the file in read mode and give access to the BufferedReader
+					while ((currentLine = br.readLine()) != null) {//Loop through every line that is not null in the file
+						recs = currentLine.split(",");//Separate the line with a comma and add the records in a string array
+						if (recs[0].equals(emp) && recs[1].equals(service) && recs[2].equals(activity)) { //Check if the line matches the employee working time to be changed
+							list.add(emp+","+service+","+activity+","+newstartTime+","+newendTime+","+duration);//Add new details in a list
 						}else{
-							list.add(currentLine);
+							list.add(currentLine);//Add the line as it was read in a list since no changes are needed
 						}
 					}
-					br.close();
-					bw = new BufferedWriter(new FileWriter("employeeworkingtime.txt"));
-					for (int a = 0; a < list.size(); a++) {
-						bw.write(list.get(a)+ System.getProperty("line.separator"));
+					br.close();//Close the BufferedReader
+					
+					/*
+					 * Now we want to write the list items back to the file
+					 */
+					bw = new BufferedWriter(new FileWriter("employeeworkingtime.txt"));//Open the file in write mode and give access to the BufferedWriter
+					for (int a = 0; a < list.size(); a++) {//Loop through every list item
+						bw.write(list.get(a)+ System.getProperty("line.separator"));//Write the list item in the file and write a new line to prepare for the next writing
 					}
-					bw.close();
+					bw.close();//Close the BufferedWriter
 
 				
 				} catch (IOException | ParseException e1) {
 					e1.printStackTrace();
 				}
-				JOptionPane.showMessageDialog(null, "Employee working time updated successfully");
-				empWorkingTimeNotNull(comboBoxService.getSelectedItem().toString());
-				employees(comboBoxService.getSelectedItem().toString());
+				JOptionPane.showMessageDialog(null, "Employee working time updated successfully"); //Display a success message after the employee working time has been updated
+				empWorkingTimeNotNull(comboBoxService.getSelectedItem().toString()); //Display employee working time in a table
+				employees(comboBoxService.getSelectedItem().toString());//Display employee names in a dropdown 
 			}
 		});
 		button_2.setBounds(354, 335, 102, 23);
 		updateEmpWaorkingTime.add(button_2);
 
+		//Declare and initialize a button to delete employee working time
 		JButton button_3 = new JButton("Delete");
 		button_3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (comboBoxService.getSelectedIndex() == 0) {
+				if (comboBoxService.getSelectedIndex() == 0) { //Check if service is selected by the business owner
 					JOptionPane.showMessageDialog(null,	"Please Select Service To Proceed");
 					return;
 				}
 				
-				String service = comboBoxService.getSelectedItem().toString();
-				String fileName = service + ".txt";
+				String service = comboBoxService.getSelectedItem().toString(); //Set service is the value selected by the user
+				String fileName = service + ".txt"; //Initialize the file to delete the working time from
 				int row = -1;
 				row = DurationTable.getSelectedRow();
-				if (row < 0) {
+				if (row < 0) { //Check that the user has selected a row to delete
 					JOptionPane.showMessageDialog(null, "Please Select row to update to proceed");
 					return;
 				}
+				//Let the user confirm that they want to delete the working time
 				int confirm = JOptionPane.showConfirmDialog(null, "You are deleting employee working time. Proceed", "Confirm", 2);
-				if(confirm == 0){
+				if(confirm == 0){ //Check that the user has confirmed to delete the employee working time 
 					String emp,   activity;
-					emp = DurationTable.getModel().getValueAt(row, 0).toString();
-					activity = DurationTable.getModel().getValueAt(row, 1).toString();
+					emp = DurationTable.getModel().getValueAt(row, 0).toString(); //Set the employee name
+					activity = DurationTable.getModel().getValueAt(row, 1).toString();//Set the activity name
 	
 					try {
-						ArrayList<String> list = new ArrayList<>();
-						BufferedReader br = new BufferedReader(new FileReader(fileName));
+						ArrayList<String> list = new ArrayList<>(); //List to contain values read from the file
+						BufferedReader br = new BufferedReader(new FileReader(fileName));//OPen the file in read mode and give access to the BufferedReader
 						String currentLine = "";
-						while ((currentLine = br.readLine()) != null) {
-							String recs[] = currentLine.split(",");
+						while ((currentLine = br.readLine()) != null) {//loop through rvery line in the file that is not null
+							String recs[] = currentLine.split(",");//Separate the line with commas
 							if (recs[0].equals(emp) && recs[2].equals(activity)) {
-								//Do Not add this line
+								//Do Not add this line because it has the employee name and the activity to delete
 							}else{
-								list.add(currentLine);
+								list.add(currentLine); //Add the line to the list
 							}
 						}
-						br.close();
+						br.close();//close the buffer reader
 						
-						BufferedWriter bw = new BufferedWriter(new FileWriter(fileName));
-						for (int a = 0; a < list.size(); a++) {
-							bw.write(list.get(a)+ System.getProperty("line.separator"));
+						BufferedWriter bw = new BufferedWriter(new FileWriter(fileName));//open the file and give access to buffer writer
+						for (int a = 0; a < list.size(); a++) {//loop through every item in  the list
+							bw.write(list.get(a)+ System.getProperty("line.separator"));//write the current list item in the file and write a new line
 						}
-						bw.close();
+						bw.close();//close buffer writer
 						
-						list = new ArrayList<>();
-						br = new BufferedReader(new FileReader("employeeworkingtime.txt"));
-						while ((currentLine = br.readLine()) != null) {
-							String recs[] = currentLine.split(",");
-							if (recs[0].equals(emp) && recs[1].equals(service) && recs[2].equals(activity)) {
+						list = new ArrayList<>();//list to contain line from employee working time
+						br = new BufferedReader(new FileReader("employeeworkingtime.txt"));//open the file and give access to buffer reader
+						while ((currentLine = br.readLine()) != null) {//loop through every line in the file that is not null
+							String recs[] = currentLine.split(",");//separate the line with commas
+							if (recs[0].equals(emp) && recs[1].equals(service) && recs[2].equals(activity)) {//check if the line has the employee name and service
 							
 							}else{
-								list.add(currentLine);
+								list.add(currentLine);//add the current line in the list
 							}
 						}
-						br.close();
-						bw = new BufferedWriter(new FileWriter("employeeworkingtime.txt"));
-						for (int a = 0; a < list.size(); a++) {
-							bw.write(list.get(a)+ System.getProperty("line.separator"));
+						br.close();//close buffer reader
+						bw = new BufferedWriter(new FileWriter("employeeworkingtime.txt"));//open file and give access to buffer reader
+						for (int a = 0; a < list.size(); a++) {//loop through every item in  the list
+							bw.write(list.get(a)+ System.getProperty("line.separator"));//write the current list item in the file and write a new line
 						}
-						bw.close();
+						bw.close();//close buffer writer
 	
 					
 					} catch (IOException  e1) {
 						e1.printStackTrace();
 					}
-					JOptionPane.showMessageDialog(null, "Employee working time deleted successfully");
-					empWorkingTimeNotNull(comboBoxService.getSelectedItem().toString());
-					employees(comboBoxService.getSelectedItem().toString());
+					JOptionPane.showMessageDialog(null, "Employee working time deleted successfully"); //Display a success message after the employee working time has been updated
+					empWorkingTimeNotNull(comboBoxService.getSelectedItem().toString()); //Display employee working time in a table
+					employees(comboBoxService.getSelectedItem().toString());//Display employee names in a dropdown 
 				}
 			}
 		});
@@ -947,10 +1220,10 @@ public class BusinessOwnerPanel extends JFrame {
 		scrollPane_6.setBounds(10, 73, 527, 232);
 		updateEmpWaorkingTime.add(scrollPane_6);
 
-		DurationTable = new JTable();
+		DurationTable = new JTable(); //Table to diaplay employee working toikes
 		DurationTable.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseClicked(MouseEvent arg0) {
+			public void mouseClicked(MouseEvent arg0) {//Set action to perform when the table row is clicked
 				int row = DurationTable.getSelectedRow();
 				String employee = DurationTable.getModel().getValueAt(row, 0)
 						.toString();
@@ -958,15 +1231,14 @@ public class BusinessOwnerPanel extends JFrame {
 						.toString();
 				String endTime = DurationTable.getModel().getValueAt(row, 3)
 						.toString();
-				String duration = DurationTable.getModel().getValueAt(row, 4)
-						.toString()+" min";
+				//Set correct values to appropriate dropdowns
 				EmployeeComboBox.setSelectedItem(employee);
 				StarTimeComboBox1.setSelectedItem(startTime);
 				EndTimeComboBox1.setSelectedItem(endTime);
-				DurationComboBox1.setSelectedItem(duration);
 			}
 		});
 		DurationTable.setRowHeight(25);
+		//Define table model
 		DurationTable.setModel(new DefaultTableModel(new Object[][] {}, new String[] {
 				"Employee Name", "Activity", "Start Time", "End Time" , "Duration" }) {
 			boolean[] columnEditables = new boolean[] { false, false, false, false, false };
@@ -993,7 +1265,7 @@ public class BusinessOwnerPanel extends JFrame {
 				"Update Employee Working Time");
 		panel_9.add(lblUpdateEmployeeWorking);
 		
-		StarTimeComboBox1 = new JComboBox();
+		StarTimeComboBox1 = new JComboBox(); //Drop down to select starting time when updating employee working time
 		StarTimeComboBox1.setModel(new DefaultComboBoxModel(new String[] {
 				"Start Time", "00:00", "00:30", "01:00", "01:30", "02:00",
 				"02:30", "03:00", "03:30", "04:00", "04:30", "05:00", "05:30",
@@ -1006,7 +1278,7 @@ public class BusinessOwnerPanel extends JFrame {
 		StarTimeComboBox1.setBounds(24, 358, 129, 20);
 		updateEmpWaorkingTime.add(StarTimeComboBox1);
 		
-		EndTimeComboBox1 = new JComboBox();
+		EndTimeComboBox1 = new JComboBox();//Drop down to select ending time when updating employee working time
 		EndTimeComboBox1.setModel(new DefaultComboBoxModel(new String[] {
 				"Start Time", "00:00", "00:30", "01:00", "01:30", "02:00",
 				"02:30", "03:00", "03:30", "04:00", "04:30", "05:00", "05:30",
@@ -1018,231 +1290,122 @@ public class BusinessOwnerPanel extends JFrame {
 				"23:30" }));
 		EndTimeComboBox1.setBounds(205, 358, 115, 20);
 		updateEmpWaorkingTime.add(EndTimeComboBox1);
-		
-		DurationComboBox1 = new JComboBox();
-		DurationComboBox1.setModel(new DefaultComboBoxModel(new String[] {"Select duration", "30 min", "60 min"}));
-		DurationComboBox1.setBounds(205, 387, 115, 20);
-		updateEmpWaorkingTime.add(DurationComboBox1);
-		
-		JLabel lblDuration_1 = new JLabel("Duration");
-		lblDuration_1.setBounds(24, 390, 115, 14);
-		updateEmpWaorkingTime.add(lblDuration_1);
 
-		empWorkingTime = new JPanel();
-		empWorkingTime.setVisible(false);
-		empWorkingTime.setBounds(0, 0, 557, 396);
-		empWorkingTime.setLayout(null);
-		panel_2.add(empWorkingTime);
 
-		JButton btnSave_1 = new JButton("Save");
-		btnSave_1.addActionListener(new ActionListener() {
-			
+		/**
+		 *empAvailable panel components 
+		 */
+		JScrollPane scrollPane_1 = new JScrollPane();
+		scrollPane_1.setBounds(10, 71, 517, 280);
+		empAvailable.add(scrollPane_1);
+
+		empTable = new JTable();// Table to display the available employees
+		empTable.setRowHeight(25);
+		empTable.setModel(new DefaultTableModel(new Object[][] {},
+				new String[] { "Employee Name", "Day", "Activity",
+						"Time Available", "Status" }) {
+			boolean[] columnEditables = new boolean[] { false, false, false,
+					false, false };
+
+			public boolean isCellEditable(int row, int column) {
+				return columnEditables[column];
+			}
+		});
+		scrollPane_1.setViewportView(empTable);
+
+		EmpAvailableSelctService = new JComboBox();//Drop down to select service to see employee available
+		EmpAvailableSelctService.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				if (comboBox.getSelectedIndex() == 0) {
-					JOptionPane.showMessageDialog(null,
-							"Please select servicde");
-					return;
-				}
-				if (comboBox_13.getSelectedIndex() == 0) {
-					JOptionPane.showMessageDialog(null,
-							"Please select activity");
-					return;
-				}
-				if (StartTimeComboBox.getSelectedIndex() == 0) {
-					JOptionPane.showMessageDialog(null,
-							"Please select starting time");
-					return;
-				}
-				if (EndTimeComboBox.getSelectedIndex() == 0) {
-					JOptionPane.showMessageDialog(null,
-							"Please select ending time");
-					return;
-				}
-				if (SelectDurationComboBox.getSelectedIndex() == 0) {
-					JOptionPane.showMessageDialog(null,
-							"Please select duration");
-					return;
-				}
-				
-				if (empWorkingTimeComboBox.getSelectedItem().toString().trim().equals("")
-						|| empWorkingTimeComboBox.getSelectedItem().toString().trim()
-								.equals("null")) {
-					JOptionPane.showMessageDialog(null,
-							"Enter Employee name to proceed");
-					return;
-				}
-				String service = comboBox.getSelectedItem().toString();
-				String activity = comboBox_13.getSelectedItem().toString();
-				String startTime = StartTimeComboBox.getSelectedItem().toString();
-				String endTime = EndTimeComboBox.getSelectedItem().toString();
-				String employee = empWorkingTimeComboBox.getSelectedItem().toString();
-				
-				int duration = 0;
-				if(SelectDurationComboBox.getSelectedIndex() == 1){
-					duration = 30;
-				}if(SelectDurationComboBox.getSelectedIndex() == 2){
-					duration = 60;
-				}
-
-				try {
-					SimpleDateFormat format = new SimpleDateFormat("HH:mm");
-					Date date1 = format.parse(startTime);
-					Date date2 = format.parse(endTime);
-					long diff = date2.getTime() - date1.getTime();
-					long diffMinutes = diff / (60 * 1000);
-					
-					int numOfSlots;
-					if(diffMinutes % duration != 0){
-						JOptionPane.showMessageDialog(null, "The difference should not have remainders for this to work");
-						return;
-					}else{
-					}
-
-					BufferedWriter writer = new BufferedWriter(new FileWriter("employeeworkingtime.txt", true));
-					writer.write(employee + "," + service + ","+ activity + "," + startTime + "," + endTime+","+duration);
-					writer.newLine();
-					writer.close();
-					
-					String fileName = service + ".txt";
-					
-					writer = new BufferedWriter(new FileWriter(fileName, true));
-					for (int a = 0; a < daysList.size(); a++) {
-						numOfSlots = (int) (diffMinutes / duration);
-						date1 = format.parse(startTime);
-						for(int d = 0; d < numOfSlots; d++ ){
-							Calendar cal = Calendar.getInstance();
-					        cal.setTime(date1);
-					        Time timeStart = new Time (cal.getTime().getTime());
-					        
-					        cal.add(Calendar.MINUTE, duration);
-					        Time timeEnd = new Time (cal.getTime().getTime());
-					        writer.write(employee + "," + daysList.get(a) + ","
-									+ activity + "," + timeStart.toString().substring(0, 5) + "-" + timeEnd.toString().substring(0, 5)
-									+ ",available");
-							writer.newLine();
-					       date1 = new Date(timeEnd.getTime());
-						}
-						
-					}
-
-					writer.close();
-					JOptionPane.showMessageDialog(null,"Employee time added successfully");
-				} catch (IOException | ParseException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-
+				//Call method to display available employees
+				empAvailable(EmpAvailableSelctService.getSelectedItem().toString());
 			}
 		});
-		btnSave_1.setBounds(250, 348, 102, 23);
-		empWorkingTime.add(btnSave_1);
+		EmpAvailableSelctService.setBounds(106, 35, 152, 25);
+		empAvailable.add(EmpAvailableSelctService);
 
-		JLabel lblEmployeeName = new JLabel("Employee Name");
-		lblEmployeeName.setBounds(22, 303, 125, 14);
-		empWorkingTime.add(lblEmployeeName);
+		JLabel lblSelectService = new JLabel("Select Service");
+		lblSelectService.setBounds(10, 35, 91, 25);
+		empAvailable.add(lblSelectService);
 
-		empWorkingTimeComboBox = new JComboBox();
-		empWorkingTimeComboBox.setEditable(true);
-		empWorkingTimeComboBox.setBounds(161, 300, 191, 20);
-		empWorkingTime.add(empWorkingTimeComboBox);
+		JPanel panel_8 = new JPanel();
+		panel_8.setBackground(Color.LIGHT_GRAY);
+		panel_8.setBounds(0, 0, 557, 24);
+		empAvailable.add(panel_8);
 
-		JPanel panel_10 = new JPanel();
-		panel_10.setBackground(Color.LIGHT_GRAY);
-		panel_10.setBounds(0, 0, 557, 24);
-		empWorkingTime.add(panel_10);
+		JLabel lblEmployeesAvailableNext = new JLabel(
+				"Employees Available Next Week");
+		panel_8.add(lblEmployeesAvailableNext);
 
-		JLabel lblAssignEmployeeWorking = new JLabel(
-				"Assign Employee Working Time");
-		panel_10.add(lblAssignEmployeeWorking);
+		JLabel label_11 = new JLabel("Select Service");
+		label_11.setBounds(286, 35, 114, 25);
+		empAvailable.add(label_11);
 
-		comboBox = new JComboBox();
-		comboBox.addActionListener(new ActionListener() {
+		empAvailSelectDay = new JComboBox();//Drop down to select day to see employee available
+		empAvailSelectDay.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (comboBox.getSelectedIndex() != 0) {
+				if (empAvailSelectDay.getSelectedIndex() != 0) {//Check that the day selected is not the first item in the dropdown
 					try {
-						activity(comboBox.getSelectedItem().toString());
-						employees(comboBox.getSelectedItem().toString());
-					} catch (Exception e1) {
-						// e.printStackTrace();
+						//Call method to display available employees
+						empAvailableParticularDay(EmpAvailableSelctService.getSelectedItem()
+								.toString(), empAvailSelectDay.getSelectedItem()
+								.toString());
+					} catch (Exception e3) {
+						e3.printStackTrace();
 					}
 				}
 			}
 		});
-		comboBox.setBounds(161, 59, 191, 24);
-		empWorkingTime.add(comboBox);
-
-		JLabel label = new JLabel("Select Service");
-		label.setBounds(22, 64, 116, 14);
-		empWorkingTime.add(label);
-
-		JLabel label_8 = new JLabel("Select Activity");
-		label_8.setBounds(22, 106, 116, 14);
-		empWorkingTime.add(label_8);
-
-		comboBox_13 = new JComboBox();
-		comboBox_13.setModel(new DefaultComboBoxModel(
-				new String[] { "Select activity" }));
-		comboBox_13.setBounds(161, 101, 191, 24);
-		empWorkingTime.add(comboBox_13);
-
-		JLabel lblStartinftime = new JLabel("Starting Time");
-		lblStartinftime.setBounds(22, 158, 116, 14);
-		empWorkingTime.add(lblStartinftime);
-
-		StartTimeComboBox = new JComboBox();
-		StartTimeComboBox.setModel(new DefaultComboBoxModel(new String[] {
-				"Start Time", "00:00", "00:30", "01:00", "01:30", "02:00",
-				"02:30", "03:00", "03:30", "04:00", "04:30", "05:00", "05:30",
-				"06:00", "06:30", "07:00", "07:30", "08:00", "08:30", "09:00",
-				"09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30",
-				"13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00",
-				"16:30", "17:00", "17:30", "18:00", "18:30", "19:00", "19:30",
-				"20:00", "20:30", "21:00", "21:30", "22:00", "22:30", "23:00",
-				"23:30" }));
-		StartTimeComboBox.setBounds(161, 155, 191, 24);
-		empWorkingTime.add(StartTimeComboBox);
-
-		EndTimeComboBox = new JComboBox();
-		EndTimeComboBox.setModel(new DefaultComboBoxModel(new String[] {
-				"Start Time", "00:00", "00:30", "01:00", "01:30", "02:00",
-				"02:30", "03:00", "03:30", "04:00", "04:30", "05:00", "05:30",
-				"06:00", "06:30", "07:00", "07:30", "08:00", "08:30", "09:00",
-				"09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30",
-				"13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00",
-				"16:30", "17:00", "17:30", "18:00", "18:30", "19:00", "19:30",
-				"20:00", "20:30", "21:00", "21:30", "22:00", "22:30", "23:00",
-				"23:30" }));
-		EndTimeComboBox.setBounds(161, 209, 191, 24);
-		empWorkingTime.add(EndTimeComboBox);
-
-		JLabel lblEndingTime = new JLabel("Ending time");
-		lblEndingTime.setBounds(22, 214, 132, 14);
-		empWorkingTime.add(lblEndingTime);
+		empAvailSelectDay.addItem("Select Day");
+		for (int a = 0; a < daysList.size(); a++) {
+			empAvailSelectDay.addItem(daysList.get(a));
+		}
+		empAvailSelectDay.setBounds(413, 35, 114, 25);
+		empAvailable.add(empAvailSelectDay);
 		
-		JLabel lblDuration = new JLabel("Duration");
-		lblDuration.setBounds(22, 258, 132, 14);
-		empWorkingTime.add(lblDuration);
+		/**
+		 * bookingsummaries Panel components
+		 */
+		JPanel panel_5 = new JPanel();
+		panel_5.setBackground(Color.LIGHT_GRAY);
+		panel_5.setBounds(0, 0, 557, 24);
+		bookingsummaries.add(panel_5);
 		
-		SelectDurationComboBox = new JComboBox();
-		SelectDurationComboBox.setModel(new DefaultComboBoxModel(new String[] {"Select duration", "30 min", "60 min"}));
-		SelectDurationComboBox.setBounds(161, 253, 191, 24);
-		empWorkingTime.add(SelectDurationComboBox);
 
-		bookForCustomer = new JPanel();
-		bookForCustomer.setVisible(false);
-		bookForCustomer.setBounds(0, 0, 557, 407);
-		panel_2.add(bookForCustomer);
-		bookForCustomer.setLayout(null);
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(10, 24, 537, 315);
+		bookingsummaries.add(scrollPane);
+
+		table = new JTable(); //Table to display all booked slots when booking for a customer
+		table.setRowHeight(25);
+		//Declare columns for the table
+		table.setModel(new DefaultTableModel(new Object[][] {}, new String[] {
+				"Customer", "Employee", "Day", "Service", "Activity",
+				"Time Slot" }) {
+			//Define if columns can be editted by the user
+			boolean[] columnEditables = new boolean[] { false, false, false,
+					false, false, false };
+
+			public boolean isCellEditable(int row, int column) {
+				return columnEditables[column];
+			}
+		});
+		table.getColumnModel().getColumn(0).setPreferredWidth(85);
+		scrollPane.setViewportView(table);
+		
+
+		JLabel lblBookingSummary = new JLabel("Booking Summary");
+		panel_5.add(lblBookingSummary);
 
 		JLabel label_3 = new JLabel("Select Service");
 		label_3.setBounds(20, 47, 127, 14);
 		bookForCustomer.add(label_3);
 
-		selectService = new JComboBox();
+		selectService = new JComboBox();//dropdown to select the service to book
 		selectService.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (selectService.getSelectedIndex() != 0) {
+				if (selectService.getSelectedIndex() != 0) {//Check that the service selected is not the first item 
 					try {
+						//Call nethos to display activities in this service
 						activity(selectService.getSelectedItem().toString());
 					} catch (Exception e1) {
 						// e.printStackTrace();
@@ -1257,11 +1420,12 @@ public class BusinessOwnerPanel extends JFrame {
 		label_4.setBounds(286, 47, 120, 14);
 		bookForCustomer.add(label_4);
 
-		selectActivity = new JComboBox();
+		selectActivity = new JComboBox();//Dropdown to select the activity to book
 		selectActivity.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (selectActivity.getSelectedIndex() != 0) {
+				if (selectActivity.getSelectedIndex() != 0) {//Check that the activity selected is not the first item
 					try {
+						//Call method to display the available days to book
 						dayOfApp(selectService.getSelectedItem().toString(),
 								selectActivity.getSelectedItem().toString());
 					} catch (Exception e1) {
@@ -1277,11 +1441,12 @@ public class BusinessOwnerPanel extends JFrame {
 		label_5.setBounds(20, 82, 158, 14);
 		bookForCustomer.add(label_5);
 
-		selectDay = new JComboBox();
+		selectDay = new JComboBox();//Drop down to select day of appointment 
 		selectDay.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				if (selectDay.getSelectedIndex() != 0) {
+				if (selectDay.getSelectedIndex() != 0) {//Check that the day selcted is not the first item
 					try {
+						//Call the method to display the available employees for booking the appointment
 						employee(selectService.getSelectedItem().toString(),
 								selectActivity.getSelectedItem().toString(),
 								selectDay.getSelectedItem().toString());
@@ -1298,11 +1463,12 @@ public class BusinessOwnerPanel extends JFrame {
 		label_6.setBounds(20, 120, 158, 14);
 		bookForCustomer.add(label_6);
 
-		selectEmp = new JComboBox();
+		selectEmp = new JComboBox();//Dropdown to select the employee to book the appointment
 		selectEmp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (selectEmp.getSelectedIndex() != 0) {
+				if (selectEmp.getSelectedIndex() != 0) {//Check that the employee selected is nit the first item
 					try {
+						//Display the available slot to book
 						availableSlots(selectService.getSelectedItem()
 								.toString(), selectActivity.getSelectedItem()
 								.toString(), selectDay.getSelectedItem()
@@ -1322,92 +1488,55 @@ public class BusinessOwnerPanel extends JFrame {
 		label_7.setBounds(26, 382, 197, 14);
 		bookForCustomer.add(label_7);
 
+		//Declare the and initialize the button to save the booked slot
 		JButton button_1 = new JButton("Save");
 		button_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (selectCustomer.getText().trim().equals("")) {
+				if (selectCustomer.getText().trim().equals("")) {//Check that customer name is entered
 					JOptionPane.showMessageDialog(null,
 							"Enter Customer To Book For");
 					return;
 				}
 				String customerInfo = selectCustomer.getText();
 				String[] customerData = customerInfo.split(",");
-				if (customerData.length != 2) {
+				if (customerData.length != 2) {//Check that two names are provided, first name and last name
 					JOptionPane.showMessageDialog(null,
 							"Enter Customer's 2 names separated by comma");
 					return;
 				}
-				String service = selectService.getSelectedItem().toString();
-				String fileName = service + ".txt";
+
+				ArrayList<String> toBookList = new ArrayList<>();//List to store the slots to book
+				String service = selectService.getSelectedItem().toString();//Get the service name
 				int row = 0;
-				int rows = EmployeeWorkingTimeTable.getRowCount();
+				int rows = bookingAvailableSlotsTable.getRowCount();//Get the number of rows in the table
 				String selected = "";
-				for (row = 0; row < rows; row++) {
-					try {
-						boolean status = (boolean) EmployeeWorkingTimeTable.getModel()
-								.getValueAt(row, 5);
-						if (status == true) {
-							selected = EmployeeWorkingTimeTable.getModel().getValueAt(row, 0)
+				for (row = 0; row < rows; row++) {//Loop through every row in the table
+						boolean status = (boolean) bookingAvailableSlotsTable.getModel()
+								.getValueAt(row, 5); //Boolean should be true is the row is ticked to book the slot
+						if (status == true) {//Check status of the boolean
+							//Set the selected slot details
+							selected = bookingAvailableSlotsTable.getModel().getValueAt(row, 0)
 									.toString()
 									+ ","
-									+ EmployeeWorkingTimeTable.getModel().getValueAt(row, 1)
+									+ bookingAvailableSlotsTable.getModel().getValueAt(row, 1)
 											.toString()
 									+ ","
-									+ EmployeeWorkingTimeTable.getModel().getValueAt(row, 2)
+									+ bookingAvailableSlotsTable.getModel().getValueAt(row, 2)
 											.toString()
 									+ ","
-									+ EmployeeWorkingTimeTable.getModel().getValueAt(row, 3)
+									+ bookingAvailableSlotsTable.getModel().getValueAt(row, 3)
 											.toString()
 									+ ","
-									+ EmployeeWorkingTimeTable.getModel().getValueAt(row, 4)
+									+ bookingAvailableSlotsTable.getModel().getValueAt(row, 4)
 											.toString();
-							String recs[];
-							while (true) {
-								recs = selected.split(",");
-
-								if (recs[4].equals("Un-available")) {
-									System.out.println("Booking Un-Available");
-									System.out.println("Please select another");
-								} else {
-									recs[4] = "Un-available";
-									break;
-								}
-
-							}
-
-							String modified = recs[0] + "," + recs[1] + ","
-									+ recs[2] + "," + recs[3] + "," + recs[4];
-
-							BufferedWriter bw = new BufferedWriter(
-									new FileWriter(fileName));
-							for (int a = 0; a < list.size(); a++) {
-								if (list.get(a).equals(selected)) {
-									list.set(a, modified);
-									bw.write(list.get(a));
-									bw.newLine();
-								} else {
-									bw.write(list.get(a));
-									bw.newLine();
-								}
-							}
-							bw.close();
-							BufferedWriter writer2 = new BufferedWriter(
-									new FileWriter("BookingSummaries.txt", true));
-							writer2.write("Customer," + customerData[0] + ","
-									+ customerData[1]
-									+ ",booked Appointment on," + recs[0] + ","
-									+ recs[1] + "," + /* servicename */service
-									+ "," + recs[2] + "," + recs[3]);
-							writer2.newLine();
-							writer2.close();
+							toBookList.add(selected);//Add the selected slot to the list
 						}
-					} catch (Exception e1) {
-						// e.printStackTrace();
 					}
-
-				}
-
-				if (selectEmp.getSelectedIndex() != 0) {
+				new BookAppointmentFactory();//Call class to make the booking
+				BookAppointmentFactory.doBooking("Owner", customerData, service, toBookList);//Call the method to make booking by the owner
+				
+				//Reset the table to show the availble slots after some have been booked
+				if (selectEmp.getSelectedIndex() != 0) { 
 					try {
 						availableSlots(selectService.getSelectedItem()
 								.toString(), selectActivity.getSelectedItem()
@@ -1420,7 +1549,6 @@ public class BusinessOwnerPanel extends JFrame {
 					}
 				}
 				selectCustomer.setText("");
-				JOptionPane.showMessageDialog(null, "Successfully Booked");
 
 			}
 		});
@@ -1431,7 +1559,7 @@ public class BusinessOwnerPanel extends JFrame {
 		lblSelectCustomer.setBounds(260, 120, 100, 14);
 		bookForCustomer.add(lblSelectCustomer);
 
-		selectCustomer = new JTextField();
+		selectCustomer = new JTextField();//Filed to enter customer name to book for
 		selectCustomer.setBounds(363, 117, 184, 20);
 		bookForCustomer.add(selectCustomer);
 
@@ -1439,8 +1567,9 @@ public class BusinessOwnerPanel extends JFrame {
 		scrollPane_7.setBounds(10, 148, 537, 223);
 		bookForCustomer.add(scrollPane_7);
 
-		EmployeeWorkingTimeTable = new JTable();
-		EmployeeWorkingTimeTable.setModel(new DefaultTableModel(new Object[][] {}, new String[] {
+		bookingAvailableSlotsTable = new JTable();//Table to show available slots when booking for the customer
+		//Define table model
+		bookingAvailableSlotsTable.setModel(new DefaultTableModel(new Object[][] {}, new String[] {
 				"Employee", "Day", "Service", "Time", "Availability", "Book" }) {
 			Class[] columnTypes = new Class[] { Object.class, Object.class,
 					Object.class, Object.class, Object.class, Boolean.class };
@@ -1457,15 +1586,15 @@ public class BusinessOwnerPanel extends JFrame {
 			}
 		});
 
-		EmployeeWorkingTimeTable.getColumnModel().getColumn(0).setPreferredWidth(150);
-		EmployeeWorkingTimeTable.getColumnModel().getColumn(1).setPreferredWidth(100);
-		EmployeeWorkingTimeTable.getColumnModel().getColumn(2).setPreferredWidth(100);
-		EmployeeWorkingTimeTable.getColumnModel().getColumn(3).setPreferredWidth(80);
-		EmployeeWorkingTimeTable.getColumnModel().getColumn(4).setPreferredWidth(70);
-		EmployeeWorkingTimeTable.getColumnModel().getColumn(5).setPreferredWidth(50);
-		EmployeeWorkingTimeTable.setRowHeight(25);
+		bookingAvailableSlotsTable.getColumnModel().getColumn(0).setPreferredWidth(150);
+		bookingAvailableSlotsTable.getColumnModel().getColumn(1).setPreferredWidth(100);
+		bookingAvailableSlotsTable.getColumnModel().getColumn(2).setPreferredWidth(100);
+		bookingAvailableSlotsTable.getColumnModel().getColumn(3).setPreferredWidth(80);
+		bookingAvailableSlotsTable.getColumnModel().getColumn(4).setPreferredWidth(70);
+		bookingAvailableSlotsTable.getColumnModel().getColumn(5).setPreferredWidth(50);
+		bookingAvailableSlotsTable.setRowHeight(25);
 
-		scrollPane_7.setViewportView(EmployeeWorkingTimeTable);
+		scrollPane_7.setViewportView(bookingAvailableSlotsTable);
 
 		JPanel panel_11 = new JPanel();
 		panel_11.setBackground(Color.LIGHT_GRAY);
@@ -1475,124 +1604,7 @@ public class BusinessOwnerPanel extends JFrame {
 		JLabel lblMakeBookingFor = new JLabel("Make Booking For Customer");
 		panel_11.add(lblMakeBookingFor);
 
-		addActivity = new JPanel();
-		addActivity.setVisible(true);
-		addActivity.setBounds(0, 0, 557, 407);
-		panel_2.add(addActivity);
-		addActivity.setLayout(null);
-
-		JPanel panel_13 = new JPanel();
-		panel_13.setBackground(Color.LIGHT_GRAY);
-		panel_13.setBounds(0, 0, 557, 24);
-		addActivity.add(panel_13);
-
-		JLabel lblAddServiceActivitieshere = new JLabel(
-				"Add Service Activities Here");
-		panel_13.add(lblAddServiceActivitieshere);
-
-		AddActivityComboBox = new JComboBox();
-		AddActivityComboBox.setBounds(173, 75, 185, 24);
-		addActivity.add(AddActivityComboBox);
-
-		JLabel lblSelectService_3 = new JLabel("Select Service");
-		lblSelectService_3.setBounds(27, 80, 136, 14);
-		addActivity.add(lblSelectService_3);
-
-		JLabel lblNumberOfActivities_1 = new JLabel("Number of Activities");
-		lblNumberOfActivities_1.setBounds(27, 120, 136, 14);
-		addActivity.add(lblNumberOfActivities_1);
-
-		JLabel lblActivityName = new JLabel("Activity Name");
-		lblActivityName.setBounds(27, 163, 136, 14);
-		addActivity.add(lblActivityName);
-
-		AddActivityNameTextField = new JTextField();
-		AddActivityNameTextField.setBounds(173, 127, 185, 20);
-		addActivity.add(AddActivityNameTextField);
-		AddActivityNameTextField.setColumns(10);
-
-		JScrollPane scrollPane_8 = new JScrollPane();
-		scrollPane_8.setBounds(173, 158, 185, 144);
-		addActivity.add(scrollPane_8);
-
-		JTextArea textArea = new JTextArea();
-		scrollPane_8.setViewportView(textArea);
-
-		JButton btnSaveActivities = new JButton("Save Activities");
-		btnSaveActivities.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if (AddActivityComboBox.getSelectedIndex() == 0) {
-					JOptionPane.showMessageDialog(null,
-							"Select Service Name to proceed");
-					return;
-				}
-
-				String service = AddActivityComboBox.getSelectedItem().toString();
-				String fileName = service + ".txt";
-				String num = AddActivityNameTextField.getText().trim();
-				String activities = textArea.getText().trim();
-
-				if (num.equals("") || activities.equals("")) {
-					JOptionPane.showMessageDialog(null,
-							"Enter Number of activities To Register");
-					return;
-				}
-
-				try {
-					int number = Integer.parseInt(num);
-					String[] activitiesArr = activities.split(",");
-					if (activitiesArr.length != number) {
-						JOptionPane
-								.showMessageDialog(null,
-										"Enter correct number of activities, separate by [,]");
-						return;
-					}
-					FileWriter fw = new FileWriter(fileName, true);
-					BufferedWriter bw = new BufferedWriter(fw);
-
-					for (int a = 0; a < number; a++) {
-						bw.write("null,null," + activitiesArr[a].toLowerCase()
-								+ ",null,available");
-						bw.newLine();
-					}
-					bw.close();
-
-					JOptionPane.showMessageDialog(null,
-							"Service Entered successfully");
-				} catch (Exception e1) {
-					e1.printStackTrace();
-				}
-
-			}
-		});
-		btnSaveActivities.setForeground(Color.BLACK);
-		btnSaveActivities.setBackground(SystemColor.activeCaption);
-		btnSaveActivities.setBounds(178, 343, 180, 23);
-		addActivity.add(btnSaveActivities);
-
-		JPanel panel = new JPanel();
-		panel.setBackground(Color.ORANGE);
-		contentPane.add(panel, BorderLayout.NORTH);
-		panel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
-
-		JLabel lblNewLabel_1 = new JLabel();
-		img = new ImageIcon(this.getClass().getResource("/icon.png"))
-				.getImage();
-		lblNewLabel_1.setIcon(new ImageIcon(img));
-		Image bi;
-		try {
-			bi = null;
-			bi = ImageIO.read(this.getClass().getResource("/icon.png"));
-			lblNewLabel_1.setIcon(new ImageIcon(bi
-					.getScaledInstance(50, 36, 36)));
-		} catch (Exception e) {
-
-		}
-		panel.add(lblNewLabel_1);
-
-		businessTitle = new JLabel(fillBusinessData());
-		businessTitle.setFont(new Font("Tahoma", Font.BOLD, 13));
-		panel.add(businessTitle);
+		//Call function to display services in dropdowns
 		services();
 
 	}
@@ -1634,62 +1646,74 @@ public class BusinessOwnerPanel extends JFrame {
 
 	}
 
+	//Function to read the business information and display them in the window
 	private String fillBusinessData() {
 		String businessDetails = "";
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(
-					"BusinessInfo.txt"));
+					"BusinessInfo.txt"));//Open the BusinessInfo.txt file in read mode and give access to the BufferedReader
 			String line = "";
-			while ((line = br.readLine()) != null) {
-				String recs[] = line.split(",");
-				if (recs[3].equals(userData[4])) {
+			while ((line = br.readLine()) != null) {//Loop through every line that is not null
+				String recs[] = line.split(",");//Separate the line with a comma and add the records in as string array
+				if (recs[3].equals(userData[4])) {//Check whether the username read is equal to the usernae of the business owner logged in
 					businessDetails = "<html><font color='green'>Name:</font> "
 							+ "<font color='red'>" + recs[0] + "</font> "
 							+ "<font color='green'>Location:</font> "
 							+ "<font color='red'>" + recs[1] + "</font> "
 							+ "<font color='green'>Telephone:</font> "
 							+ "<font color='red'>" + recs[2]
-							+ "</font> </html>";
+							+ "</font> </html>"; //Style the business information using HTML
 				}
 			}
-			br.close();
-			return businessDetails;
+			br.close();//Close the BufferedReader
+			return businessDetails; //Return the string with business info
 		} catch (Exception e2) {
 			e2.printStackTrace();
 			return businessDetails;
 		}
 	}
 
+	//Function to read service in the system and display them in dropdowns
 	public void services() {
 		BufferedReader br;
 		try {
-			br = new BufferedReader(new FileReader("services.txt"));
-			ArrayList<String> services = new ArrayList<String>();
+			br = new BufferedReader(new FileReader("services.txt"));//Open the file in read mode and give access to the BufferedReader
+			ArrayList<String> services = new ArrayList<String>();//List to contain all the services
 			String line = "";
-			while ((line = br.readLine()) != null) {
-				services.add(line);
+			while ((line = br.readLine()) != null) {//Loop through every line that is not null
+				services.add(line);//Add the line read in the list
 			}
+			/*
+			 Remove all items in the dropdowns to prepare for the new data
+			 */
 			servicedeleteCombo.removeAllItems();
-			EmpAvailableComboBox.removeAllItems();
+			EmpAvailableSelctService.removeAllItems();
 			comboBoxService.removeAllItems();
 			selectService.removeAllItems();
 			ComboBoxServiceName.removeAllItems();
-			AddActivityComboBox.removeAllItems();
-			comboBox.removeAllItems();
+			ServiceToAddActivity.removeAllItems();
+			selectServiceToAddEmpTime.removeAllItems();
+			/*
+			 Set the first items in the dropdowns
+			 */
 			servicedeleteCombo.addItem("Select Service");
 			comboBoxService.addItem("Select Services");
 			selectService.addItem("Select Services");
 			ComboBoxServiceName.addItem("Select Services");
-			AddActivityComboBox.addItem("Select Services");
-			comboBox.addItem("Select Services");
-			for (int a = 0; a < services.size(); a++) {
+			ServiceToAddActivity.addItem("Select Services");
+			selectServiceToAddEmpTime.addItem("Select Services");
+			
+			for (int a = 0; a < services.size(); a++) {//Loop through every list item
+				/*
+				 Add the list item in the dropdowns
+				 */
 				servicedeleteCombo.addItem(services.get(a));
-				EmpAvailableComboBox.addItem(services.get(a));
+				EmpAvailableSelctService.addItem(services.get(a));
 				comboBoxService.addItem(services.get(a));
 				selectService.addItem(services.get(a));
 				ComboBoxServiceName.addItem(services.get(a));
-				AddActivityComboBox.addItem(services.get(a));
-				comboBox.addItem(services.get(a));
+				ServiceToAddActivity.addItem(services.get(a));
+				selectServiceToAddEmpTime.addItem(services.get(a));
 			}
 
 		} catch (IOException e) {
@@ -1698,25 +1722,20 @@ public class BusinessOwnerPanel extends JFrame {
 
 	}
 
+	//Function to show the available employees in a certain service in a dropdowns
 	public void employees(String service) {
 		String fileName = service + ".txt";
 		BufferedReader br;
 		try {
 			br = new BufferedReader(new FileReader(fileName));
-			ArrayList<String> employeees = new ArrayList<String>();
-			String line = "";
-			String[] recs = null;
-			while ((line = br.readLine()) != null) {
-				recs = line.split(",");
-				if (!employeees.contains(recs[0]) && !recs[0].equals("null")) {
-					employeees.add(recs[0]);
-				}
-			}
-			EmployeeComboBox.removeAllItems();
-			empWorkingTimeComboBox.removeAllItems();
-			for (int a = 0; a < employeees.size(); a++) {
-				empWorkingTimeComboBox.addItem(employeees.get(a));
-				EmployeeComboBox.addItem(employeees.get(a));
+			ArrayList<String> employeees = new OwnerUtils().empAvailable(service); //Initialize the list with available employees
+			
+			EmployeeComboBox.removeAllItems();//Remove all items from the dropdown
+			empNamesWorkingTime.removeAllItems();//Remove all items from the dropdown
+			
+			for (int a = 0; a < employeees.size(); a++) {//Loop through every list item in the list
+				empNamesWorkingTime.addItem(employeees.get(a));//Add the list item in the dropdown
+				EmployeeComboBox.addItem(employeees.get(a));//Add the list item in the dropdown
 			}
 
 		} catch (IOException e) {
@@ -1725,71 +1744,59 @@ public class BusinessOwnerPanel extends JFrame {
 
 	}
 
+	//Function to show the available employees in a certain service in a table
 	public void empAvailable(String service) {
-		try {
-			String fileName = service + ".txt";
-			BufferedReader br;
-			br = new BufferedReader(new FileReader(fileName));
-			String line = "";
-			ArrayList<String> list = new ArrayList<>();
-			String recs[] = null;
-			while ((line = br.readLine()) != null) {
-				recs = line.split(",");
-				if (!recs[0].equals("null") && recs[4].equals("available")) {
-					list.add(line);
-				}
-			}
+		ArrayList<String> list = new OwnerUtils().empAvailable(service); //Initialize the list with available employees
+		int i;
 
-			br.close();
-			int i;
-
-			DefaultTableModel model = (DefaultTableModel) empTable.getModel();
-			model.setRowCount(0);
-			Object[] rowData = new Object[5];
-			for (i = 0; i < list.size(); i++) {
-				recs = list.get(i).split(",");
-				rowData[0] = recs[0];
-				rowData[1] = recs[1];
-				rowData[2] = recs[2];
-				rowData[3] = recs[3];
-				rowData[4] = recs[4];
-				model.addRow(rowData);
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
+		DefaultTableModel model = (DefaultTableModel) empTable.getModel();//Define model for this table
+		model.setRowCount(0);//Remove all rows in the table
+		Object[] rowData = new Object[5];//Set column number to 5
+		String recs[] = null;
+		for (i = 0; i < list.size(); i++) {//Loop through every list item
+			recs = list.get(i).split(",");//Separate the current list item with a comma and add them to the string array
+			//Set the column data with the appropriate record
+			rowData[0] = recs[0];
+			rowData[1] = recs[1];
+			rowData[2] = recs[2];
+			rowData[3] = recs[3];
+			rowData[4] = recs[4];
+			model.addRow(rowData);//Add row to the table model
 		}
 
 	}
 
+	//Function to show employees working times
 	public void empWorkingTimeNotNull(String service) {
 		try {
-			String fileName = "employeeworkingtime.txt";
+			String fileName = "employeeworkingtime.txt"; //Initialize the file to read data
 			BufferedReader br;
-			br = new BufferedReader(new FileReader(fileName));
+			br = new BufferedReader(new FileReader(fileName));//Open the file in read mode and give access to the BufferedReader
 			String line = "";
-			ArrayList<String> list = new ArrayList<>();
+			ArrayList<String> list = new ArrayList<>();//List to hold the read lines
 			String recs[] = null;
-			while ((line = br.readLine()) != null) {
-				recs = line.split(",");
-				if (recs[1].equals(service)) {
-					list.add(line);
+			while ((line = br.readLine()) != null) {//Loop through every line in the file that is not  null
+				recs = line.split(",");//Separate the read line with a comma and add the records in a string array
+				if (recs[1].equals(service)) {//Check whether the second array item is equal to the service selected
+					list.add(line);//Add the line in the list
 				}
 			}
 
 			br.close();
 			int i;
 
-			DefaultTableModel model = (DefaultTableModel) DurationTable.getModel();
-			model.setRowCount(0);
-			Object[] rowData = new Object[5];
-			for (i = 0; i < list.size(); i++) {
-				recs = list.get(i).split(",");
+			DefaultTableModel model = (DefaultTableModel) DurationTable.getModel();//Define the model for the table
+			model.setRowCount(0);//Remove all the rows in the table to prepare for the new data
+			Object[] rowData = new Object[5];//set columns number to 5
+			for (i = 0; i < list.size(); i++) {//Loop through every list item
+				recs = list.get(i).split(",");//Separate the current list item with a comma and put records in a string array
+				//Set the column data with the appropriate record
 				rowData[0] = recs[0];
 				rowData[1] = recs[2];
 				rowData[2] = recs[3];
 				rowData[3] = recs[4];
 				rowData[4] = recs[5];
-				model.addRow(rowData);
+				model.addRow(rowData);//Add the row to the table model
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -1797,7 +1804,9 @@ public class BusinessOwnerPanel extends JFrame {
 
 	}
 
+	//Function do control the panel to be visible
 	public void panelToSee(JPanel panel) {
+		//Hide all the panels
 		addActivity.setVisible(false);
 		bookingsummaries.setVisible(false);
 		newservice.setVisible(false);
@@ -1806,92 +1815,106 @@ public class BusinessOwnerPanel extends JFrame {
 		empWorkingTime.setVisible(false);
 		updateEmpWaorkingTime.setVisible(false);
 		bookForCustomer.setVisible(false);
-		addActivity.setVisible(false);
+		//Set the panel visible 
 		panel.setVisible(true);
-		panel.setBounds(0, 0, 557, 407);
+		panel.setBounds(0, 0, 557, 407);//Set location for the panel in the contntpane
 	}
 
+	//Function to add activities in a dropdowm
 	public void activity(String service) {
-		ArrayList<String> serviceNames = Utils.getActivities(service);
-		selectActivity.removeAllItems();
-		comboBox_13.removeAllItems();
-		comboBox_13.addItem("Select Activity");
-		selectActivity.addItem("Select Activity");
-		for (int a = 0; a < serviceNames.size(); a++) {
-			selectActivity.addItem(serviceNames.get(a));
-			comboBox_13.addItem(serviceNames.get(a));
+		ArrayList<String> serviceNames = Utils.getActivities(service);//Initialize a list to cotain all the activities in a service
+		selectActivity.removeAllItems();//Remove all the items from this dropdown to prepare for new items
+		selectActivity.addItem("Select Activity");//Set the first item in the dropdown
+		for (int a = 0; a < serviceNames.size(); a++) {//Loop through every item in the list 
+			selectActivity.addItem(serviceNames.get(a));//Add the list item to the dropdown
 		}
 
 	}
-
+	
+	//Function to add activity in a table for owner to check activity to add
+	public void activityTable(String service) {
+		ArrayList<String> serviceNames = Utils.getActivities(service);//Initialize a list to cotain all the activities in a service
+		DefaultTableModel model = (DefaultTableModel) activitySelectTable.getModel();//Define model for the table
+		model.setRowCount(0);//Remove all rows from the table to prepare for the new data
+		Object[] rowData = new Object[6];//Set the number of columns to 6
+		for (int i = 0; i < serviceNames.size(); i++) {//Loop through every item in the list
+			rowData[0] = false;//Set the first column not selected
+			rowData[1] = serviceNames.get(i);
+			model.addRow(rowData); //Add row to the table model
+		}
+	}
+	
+	//Function to read available days of appointment for a certain activity
 	public void dayOfApp(String service, String activity) {
 		ArrayList<String> activityDays = Utils.getActivityAppointmentDays(
-				service, activity);
-		selectDay.removeAllItems();
-		selectDay.addItem("Select Day");
-		for (int a = 0; a < activityDays.size(); a++) {
-			selectDay.addItem(activityDays.get(a));
+				service, activity); //Initialize the activityDays list with available days
+		selectDay.removeAllItems();//Remove all items in the dropdown to prepare for new items
+		selectDay.addItem("Select Day");//Set the first item in the dropdown
+		for (int a = 0; a < activityDays.size(); a++) {//Loop throughevery item in the activityDays list
+			selectDay.addItem(activityDays.get(a));//add the activityDays
 		}
 
 	}
 
+	//Function to read available employee, should receibve service name, activity and day
 	public void employee(String service, String activity, String day) {
 		service += ".txt";
 		ArrayList<String> employeeNames = Utils.getEmployeeNames(service,
-				activity, day);
-		selectEmp.removeAllItems();
-		;
-		selectEmp.addItem("Select Employee");
-		for (int a = 0; a < employeeNames.size(); a++) {
-			if (!employeeNames.get(a).equals("null")) {
-				selectEmp.addItem(employeeNames.get(a));
+				activity, day);//initialize the  employeeNames list with available employee
+		selectEmp.removeAllItems(); //Remove all items in this dropdown to prepare to add new items
+		selectEmp.addItem("Select Employee");//Set the first item in the dropdown
+		for (int a = 0; a < employeeNames.size(); a++) {//Loop through every item in the list so that itb adds employees in the dropdown
+			if (!employeeNames.get(a).equals("null")) {//Check if the list item is not rqual to null
+				selectEmp.addItem(employeeNames.get(a));//Add the list item in the dropdown
 			}
 		}
 
 	}
 
+	//Function to view available slots
 	public void availableSlots(String service, String activity, String day,
 			String empName) {
-		list.clear();
-		temp.clear();
+		list.clear(); //Remove all the items from this list
+		temp.clear();//Remove all the items from the temporary file
 		try {
-			String fileName = service + ".txt";
+			String fileName = service + ".txt"; //Initialize the file name
 			BufferedReader br;
-			br = new BufferedReader(new FileReader(fileName));
+			br = new BufferedReader(new FileReader(fileName)); //Open the file in read mode and give access to the BufferedReader
 			String line = "";
-			while ((line = br.readLine()) != null) {
-				list.add(line);
+			while ((line = br.readLine()) != null) {//Read every line in the file that is not null
+				list.add(line);//Add the read line in the list
 			}
 
-			int one = 0;
-			for (int a = 0; a < list.size(); a++) {
-				String recs[] = list.get(a).split(",");
-				if (!recs[0].equals("null")
-						&& recs[4].equals("available")
-						&& (recs[1].toLowerCase().equals(day)
-								&& (recs[0].toLowerCase().equals(empName) || empName
+			for (int a = 0; a < list.size(); a++) {//Loop through every list item in the list
+				String recs[] = list.get(a).split(",");//Separate the list item with a comma and add the records in a string array
+				if (!recs[0].equals("null")//Check whether the 1st arrau item is not equal to null
+						&& recs[4].equals("available")//Check if the 5th item equals to available
+						&& (recs[1].toLowerCase().equals(day)//Check whether the 2nd item equals to the day selected
+								&& (recs[0].toLowerCase().equals(empName) || empName //Check if the 1st item equals to the employee selected
 										.equals("*")) && (recs[2].toLowerCase()
 								.equals(activity)))) {
-					temp.add(list.get(a));
-					one++;
+					temp.add(list.get(a));//Add the list item in the temporary list
 				}
 			}
-			br.close();
+			br.close();//Close the BufferedReader
 			int i;
 
-			DefaultTableModel model = (DefaultTableModel) EmployeeWorkingTimeTable.getModel();
-			model.setRowCount(0);
-			Object[] rowData = new Object[6];
+			DefaultTableModel model = (DefaultTableModel) bookingAvailableSlotsTable.getModel();//Define model to the table
+			model.setRowCount(0);//Delete all rows in the table to prepare to add new data
+			Object[] rowData = new Object[6];//Set six columns for the table
 			String recs[] = null;
-			for (i = 0; i < temp.size(); i++) {
-				recs = temp.get(i).split(",");
+			for (i = 0; i < temp.size(); i++) {//List through every item in the temporary list
+				recs = temp.get(i).split(",");//Separate the list item with a comma and add the records in a string array
+				/*
+				 Set the appropriate record to the columns
+				 */
 				rowData[0] = recs[0];
 				rowData[1] = recs[1];
 				rowData[2] = recs[2];
 				rowData[3] = recs[3];
 				rowData[4] = recs[4];
 				rowData[5] = false;
-				model.addRow(rowData);
+				model.addRow(rowData);//Add the row to the table model
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -1899,22 +1922,24 @@ public class BusinessOwnerPanel extends JFrame {
 
 	}
 
+	//Function to close file lock
 	private void closeLock() {
 		try {
-			lock.release();
+			lock.release();//Release the file
 		} catch (Exception e) {
 		}
 		try {
-			lock.release();
-			chanel.close();
+			lock.release();//Release the file
+			chanel.close();//Close the file channel
 		} catch (Exception e) {
 		}
 
 	}
 
+	//Function to delete the file
 	private void deleteFile(File file) {
 		try {
-			file.delete();
+			file.delete(); //Delete the file
 		} catch (Exception e) {
 		}
 	}
