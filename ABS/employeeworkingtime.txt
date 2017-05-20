@@ -1,2 +1,7 @@
 Kim,hairdressing,hair cut,02:00,03:00,60
 Kim,hairdressing,hair washing,02:00,03:00,30
+Kaden,hairdressing,Men Hair Cut,02:00,04:00,60
+Kaden,hairdressing,Men HairCut,02:00,04:00,60
+Hella,hairdressing,men haircut,02:00,04:00,60
+Olympus,hairdressing,woman hairwash,02:00,04:00,60
+ter,hairdressing,men hair cut,03:00,06:00,60

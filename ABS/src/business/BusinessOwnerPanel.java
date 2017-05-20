@@ -639,6 +639,28 @@ public class BusinessOwnerPanel extends JFrame {
 					}
 					bw.close();// Close the BufferedReader TO release the file
 					
+					
+					list.clear(); //Remove all the items added to the list to prapeare other items to be added
+					br = new BufferedReader(new FileReader(
+							"serviceduration.txt"));//Open the "serviceduration.txt" file in write mode and give access to the BufferedWriter
+					currentLine = "";
+					while ((currentLine = br.readLine()) != null) { //Loop through every line that is not null
+						String[] recs = currentLine.split(",");//Separate the read line by comma and put the records in a String array
+						if (!recs[0].equals(service)
+								|| !recs[1].equals(activity)) { /*Check whether the seventh item in array matches the service selected by the user and the 8th
+								matches the activity selected*/ 
+							list.add(currentLine); //If service and activity do not match the records add the line in the list
+						}
+					}
+					br.close();// Close the BufferedReader TO release the file
+					bw = new BufferedWriter(new FileWriter(
+							"serviceduration.txt"));//Open the "serviceduration.txt" file in write mode and give access to the BufferedWriter
+					for (int a = 0; a < list.size(); a++) {//Loop through each item added in the list
+						bw.write(list.get(a)//Write the list item in the file
+								+ System.getProperty("line.separator"));// Add a newline to prepare for the next line to ease the manipulation of the file
+					}
+					bw.close();// Close the BufferedReader TO release the file
+					
 					JOptionPane.showMessageDialog(null,
 							"Activity Deleted Successfully"); //Display a success message that the activity has been deleted 
 					
@@ -719,7 +741,7 @@ public class BusinessOwnerPanel extends JFrame {
 
 				String service = ServiceToAddActivity.getSelectedItem().toString();//Initialize the service name with the selected service
 				String fileName = service + ".txt";//Initialize a file for the service
-				String activity = activityNameField.getText().trim();//Initialize the activity with the activity entered by the user
+				String activity = activityNameField.getText().toLowerCase().trim();//Initialize the activity with the activity entered by the user
 				if(activity.equals("")){//Check whether activity was entered
 					JOptionPane.showMessageDialog(null,
 							"Fill activity name to proceed.");
@@ -736,6 +758,8 @@ public class BusinessOwnerPanel extends JFrame {
 					duration = 60;
 				}
 				try {
+					File file = new File(fileName);
+					file.createNewFile();
 					BufferedReader reader = new BufferedReader(new FileReader(fileName));//Open the file in read mode and give access to the BufferedReader
 					String line = "", recs[] = null;
 					while( (line = reader.readLine()) != null){//Loop through every line that is not null
@@ -755,7 +779,7 @@ public class BusinessOwnerPanel extends JFrame {
 					
 					bw.close();//Close the BufferedWriter
 					JOptionPane.showMessageDialog(null,
-							"Service Entered successfully");//Display a success message to the user
+							"Activity Saved successfully");//Display a success message to the user
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
@@ -909,7 +933,7 @@ public class BusinessOwnerPanel extends JFrame {
 				String service = selectServiceToAddEmpTime.getSelectedItem().toString();
 				String startTime = StartTimeComboBox.getSelectedItem().toString();
 				String endTime = EndTimeComboBox.getSelectedItem().toString();
-				String employee = empNamesWorkingTime.getSelectedItem().toString();
+				String employee = empNamesWorkingTime.getSelectedItem().toString().toLowerCase();
 				
 				int rows = activitySelectTable.getRowCount();//Get the number of rows in the table
 				
@@ -1004,7 +1028,7 @@ public class BusinessOwnerPanel extends JFrame {
 					return;
 				}
 				if (EmployeeComboBox.getSelectedItem().toString().trim().equals("")
-						|| empNamesWorkingTime.getSelectedItem().toString().trim()
+						|| EmployeeComboBox.getSelectedItem().toString().trim()
 								.equals("null")) {//Check whether the business owner has entered or selected a valid employee name
 					JOptionPane.showMessageDialog(null,
 							"Enter Employee name to proceed");
@@ -1039,6 +1063,7 @@ public class BusinessOwnerPanel extends JFrame {
 
 				String newstartTime = StarTimeComboBox1.getSelectedItem().toString();
 				String newendTime = EndTimeComboBox1.getSelectedItem().toString();
+				String newEmp = EmployeeComboBox.getSelectedItem().toString().toLowerCase();
 				
 				try {
 					BufferedReader reader = new BufferedReader(new FileReader("serviceduration.txt"));//Open the file in read mode and give access to the BufferedReader 
@@ -1096,7 +1121,7 @@ public class BusinessOwnerPanel extends JFrame {
 					        
 					        cal.add(Calendar.MINUTE, duration);//Add duration to get ending time of the slot
 					        Time timeEnd = new Time (cal.getTime().getTime());//Grt ending time of the slot in Time
-					        writer.write(emp + "," + daysList.get(a) + ","
+					        writer.write(newEmp + "," + daysList.get(a) + ","
 									+ activity + "," + timeStart.toString().substring(0, 5) + "-" + timeEnd.toString().substring(0, 5)
 									+ ",available");//write the slot, Remember we are updating employee working time
 							writer.newLine();//write a new line
@@ -1114,7 +1139,7 @@ public class BusinessOwnerPanel extends JFrame {
 					while ((currentLine = br.readLine()) != null) {//Loop through every line that is not null in the file
 						recs = currentLine.split(",");//Separate the line with a comma and add the records in a string array
 						if (recs[0].equals(emp) && recs[1].equals(service) && recs[2].equals(activity)) { //Check if the line matches the employee working time to be changed
-							list.add(emp+","+service+","+activity+","+newstartTime+","+newendTime+","+duration);//Add new details in a list
+							list.add(newEmp+","+service+","+activity+","+newstartTime+","+newendTime+","+duration);//Add new details in a list
 						}else{
 							list.add(currentLine);//Add the line as it was read in a list since no changes are needed
 						}
@@ -1497,7 +1522,7 @@ public class BusinessOwnerPanel extends JFrame {
 							"Enter Customer To Book For");
 					return;
 				}
-				String customerInfo = selectCustomer.getText();
+				String customerInfo = selectCustomer.getText().trim().toLowerCase();
 				String[] customerData = customerInfo.split(",");
 				if (customerData.length != 2) {//Check that two names are provided, first name and last name
 					JOptionPane.showMessageDialog(null,
@@ -1733,9 +1758,14 @@ public class BusinessOwnerPanel extends JFrame {
 			EmployeeComboBox.removeAllItems();//Remove all items from the dropdown
 			empNamesWorkingTime.removeAllItems();//Remove all items from the dropdown
 			
+			ArrayList<String> list = new ArrayList<>();
 			for (int a = 0; a < employeees.size(); a++) {//Loop through every list item in the list
-				empNamesWorkingTime.addItem(employeees.get(a));//Add the list item in the dropdown
-				EmployeeComboBox.addItem(employeees.get(a));//Add the list item in the dropdown
+				String recs[] = employeees.get(a).split(",");
+				if(!list.contains(recs[0])){//Check if employee name has been added in dropdown
+					list.add(recs[0]);//Separate to get employee name
+					empNamesWorkingTime.addItem(recs[0]);//Add the list item in the dropdown
+					EmployeeComboBox.addItem(recs[0]);//Add the list item in the dropdown
+				}
 			}
 
 		} catch (IOException e) {

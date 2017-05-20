@@ -15,3 +15,115 @@ Kim,thursday,hair washing,02:00-02:30,available
 Kim,thursday,hair washing,02:30-03:00,available
 Kim,friday,hair washing,02:00-02:30,available
 Kim,friday,hair washing,02:30-03:00,available
+Kaden,monday,Men Hair Cut,02:00-03:00,available
+Kaden,monday,Men Hair Cut,03:00-04:00,available
+Kaden,tuesday,Men Hair Cut,02:00-03:00,available
+Kaden,tuesday,Men Hair Cut,03:00-04:00,available
+Kaden,wednesday,Men Hair Cut,02:00-03:00,available
+Kaden,wednesday,Men Hair Cut,03:00-04:00,available
+Kaden,thursday,Men Hair Cut,02:00-03:00,available
+Kaden,thursday,Men Hair Cut,03:00-04:00,available
+Kaden,friday,Men Hair Cut,02:00-03:00,available
+Kaden,friday,Men Hair Cut,03:00-04:00,available
+Kaden,monday,Men HairCut,02:00-03:00,available
+Kaden,monday,Men HairCut,03:00-04:00,available
+Kaden,tuesday,Men HairCut,02:00-03:00,available
+Kaden,tuesday,Men HairCut,03:00-04:00,available
+Kaden,wednesday,Men HairCut,02:00-03:00,available
+Kaden,wednesday,Men HairCut,03:00-04:00,available
+Kaden,thursday,Men HairCut,02:00-03:00,available
+Kaden,thursday,Men HairCut,03:00-04:00,available
+Kaden,friday,Men HairCut,02:00-03:00,available
+Kaden,friday,Men HairCut,03:00-04:00,available
+Hella,monday,men haircut,02:00-03:00,available
+Hella,monday,men haircut,03:00-04:00,available
+Hella,tuesday,men haircut,02:00-03:00,available
+Hella,tuesday,men haircut,03:00-04:00,available
+Hella,wednesday,men haircut,02:00-03:00,available
+Hella,wednesday,men haircut,03:00-04:00,available
+Hella,thursday,men haircut,02:00-03:00,available
+Hella,thursday,men haircut,03:00-04:00,available
+Hella,friday,men haircut,02:00-03:00,available
+Hella,friday,men haircut,03:00-04:00,available
+Olympus,monday,woman hairwash,02:00-03:00,Un-available
+Olympus,monday,woman hairwash,03:00-04:00,Un-available
+Olympus,tuesday,woman hairwash,02:00-03:00,available
+Olympus,tuesday,woman hairwash,03:00-04:00,available
+Olympus,wednesday,woman hairwash,02:00-03:00,available
+Olympus,wednesday,woman hairwash,03:00-04:00,available
+Olympus,thursday,woman hairwash,02:00-03:00,available
+Olympus,thursday,woman hairwash,03:00-04:00,available
+Olympus,friday,woman hairwash,02:00-03:00,available
+Olympus,friday,woman hairwash,03:00-04:00,available
+null,null,hair cut,null,available
+ericnew,friday,hair cut,00:30-01:00,available
+Kim,monday,hair cut,02:00-03:00,available
+Kim,tuesday,hair cut,02:00-03:00,available
+Kim,wednesday,hair cut,02:00-03:00,available
+Kim,thursday,hair cut,02:00-03:00,available
+Kim,friday,hair cut,02:00-03:00,available
+Kim,monday,hair washing,02:00-02:30,available
+Kim,monday,hair washing,02:30-03:00,available
+Kim,tuesday,hair washing,02:00-02:30,available
+Kim,tuesday,hair washing,02:30-03:00,available
+Kim,wednesday,hair washing,02:00-02:30,available
+Kim,wednesday,hair washing,02:30-03:00,available
+Kim,thursday,hair washing,02:00-02:30,available
+Kim,thursday,hair washing,02:30-03:00,available
+Kim,friday,hair washing,02:00-02:30,available
+Kim,friday,hair washing,02:30-03:00,available
+Kaden,monday,Men Hair Cut,02:00-03:00,available
+Kaden,monday,Men Hair Cut,03:00-04:00,available
+Kaden,tuesday,Men Hair Cut,02:00-03:00,available
+Kaden,tuesday,Men Hair Cut,03:00-04:00,available
+Kaden,wednesday,Men Hair Cut,02:00-03:00,available
+Kaden,wednesday,Men Hair Cut,03:00-04:00,available
+Kaden,thursday,Men Hair Cut,02:00-03:00,available
+Kaden,thursday,Men Hair Cut,03:00-04:00,available
+Kaden,friday,Men Hair Cut,02:00-03:00,available
+Kaden,friday,Men Hair Cut,03:00-04:00,available
+Kaden,monday,Men HairCut,02:00-03:00,available
+Kaden,monday,Men HairCut,03:00-04:00,available
+Kaden,tuesday,Men HairCut,02:00-03:00,available
+Kaden,tuesday,Men HairCut,03:00-04:00,available
+Kaden,wednesday,Men HairCut,02:00-03:00,available
+Kaden,wednesday,Men HairCut,03:00-04:00,available
+Kaden,thursday,Men HairCut,02:00-03:00,available
+Kaden,thursday,Men HairCut,03:00-04:00,available
+Kaden,friday,Men HairCut,02:00-03:00,available
+Kaden,friday,Men HairCut,03:00-04:00,available
+Hella,monday,men haircut,02:00-03:00,available
+Hella,monday,men haircut,03:00-04:00,available
+Hella,tuesday,men haircut,02:00-03:00,available
+Hella,tuesday,men haircut,03:00-04:00,available
+Hella,wednesday,men haircut,02:00-03:00,available
+Hella,wednesday,men haircut,03:00-04:00,available
+Hella,thursday,men haircut,02:00-03:00,available
+Hella,thursday,men haircut,03:00-04:00,available
+Hella,friday,men haircut,02:00-03:00,available
+Hella,friday,men haircut,03:00-04:00,available
+Olympus,monday,woman hairwash,02:00-03:00,Un-available
+Olympus,monday,woman hairwash,03:00-04:00,Un-available
+Olympus,tuesday,woman hairwash,02:00-03:00,available
+Olympus,tuesday,woman hairwash,03:00-04:00,available
+Olympus,wednesday,woman hairwash,02:00-03:00,available
+Olympus,wednesday,woman hairwash,03:00-04:00,available
+Olympus,thursday,woman hairwash,02:00-03:00,available
+Olympus,thursday,woman hairwash,03:00-04:00,available
+Olympus,friday,woman hairwash,02:00-03:00,available
+Olympus,friday,woman hairwash,03:00-04:00,available
+ter,monday,men hair cut,03:00-04:00,available
+ter,monday,men hair cut,04:00-05:00,available
+ter,monday,men hair cut,05:00-06:00,available
+ter,tuesday,men hair cut,03:00-04:00,available
+ter,tuesday,men hair cut,04:00-05:00,available
+ter,tuesday,men hair cut,05:00-06:00,available
+ter,wednesday,men hair cut,03:00-04:00,available
+ter,wednesday,men hair cut,04:00-05:00,available
+ter,wednesday,men hair cut,05:00-06:00,available
+ter,thursday,men hair cut,03:00-04:00,available
+ter,thursday,men hair cut,04:00-05:00,available
+ter,thursday,men hair cut,05:00-06:00,available
+ter,friday,men hair cut,03:00-04:00,available
+ter,friday,men hair cut,04:00-05:00,available
+ter,friday,men hair cut,05:00-06:00,available

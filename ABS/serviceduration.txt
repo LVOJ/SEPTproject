@@ -5,3 +5,8 @@ dental,teeth extraction,60
 dental,teeth cleaning,30
 tutoring,math tutoring,30
 tutoring,comp tutoring,60
+hairdressing,Men Hair Cut,60
+hairdressing,Men HairCut,60
+hairdressing,men haircut,60
+hairdressing,woman hairwash,60
+hairdressing,men hair cut,60
