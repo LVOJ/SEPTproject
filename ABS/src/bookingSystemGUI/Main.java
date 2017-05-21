@@ -18,7 +18,7 @@ import java.awt.event.ActionListener;
 import java.util.logging.Level;
 import java.awt.event.ActionEvent;
 
-import junit.runner.Version;
+
 
 /**
  * 
@@ -50,7 +50,7 @@ public class Main extends JFrame {
 	 * Create the frame.
 	 */
 	public Main() {
-		System.out.println(Version.id());
+
 		JFrame dialog = new JFrame();
 		dialog.setResizable(false); //Diables the frame from being resized by users
 		dialog.setDefaultCloseOperation(EXIT_ON_CLOSE);

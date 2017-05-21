@@ -1,2 +1,0 @@
-Customer,KIKIK,L,booked Appointment on,Olympus,monday,hairdressing,woman hairwash,02:00-03:00
-Customer,KIKIK,L,booked Appointment on,Olympus,monday,hairdressing,woman hairwash,03:00-04:00
